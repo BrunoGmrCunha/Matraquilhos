@@ -43,7 +43,7 @@
     <div id="view-game" class="view">
         <div class="title-timer">
             <h2>Jogo em Progresso</h2>
-            <div class="game-timer" id="game-timer">04:00</div>
+            <div class="game-timer" onclick="pauseResumeTimer()" id="game-timer">04:00</div>
         </div>
         <div id="score-board"></div>
         <div class="team-section">
@@ -64,6 +64,10 @@
         <div class="summary-section" id="tournament-summary"></div>
         <button onclick="newGame()">Novo Jogo</button>
         <button onclick="endTournament()">Finalizar Torneio</button>
+    </div>
+
+    <div id = "debug">
+
     </div>
 
  <script src="script.js"></script>

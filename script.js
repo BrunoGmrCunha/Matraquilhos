@@ -107,19 +107,41 @@
             showView('view-game');
         }
 
+        // function startTimer() {
+        //     clearInterval(timer);
+        //     updateTimerDisplay();
+        //     timer = setInterval(() => {
+        //         if (timeLeft > 0) {
+        //             timeLeft--;
+        //             updateTimerDisplay();
+        //         } else {
+        //             clearInterval(timer);
+        //             checkWinner();
+        //         }
+        //     }, 1000);
+        // }
+        let isPaused = false;
+
         function startTimer() {
-            clearInterval(timer);
+    clearInterval(timer);
+    isPaused = false;
+    updateTimerDisplay();
+    timer = setInterval(() => {
+        if (!isPaused && timeLeft > 0) {
+            timeLeft--;
             updateTimerDisplay();
-            timer = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    updateTimerDisplay();
-                } else {
-                    clearInterval(timer);
-                    checkWinner();
-                }
-            }, 1000);
         }
+        if (timeLeft === 0) {
+            clearInterval(timer);
+            checkWinner();
+        }
+    }, 1000);
+}
+
+function pauseResumeTimer() {
+    isPaused = !isPaused;
+}
+
 
         function updateTimerDisplay() {
             const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
@@ -149,8 +171,8 @@
                     div.classList.add('score-controls')
                     div.innerHTML = `<span class="player-name">${player.name}</span> - ${player.goals} Golo(s) | ${player.ownGoals} Autogolo(s) ` +
                         `<div class="score-controls">
-                            <button onclick="addGoal('${team}', '${player.id}')">+ Golo</button>
-                            <button onclick="addOwnGoal('${team}', '${player.id}')">+ Autogolo</button>
+                            <button onclick="addGoal('${team}', '${player.id}')" onTouchStart="touchStartGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Golo</button>
+                            <button onclick="addOwnGoal('${team}', '${player.id}')" onTouchStart="touchStartOwnGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Autogolo</button>
                         </div>`;
                     wrapper.appendChild(div);
                 });
@@ -158,7 +180,35 @@
                 board.appendChild(wrapper);
             });
         }
+  let longPressTimer;
+  let longPressDuration = 600; // em milissegundos
+    let isLongPress = false;
 
+function touchStartGoal(team, id){
+        isLongPress = false;
+
+  longPressTimer = setTimeout(() => {
+      isLongPress = true;
+      removeGoal(team, id);
+    }, longPressDuration);
+
+}
+
+function touchStartOwnGoal(team, id){
+        isLongPress = false;
+
+  longPressTimer = setTimeout(() => {
+      isLongPress = true;
+      removeOwnGoal(team, id);
+    }, longPressDuration);
+
+}
+
+
+
+function touchEnd(){
+    clearTimeout(longPressTimer);
+}
         function addGoal(team, id) {
             const player = currentGame[team].find(p => p.id === id);
             player.goals++;
@@ -179,6 +229,27 @@
             checkWinner();
         }
 
+
+          function removeGoal(team, id) {
+            const player = currentGame[team].find(p => p.id === id);
+            player.goals--;
+            const playerScore = playersScore.find(player => player.id === id);
+
+            if (!playerScore) {
+                playersScore.push({
+                    id: id,
+                    name: playersList.find(player => player.id === id).name,
+                    goals: 1,
+                    ownGoals: 0
+                });
+            } else {
+                playerScore.goals -= 1;
+            }
+
+            updateScoreBoard();
+            checkWinner();
+        }
+
         function addOwnGoal(team, id) {
             const player = currentGame[team].find(p => p.id === id);
             player.ownGoals++;
@@ -193,6 +264,25 @@
                 });
             } else {
                 playerScore.ownGoals += 1;
+            }
+            updateScoreBoard();
+            checkWinner();
+        }
+
+         function removeOwnGoal(team, id) {
+            const player = currentGame[team].find(p => p.id === id);
+            player.ownGoals--;
+            const playerScore = playersScore.find(player => player.id === id);
+
+            if (!playerScore) {
+                playersScore.push({
+                    id: id,
+                    name: playersList.find(player => player.id === id).name,
+                    goals: 0,
+                    ownGoals: 1
+                });
+            } else {
+                playerScore.ownGoals -= 1;
             }
             updateScoreBoard();
             checkWinner();

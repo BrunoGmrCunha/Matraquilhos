@@ -11,6 +11,8 @@
             { id: "47c7e177-5847-4361-8c6f-23aa3bd0a8b3", name: "Vera" },
             { id: "47c7e177-5847-4361-8c6f-23aa3bd0a8b4", name: "Melo" },
             { id: "47c7e177-5847-4361-8c6f-23aa3bd0a8b5", name: "Jéssica" },
+               { id: "47c7e177-5847-4361-8c6d-23aa3bd0a8b8", name: "Alexandre" },
+                        { id: "47c7e178-5847-4362-8c6d-23aa3bd0a8b8", name: "Zequinha" }
         ];
 
         let games = [];

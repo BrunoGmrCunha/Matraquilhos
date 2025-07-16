@@ -19,7 +19,7 @@
         let playersScore = [];
         let currentGame = null;
         let timer = null;
-        let timeLeft = 180;
+        let timeLeft = 150;
         function debug(msg) {
             document.getElementById('debug').textContent += msg + '\n';
         }
@@ -101,7 +101,7 @@
                 endTime: null
             };
 
-            timeLeft = 180;
+            timeLeft = 150;
             startTimer();
             updateScoreBoard();
             document.getElementById('score-board').style.display = 'block';

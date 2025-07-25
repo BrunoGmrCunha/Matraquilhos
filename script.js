@@ -22,6 +22,8 @@ let playersScore = [];
 let currentGame = null;
 let timer = null;
 let timeLeft = 10;
+let audioContext = null;
+
 function debug(msg) {
     document.getElementById('debug').textContent += msg + '\n';
 }
@@ -75,6 +77,12 @@ function populatePlayerSelect(containerId) {
         select.innerHTML = `<option value="" disabled selected>-- Escolher Jogador --</option>` +
             playersList.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
         container.appendChild(select);
+    }
+}
+
+function initAudioContext(){
+    if(!audioContext){
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
 }
 
@@ -151,7 +159,9 @@ function pauseResumeTimer() {
     isPaused = !isPaused;
 }
 function beep(frequency = 1000, duration = 200) {
-    const context = new (window.AudioContext || window.webkitAudioContext)();
+
+    if(!audioContext) return
+    //const context = new (window.AudioContext || window.webkitAudioContext)();
     const oscillator = context.createOscillator();
     const gainNode = context.createGain();
 

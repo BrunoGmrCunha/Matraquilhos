@@ -21,7 +21,7 @@ let games = [];
 let playersScore = [];
 let currentGame = null;
 let timer = null;
-let timeLeft = 150;
+let timeLeft = 10;
 function debug(msg) {
     document.getElementById('debug').textContent += msg + '\n';
 }
@@ -103,7 +103,7 @@ function startGame() {
         endTime: null
     };
 
-    timeLeft = 150;
+    timeLeft = 10;
     startTimer();
     updateScoreBoard();
     document.getElementById('score-board').style.display = 'block';

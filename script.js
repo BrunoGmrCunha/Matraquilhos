@@ -132,7 +132,12 @@ function startTimer() {
     updateTimerDisplay();
     timer = setInterval(() => {
         if (!isPaused && timeLeft > 0) {
+
+            
             timeLeft--;
+
+                 if (timeLeft <= 5 && timeLeft > 0) {
+                beep(); }
             updateTimerDisplay();
         }
         if (timeLeft === 0) {
@@ -145,7 +150,23 @@ function startTimer() {
 function pauseResumeTimer() {
     isPaused = !isPaused;
 }
+function beep(frequency = 1000, duration = 200) {
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = context.createOscillator();
+    const gainNode = context.createGain();
 
+    oscillator.frequency.value = frequency;
+    oscillator.type = 'sine';
+
+    oscillator.connect(gainNode);
+    gainNode.connect(context.destination);
+
+    oscillator.start();
+    setTimeout(() => {
+        oscillator.stop();
+        context.close(); // Libera recursos
+    }, duration);
+}
 
 function updateTimerDisplay() {
     const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');

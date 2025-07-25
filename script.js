@@ -150,7 +150,6 @@ function pauseResumeTimer() {
 function beep(frequency = 1000, duration = 200) {
 
     if(!audioContext) return
-    //const context = new (window.AudioContext || window.webkitAudioContext)();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -163,7 +162,6 @@ function beep(frequency = 1000, duration = 200) {
     oscillator.start();
     setTimeout(() => {
         oscillator.stop();
-        // audioContext.close(); // Libera recursos
     }, duration);
 }
 

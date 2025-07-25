@@ -21,7 +21,7 @@ let games = [];
 let playersScore = [];
 let currentGame = null;
 let timer = null;
-let timeLeft = 10;
+let timeLeft = 150;
 let audioContext = null;
 
 function debug(msg) {
@@ -111,7 +111,7 @@ function startGame() {
         endTime: null
     };
 
-    timeLeft = 10;
+    timeLeft = 150;
     startTimer();
     updateScoreBoard();
     document.getElementById('score-board').style.display = 'block';
@@ -119,19 +119,6 @@ function startGame() {
     showView('view-game');
 }
 
-// function startTimer() {
-//     clearInterval(timer);
-//     updateTimerDisplay();
-//     timer = setInterval(() => {
-//         if (timeLeft > 0) {
-//             timeLeft--;
-//             updateTimerDisplay();
-//         } else {
-//             clearInterval(timer);
-//             checkWinner();
-//         }
-//     }, 1000);
-// }
 let isPaused = false;
 
 function startTimer() {
@@ -147,9 +134,6 @@ function startTimer() {
                  if (timeLeft <= 5 && timeLeft > 0) {
                 beep(); 
             }
-                // else if (timeLeft <= 5 && timeLeft > 0 ){
-                // // beep(1500, 1000); 
-                // }
             updateTimerDisplay();
         }
         if (timeLeft === 0) {

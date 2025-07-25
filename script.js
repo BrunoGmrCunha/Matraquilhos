@@ -174,7 +174,7 @@ function beep(frequency = 1000, duration = 200) {
     oscillator.start();
     setTimeout(() => {
         oscillator.stop();
-        audioContext.close(); // Libera recursos
+        // audioContext.close(); // Libera recursos
     }, duration);
 }
 

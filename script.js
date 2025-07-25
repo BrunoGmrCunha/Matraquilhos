@@ -162,19 +162,19 @@ function beep(frequency = 1000, duration = 200) {
 
     if(!audioContext) return
     //const context = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = context.createOscillator();
-    const gainNode = context.createGain();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
 
     oscillator.frequency.value = frequency;
     oscillator.type = 'sine';
 
     oscillator.connect(gainNode);
-    gainNode.connect(context.destination);
+    gainNode.connect(audioContext.destination);
 
     oscillator.start();
     setTimeout(() => {
         oscillator.stop();
-        context.close(); // Libera recursos
+        audioContext.close(); // Libera recursos
     }, duration);
 }
 

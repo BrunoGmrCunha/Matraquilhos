@@ -68,6 +68,7 @@ function random() {
     // });
 }
 
+
 function populatePlayerSelect(containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';

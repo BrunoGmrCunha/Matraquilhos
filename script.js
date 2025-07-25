@@ -144,8 +144,11 @@ function startTimer() {
             
             timeLeft--;
 
-                 if (timeLeft <= 5 && timeLeft > 0) {
+                 if (timeLeft <= 5 && timeLeft > 1) {
                 beep(); }
+                else if (timeLeft <= 5 && timeLeft > 0 ){
+                beep(1500, 1000); 
+                }
             updateTimerDisplay();
         }
         if (timeLeft === 0) {

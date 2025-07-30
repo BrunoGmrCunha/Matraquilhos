@@ -81,8 +81,8 @@ function populatePlayerSelect(containerId) {
     }
 }
 
-function initAudioContext(){
-    if(!audioContext){
+function initAudioContext() {
+    if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
 }
@@ -129,16 +129,16 @@ function startTimer() {
     timer = setInterval(() => {
         if (!isPaused && timeLeft > 0) {
 
-            
+
             timeLeft--;
 
-                 if (timeLeft <= 5 && timeLeft > 0) {
-                beep(); 
+            if (timeLeft <= 5 && timeLeft > 0) {
+                beep();
             }
             updateTimerDisplay();
         }
         if (timeLeft === 0) {
-                      beep(1500, 1000); 
+            beep(1500, 1000);
             clearInterval(timer);
             checkWinner();
         }
@@ -150,7 +150,7 @@ function pauseResumeTimer() {
 }
 function beep(frequency = 1000, duration = 200) {
 
-    if(!audioContext) return
+    if (!audioContext) return
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -195,7 +195,7 @@ function updateScoreBoard() {
             div.innerHTML = `<span class="player-name">${player.name}</span> - ${player.goals} Golo(s) | ${player.ownGoals} Autogolo(s) ` +
                 `<div class="score-controls">
                             <button onclick="addGoal('${team}', '${player.id}')" onTouchStart="touchStartGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Golo</button>
-                            <button onclick="addOwnGoal('${team}', '${player.id}')" onTouchStart="touchStartOwnGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Autogolo</button>
+                            <button  style="background-color:#ff0000" onclick="addOwnGoal('${team}', '${player.id}')" onTouchStart="touchStartOwnGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Autogolo</button>
                         </div>`;
             wrapper.appendChild(div);
         });
@@ -255,22 +255,22 @@ function addGoal(team, id) {
 
 function removeGoal(team, id) {
     const player = currentGame[team].find(p => p.id === id);
-    player.goals--;
-    const playerScore = playersScore.find(player => player.id === id);
-
-    if (!playerScore) {
-        playersScore.push({
-            id: id,
-            name: playersList.find(player => player.id === id).name,
-            goals: 1,
-            ownGoals: 0
-        });
-    } else {
-        playerScore.goals -= 1;
+    if (player.goals >= 0) {
+        player.goals--;
+        const playerScore = playersScore.find(player => player.id === id);
+        if (!playerScore) {
+            playersScore.push({
+                id: id,
+                name: playersList.find(player => player.id === id).name,
+                goals: 1,
+                ownGoals: 0
+            });
+        } else {
+            playerScore.goals -= 1;
+        }
+        updateScoreBoard();
+        checkWinner();
     }
-
-    updateScoreBoard();
-    checkWinner();
 }
 
 function addOwnGoal(team, id) {
@@ -294,21 +294,23 @@ function addOwnGoal(team, id) {
 
 function removeOwnGoal(team, id) {
     const player = currentGame[team].find(p => p.id === id);
-    player.ownGoals--;
-    const playerScore = playersScore.find(player => player.id === id);
+    if (player.ownGoals >= 0) {
+        player.ownGoals--;
+        const playerScore = playersScore.find(player => player.id === id);
 
-    if (!playerScore) {
-        playersScore.push({
-            id: id,
-            name: playersList.find(player => player.id === id).name,
-            goals: 0,
-            ownGoals: 1
-        });
-    } else {
-        playerScore.ownGoals -= 1;
+        if (!playerScore) {
+            playersScore.push({
+                id: id,
+                name: playersList.find(player => player.id === id).name,
+                goals: 0,
+                ownGoals: 1
+            });
+        } else {
+            playerScore.ownGoals -= 1;
+        }
+        updateScoreBoard();
+        checkWinner();
     }
-    updateScoreBoard();
-    checkWinner();
 }
 
 function checkWinner() {

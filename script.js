@@ -28,12 +28,6 @@ function debug(msg) {
     document.getElementById('debug').textContent += msg + '\n';
 }
 
-  const popup = document.getElementById('popup');
-  popup.classList.add('show');
-
-  setTimeout(() => {
-    popup.classList.remove('show');
-  }, 5000);
 function showView(id) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -477,6 +471,14 @@ document.addEventListener("DOMContentLoaded", () => {
     populateRandomPlayerSelect('player-4');
     populatePlayerSelect('team-red');
     populatePlayerSelect('team-white');
+
+    
+  const popup = document.getElementById('popup');
+  popup.classList.add('show');
+
+  setTimeout(() => {
+    popup.classList.remove('show');
+  }, 5000);
 });
 document.addEventListener('gesturestart', function (e) {
     e.preventDefault();

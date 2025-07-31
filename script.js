@@ -255,7 +255,7 @@ function addGoal(team, id) {
 
 function removeGoal(team, id) {
     const player = currentGame[team].find(p => p.id === id);
-    if (player.goals >= 0) {
+    if (player.goals > 0) {
         player.goals--;
         const playerScore = playersScore.find(player => player.id === id);
         if (!playerScore) {
@@ -294,7 +294,7 @@ function addOwnGoal(team, id) {
 
 function removeOwnGoal(team, id) {
     const player = currentGame[team].find(p => p.id === id);
-    if (player.ownGoals >= 0) {
+    if (player.ownGoals > 0) {
         player.ownGoals--;
         const playerScore = playersScore.find(player => player.id === id);
 

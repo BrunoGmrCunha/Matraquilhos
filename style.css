@@ -204,3 +204,22 @@
    .player-name {
        font-weight: 800;
    }
+   #popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: #fff;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      font-size: 16px;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    #popup.show {
+      opacity: 1;
+    }
+

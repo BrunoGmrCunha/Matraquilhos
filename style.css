@@ -204,18 +204,20 @@
    .player-name {
        font-weight: 800;
    }
-   #popup {
+     #popup {
       position: fixed;
-      top: 20px;
-      left: 50%;
-      margin: 20px;
-      transform: translateX(-50%);
-      background-color: #333;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.85);
       color: #fff;
-      padding: 15px 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 22px;
+      padding: 20px;
       z-index: 9999;
       opacity: 0;
       transition: opacity 0.5s ease-in-out;

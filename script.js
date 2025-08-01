@@ -473,13 +473,14 @@ document.addEventListener("DOMContentLoaded", () => {
     populatePlayerSelect('team-white');
 
     
- // const popup = document.getElementById('popup');
- // popup.classList.add('show');
+  const popup = document.getElementById('popup');
+  popup.classList.add('show');
 
-//  setTimeout(() => {
-//    popup.classList.remove('show');
-//  }, 5000);
-//});
+setTimeout(() => {
+   //popup.classList.remove('show');
+    popup.remove(); 
+ }, 5000);
+});
 document.addEventListener('gesturestart', function (e) {
     e.preventDefault();
 });

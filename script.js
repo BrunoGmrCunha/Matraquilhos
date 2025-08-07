@@ -149,6 +149,10 @@ function pauseResumeTimer() {
     isPaused = !isPaused;
 }
 
+function pauseTimer() {
+    isPaused = true;
+}
+
 function beep(frequency = 1000, duration = 200) {
 
     if (!audioContext) return
@@ -322,7 +326,7 @@ function checkWinner() {
 
     if (redGoals >= 3 || whiteGoals >= 3) {
         currentGame.winner = redGoals > whiteGoals ? 'red' : 'white';
-        pauseResumeTimer();
+        pauseTimer();
         showView('view-summary');
         // finalizeGame();
     } else if (timeLeft <= 0 && redGoals === whiteGoals) {
@@ -335,7 +339,7 @@ function checkWinner() {
         document.getElementById('tie-breaker').style.display = 'block';
     } else if (timeLeft <= 0) {
         currentGame.winner = redGoals > whiteGoals ? 'red' : 'white';
-        pauseResumeTimer();
+        pauseTimer();
         showView('view-summary');
         // finalizeGame();
     }

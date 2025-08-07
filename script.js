@@ -180,12 +180,12 @@ function updateTimerDisplay() {
 
 function updateScoreBoard() {
     const board = document.getElementById('score-board');
-        const resultGame = document.getElementById('result');
+    const resultGame = document.getElementById('result');
     board.innerHTML = '';
-    resultGame.innerHTML = '' 
+    resultGame.innerHTML = ''
     const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
     const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
-            resultGame.textContent = `🔴 ${redGoals} - ${whiteGoals} ⚪ `;
+    resultGame.textContent = `🔴 ${redGoals} - ${whiteGoals} ⚪ `;
 
     ['red', 'white'].forEach(team => {
         const wrapper = document.createElement('div');
@@ -324,12 +324,12 @@ function checkWinner() {
     const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
     const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
 
-    if (redGoals >= 3 || whiteGoals >= 3) {
+    if ((redGoals === 3 && whiteGoals < 3) || (whiteGoals === 3 && redGoals < 3)) {
         currentGame.winner = redGoals > whiteGoals ? 'red' : 'white';
         pauseTimer();
         showView('view-summary');
         // finalizeGame();
-    } else if (timeLeft <= 0 && redGoals === whiteGoals) {
+    } else if (timeLeft <= 0 && redGoals === whiteGoals && redGoals !=3) {
         const select = document.getElementById('winner-team');
         select.innerHTML = `
                     <option value="red">Equipa Vermelha</option>
@@ -337,12 +337,13 @@ function checkWinner() {
                 `;
         document.getElementById('score-board').style.display = 'none';
         document.getElementById('tie-breaker').style.display = 'block';
-    } else if (timeLeft <= 0) {
+    } else if (timeLeft <= 0 && redGoals != whiteGoals) {
         currentGame.winner = redGoals > whiteGoals ? 'red' : 'white';
         pauseTimer();
         showView('view-summary');
         // finalizeGame();
     }
+
 }
 
 function finalizeGame() {
@@ -364,10 +365,10 @@ function finalizeGame() {
     // showSummary();
 }
 
-function reftifyGame(){
-            document.getElementById('score-board').style.display = 'block';
-        document.getElementById('tie-breaker').style.display = 'none';
-        showView('view-game');
+function reftifyGame() {
+    document.getElementById('score-board').style.display = 'block';
+    document.getElementById('tie-breaker').style.display = 'none';
+    showView('view-game');
 }
 
 function showSummary() {
@@ -416,7 +417,7 @@ function newGame() {
 }
 
 async function endTournament() {
-        finalizeGame();
+    finalizeGame();
     const summary = document.getElementById('tournament-summary');
     let text = '';
     games.forEach((game, idx) => {

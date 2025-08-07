@@ -118,7 +118,7 @@ function startGame() {
     document.getElementById('score-board').style.display = 'block';
     document.getElementById('tie-breaker').style.display = 'none';
     showView('view-game');
-    document.getElementById('view-game').scrollIntoView({behavior:"smooth"});
+    document.getElementById('view-game').scrollIntoView({ behavior: "smooth" });
 
 }
 
@@ -243,23 +243,28 @@ function touchEnd() {
 }
 
 function addGoal(team, id) {
-    const player = currentGame[team].find(p => p.id === id);
-    player.goals++;
-    const playerScore = playersScore.find(player => player.id === id);
+    const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
+    const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
 
-    if (!playerScore) {
-        playersScore.push({
-            id: id,
-            name: playersList.find(player => player.id === id).name,
-            goals: 1,
-            ownGoals: 0
-        });
-    } else {
-        playerScore.goals += 1;
+    if ((team === 'red' && redGoals < 3) || (team === 'white' && whiteGoals < 3)) {
+        const player = currentGame[team].find(p => p.id === id);
+        player.goals++;
+        const playerScore = playersScore.find(player => player.id === id);
+
+        if (!playerScore) {
+            playersScore.push({
+                id: id,
+                name: playersList.find(player => player.id === id).name,
+                goals: 1,
+                ownGoals: 0
+            });
+        } else {
+            playerScore.goals += 1;
+        }
+
+        updateScoreBoard();
+        checkWinner();
     }
-
-    updateScoreBoard();
-    checkWinner();
 }
 
 function removeGoal(team, id) {
@@ -283,22 +288,27 @@ function removeGoal(team, id) {
 }
 
 function addOwnGoal(team, id) {
-    const player = currentGame[team].find(p => p.id === id);
-    player.ownGoals++;
-    const playerScore = playersScore.find(player => player.id === id);
+    const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
+    const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
 
-    if (!playerScore) {
-        playersScore.push({
-            id: id,
-            name: playersList.find(player => player.id === id).name,
-            goals: 0,
-            ownGoals: 1
-        });
-    } else {
-        playerScore.ownGoals += 1;
+    if ((team === 'red' && whiteGoals < 3) || (team === 'white' && redGoals < 3)) {
+        const player = currentGame[team].find(p => p.id === id);
+        player.ownGoals++;
+        const playerScore = playersScore.find(player => player.id === id);
+
+        if (!playerScore) {
+            playersScore.push({
+                id: id,
+                name: playersList.find(player => player.id === id).name,
+                goals: 0,
+                ownGoals: 1
+            });
+        } else {
+            playerScore.ownGoals += 1;
+        }
+        updateScoreBoard();
+        checkWinner();
     }
-    updateScoreBoard();
-    checkWinner();
 }
 
 function removeOwnGoal(team, id) {
@@ -331,7 +341,7 @@ function checkWinner() {
         pauseTimer();
         showView('view-summary');
         // finalizeGame();
-    } else if (timeLeft <= 0 && redGoals === whiteGoals && redGoals !=3) {
+    } else if (timeLeft <= 0 && redGoals === whiteGoals && redGoals != 3) {
         const select = document.getElementById('winner-team');
         select.innerHTML = `
                     <option value="red">Equipa Vermelha</option>

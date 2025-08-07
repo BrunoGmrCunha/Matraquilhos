@@ -13,6 +13,7 @@
 
 <body>
     <h1>Matraquilhos</h1>
+    <div id="popup">Estou de férias!! 😝 <br>Não há matraquilhos para ninguém 😆</div>
     <div id="view-random" class="view">
         <h1>Selecionar Jogadores</h1>
         <div class="team-section">
@@ -37,13 +38,13 @@
             <h2>Equipa Branca</h2>
             <div class="player-list" id="team-white"></div>
         </div>
-        <button onclick="startGame()">Iniciar Jogo</button>
+        <button onclick="initAudioContext(); startGame();">Iniciar Jogo</button>
     </div>
 
     <div id="view-game" class="view">
         <div class="title-timer">
             <h2>Jogo em Progresso</h2>
-            <div class="game-timer" id="game-timer">04:00</div>
+            <div class="game-timer" onclick="pauseResumeTimer()" id="game-timer">04:00</div>
         </div>
         <div id="score-board"></div>
         <div class="team-section">
@@ -65,6 +66,11 @@
         <button onclick="newGame()">Novo Jogo</button>
         <button onclick="endTournament()">Finalizar Torneio</button>
     </div>
+
+    <div id = "debug">
+
+    </div>
+
 <video id="keepAwake" muted autoplay loop playsinline style="display: none;">
   <source src="blank.mp4" type="video/mp4">
 </video>

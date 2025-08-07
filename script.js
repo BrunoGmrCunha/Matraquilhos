@@ -69,7 +69,6 @@ function random() {
     // });
 }
 
-
 function populatePlayerSelect(containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
@@ -149,6 +148,7 @@ function startTimer() {
 function pauseResumeTimer() {
     isPaused = !isPaused;
 }
+
 function beep(frequency = 1000, duration = 200) {
 
     if (!audioContext) return
@@ -176,9 +176,13 @@ function updateTimerDisplay() {
 
 function updateScoreBoard() {
     const board = document.getElementById('score-board');
+        const resultGame = document.getElementById('result');
     board.innerHTML = '';
+    resultGame.innerHTML = '' 
     const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
     const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
+            resultGame.textContent = `🔴 ${redGoals} - ${whiteGoals} ⚪ `;
+
     ['red', 'white'].forEach(team => {
         const wrapper = document.createElement('div');
         // wrapper.className = team === 'red' ? 'team-section red' : 'team-section white';
@@ -186,15 +190,15 @@ function updateScoreBoard() {
         wrapper.classList.add(team === 'red' ? 'red' : 'white')
 
         const title = document.createElement('h3');
-        title.textContent = team === 'red' ? `Equipa Vermelha - ${redGoals}` : `Equipa Branca - ${whiteGoals}`;
+        title.textContent = team === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
 
         wrapper.appendChild(title);
 
         currentGame[team].forEach(player => {
             const div = document.createElement('div');
             div.classList.add('score-controls')
-            div.innerHTML = `<span class="player-name">${player.name}</span> - ${player.goals} Golo(s) | ${player.ownGoals} Autogolo(s) ` +
-                `<div class="score-controls">
+            div.innerHTML = `<span class="player-name">${player.name}</span> - ${player.goals} Golo(s) | ${player.ownGoals} Autogolo(s)` +
+                `<div class="score-controls-buttons">
                             <button onclick="addGoal('${team}', '${player.id}')" onTouchStart="touchStartGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Golo</button>
                             <button  style="background-color:#ff0000" onclick="addOwnGoal('${team}', '${player.id}')" onTouchStart="touchStartOwnGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Autogolo</button>
                         </div>`;
@@ -228,11 +232,10 @@ function touchStartOwnGoal(team, id) {
 
 }
 
-
-
 function touchEnd() {
     clearTimeout(longPressTimer);
 }
+
 function addGoal(team, id) {
     const player = currentGame[team].find(p => p.id === id);
     player.goals++;
@@ -252,7 +255,6 @@ function addGoal(team, id) {
     updateScoreBoard();
     checkWinner();
 }
-
 
 function removeGoal(team, id) {
     const player = currentGame[team].find(p => p.id === id);
@@ -320,7 +322,9 @@ function checkWinner() {
 
     if (redGoals >= 3 || whiteGoals >= 3) {
         currentGame.winner = redGoals > whiteGoals ? 'red' : 'white';
-        finalizeGame();
+        pauseResumeTimer();
+        showView('view-summary');
+        // finalizeGame();
     } else if (timeLeft <= 0 && redGoals === whiteGoals) {
         const select = document.getElementById('winner-team');
         select.innerHTML = `
@@ -331,7 +335,9 @@ function checkWinner() {
         document.getElementById('tie-breaker').style.display = 'block';
     } else if (timeLeft <= 0) {
         currentGame.winner = redGoals > whiteGoals ? 'red' : 'white';
-        finalizeGame();
+        pauseResumeTimer();
+        showView('view-summary');
+        // finalizeGame();
     }
 }
 
@@ -351,7 +357,13 @@ function finalizeGame() {
     if (!currentGame.winner) {
         currentGame.winner = document.getElementById('winner-team').value;
     }
-    showSummary();
+    // showSummary();
+}
+
+function reftifyGame(){
+            document.getElementById('score-board').style.display = 'block';
+        document.getElementById('tie-breaker').style.display = 'none';
+        showView('view-game');
 }
 
 function showSummary() {
@@ -369,12 +381,11 @@ function showSummary() {
     //     text += `${player.name} -> Golos: ${player.goals} | Autogolos: ${player.ownGoals}\n`;
     // });
     // summary.textContent = text;
-    console.log(playersScore);
-    console.log(games);
     showView('view-summary');
 }
 
 function newGame() {
+    finalizeGame();
     const winningTeam = currentGame[currentGame.winner];
     if (currentGame.winner === 'red') {
         document.getElementById('team-red').style.display = 'none';
@@ -401,6 +412,7 @@ function newGame() {
 }
 
 async function endTournament() {
+        finalizeGame();
     const summary = document.getElementById('tournament-summary');
     let text = '';
     games.forEach((game, idx) => {
@@ -472,20 +484,18 @@ document.addEventListener("DOMContentLoaded", () => {
     populatePlayerSelect('team-red');
     populatePlayerSelect('team-white');
 
-    
-  const popup = document.getElementById('popup');
-  popup.classList.add('show');
 
-setTimeout(() => {
-   //popup.classList.remove('show');
-    popup.remove(); 
- }, 5000);
+    const popup = document.getElementById('popup');
+    popup.remove();
+    // popup.classList.add('show');
+
+    // setTimeout(() => {
+    //     //popup.classList.remove('show');
+    //     popup.remove();
+    // }, 5000);
+
 });
-document.addEventListener('gesturestart', function (e) {
-    e.preventDefault();
-});
-// window.addEventListener('beforeunload', function (e) {
-//     e.preventDefault(); // Necessário para alguns browsers
-//     e.returnValue = ''; // Requerido para mostrar o diálogo de confirmação
-// });
+
+
+
 

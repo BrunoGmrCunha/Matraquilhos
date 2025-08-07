@@ -55,6 +55,11 @@
    .team-section.red h2 {
        background-color: #ffcccc;
        color: #800000;
+       margin-top: 2px;
+       margin-bottom: 10px;
+       font-size: 20px;
+       text-align: center;
+  
    }
 
    .team-section.white {
@@ -65,6 +70,10 @@
    .team-section.white h2 {
        background-color: #333;
        color: #ffffff;
+              margin-top: 2px;
+       margin-bottom: 10px;
+       font-size: 20px;
+       text-align: center;
    }
 
    .player-list select {
@@ -102,10 +111,11 @@
    .score-controls button {
        /* margin-left: auto;
             margin-right: auto; */
-       margin: 5px 5px 10px 0;
-       width: 40%;
+       /* margin: 5px 5px 10px 0; */
+       margin: 5px;
+       width: 50%;
        padding: 0px;
-       font-size: 16px;
+       font-size: 20px;
    }
 
    .game-timer {
@@ -116,6 +126,7 @@
        color: #0061A8;
        width: 20%;
        border-radius: 10px;
+       margin-right: 0px;
        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
    }
 
@@ -158,6 +169,13 @@
        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
    }
 
+   #score-controls-buttons {
+       /* margin: 20px 0; */
+       padding-top: 0px;
+       /* border-radius: 10px; */
+       /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); */
+   }
+
    .score-controls {
        text-align: center;
        background-color: rgba(255, 255, 255, 0.9);
@@ -171,6 +189,7 @@
    .score-controls div {
        display: flex;
        justify-content: center;
+       
 
    }
 
@@ -198,31 +217,39 @@
    .title-timer h2 {
        text-align: left;
        color: white;
-
+       
    }
 
    .player-name {
        font-weight: 800;
    }
-     #popup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.85);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-size: 22px;
-      padding: 20px;
-      z-index: 9999;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
-    }
-    #popup.show {
-      opacity: 1;
-    }
 
+   .hold-label {
+       margin-top: 5px;
+    text-align: center;
+       /* margin-top: 100px;
+       padding-top: 50px; */
+   }
+
+   #popup {
+       position: fixed;
+       top: 0;
+       left: 0;
+       width: 100vw;
+       height: 100vh;
+       background-color: rgba(0, 0, 0, 0.85);
+       color: #fff;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       text-align: center;
+       font-size: 22px;
+       padding: 20px;
+       z-index: 9999;
+       opacity: 0;
+       transition: opacity 0.5s ease-in-out;
+   }
+
+   #popup.show {
+       opacity: 1;
+   }

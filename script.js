@@ -118,6 +118,8 @@ function startGame() {
     document.getElementById('score-board').style.display = 'block';
     document.getElementById('tie-breaker').style.display = 'none';
     showView('view-game');
+    document.getElementById('view-game').scrollIntoView({behavior:"smooth"});
+
 }
 
 let isPaused = false;
@@ -204,7 +206,7 @@ function updateScoreBoard() {
             div.innerHTML = `<span class="player-name">${player.name}</span> - ${player.goals} Golo(s) | ${player.ownGoals} Autogolo(s)` +
                 `<div class="score-controls-buttons">
                             <button onclick="addGoal('${team}', '${player.id}')" onTouchStart="touchStartGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Golo</button>
-                            <button  style="background-color:#ff0000" onclick="addOwnGoal('${team}', '${player.id}')" onTouchStart="touchStartOwnGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Autogolo</button>
+                            <button  style="background-color:#ff4646" onclick="addOwnGoal('${team}', '${player.id}')" onTouchStart="touchStartOwnGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Autogolo</button>
                         </div>`;
             wrapper.appendChild(div);
         });

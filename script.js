@@ -33,6 +33,7 @@ function showView(id) {
     document.getElementById(id).classList.add('active');
 }
 
+
 function random() {
     // console.log(document.getElementById("player-1").querySelectorAll('select')[0].value)
     // const selectedPlayers = [
@@ -87,16 +88,23 @@ function initAudioContext() {
     }
 }
 
-function populateRandomPlayerSelect(containerId) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
+function populateRandomPlayerSelect(selectId) {
+    const select = document.getElementById(selectId);
+    select.innerHTML = '';
+         const defaultOption = document.createElement("option");
+         defaultOption.value="";
+         defaultOption.text="seleciona um jogador"
+         defaultOption.disabled=true;
+         defaultOption.selected=true;
+         select.appendChild(defaultOption);
     playersList.sort((a, b) => a.name.localeCompare(b.name));
 
-    const select = document.createElement('select');
-    select.innerHTML = `<option value="" disabled selected>-- Escolher Jogador --</option>` +
-        playersList.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-    container.appendChild(select);
-
+    playersList.forEach(player => {
+             const option = document.createElement("option");
+             option.value=player.id;
+             option.text=player.name;
+             select.appendChild(option);
+    });
 }
 
 
@@ -495,9 +503,9 @@ async function sendTextToApi(text) {
 
 document.addEventListener("DOMContentLoaded", () => {
     populateRandomPlayerSelect('player-1');
-    populateRandomPlayerSelect('player-2');
-    populateRandomPlayerSelect('player-3');
-    populateRandomPlayerSelect('player-4');
+    //populateRandomPlayerSelect('player-2');
+    //populateRandomPlayerSelect('player-3');
+  //  populateRandomPlayerSelect('player-4');
     populatePlayerSelect('team-red');
     populatePlayerSelect('team-white');
 

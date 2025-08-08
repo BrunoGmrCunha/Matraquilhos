@@ -3,16 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
     <title>Jogo de Matraquilhos</title>
-     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <h1>Matraquilhos</h1>
+    <h1>NIUP - Matraquilhos</h1>
     <div id="popup">Estou de férias!! 😝 <br>Não há matraquilhos para ninguém 😆</div>
     <div id="view-random" class="view">
         <h1>Selecionar Jogadores</h1>
@@ -29,52 +27,56 @@
         <button onclick="random()">Escolher aleatório</button>
     </div>
     <div id="view-select" class="view active">
-        <h1>Selecionar Jogadores</h1>
+        <h1>Selecionar jogadores</h1>
         <div class="team-section red">
-            <h2>Equipa Vermelha</h2>
+            <h2>🔴 Equipa Vermelha</h2>
             <div class="player-list" id="team-red"></div>
         </div>
         <div class="team-section white">
-            <h2>Equipa Branca</h2>
+            <h2>⚪ Equipa Branca</h2>
             <div class="player-list" id="team-white"></div>
         </div>
-        <button onclick="initAudioContext(); startGame();">Iniciar Jogo</button>
+        <button onclick="initAudioContext(); startGame(); ">Iniciar Jogo</button>
     </div>
 
     <div id="view-game" class="view">
         <div class="title-timer">
-            <h2>Jogo em Progresso</h2>
+            <!-- <h2>Jogo em Progresso</h2> -->
+             <h2 id="result">Jogo em progresso</h2>
             <div class="game-timer" onclick="pauseResumeTimer()" id="game-timer">04:00</div>
         </div>
         <div id="score-board"></div>
-        <div class="team-section">
+        <!-- <div class="team-section">
             <h2>Jogador 1</h2>
             <div class="player-list" id="player-1"></div>
             <h2>Jogador 2</h2>
             <div class="player-list" id="player-2"></div>
-        </div>
+        </div> -->
         <div class="winner-select" id="tie-breaker" style="display:none;">
             <label for="winner-team">Selecionar Equipa Vencedora:</label>
             <select id="winner-team"></select>
-            <button onclick="finalizeGame()">Finalizar Jogo</button>
+            <button onclick="showView('view-summary');">Finalizar Jogo</button>
         </div>
     </div>
 
     <div id="view-summary" class="view">
-        <h1>Resumo do Torneio</h1>
-        <div class="summary-section" id="tournament-summary"></div>
+        <h1>Fim de Jogo</h1>
+        
         <button onclick="newGame()">Novo Jogo</button>
+        <button onclick="reftifyGame()">Corrigir Jogo Anterior</button>
+        <hr>
         <button onclick="endTournament()">Finalizar Torneio</button>
+        <div class="summary-section" id="tournament-summary"></div>
     </div>
 
-    <div id = "debug">
+    <div id="debug">
 
     </div>
 
-<video id="keepAwake" muted autoplay loop playsinline style="display: none;">
-  <source src="blank.mp4" type="video/mp4">
-</video>
- <script src="script.js"></script>
+    <video id="keepAwake" muted autoplay loop playsinline style="display: none;">
+        <source src="blank.mp4" type="video/mp4">
+    </video>
+    <script src="script.js"></script>
 </body>
 
 </html>

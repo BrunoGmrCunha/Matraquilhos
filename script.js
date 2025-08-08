@@ -69,7 +69,6 @@ function random() {
     // });
 }
 
-
 function populatePlayerSelect(containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
@@ -119,6 +118,8 @@ function startGame() {
     document.getElementById('score-board').style.display = 'block';
     document.getElementById('tie-breaker').style.display = 'none';
     showView('view-game');
+    document.getElementById('view-game').scrollIntoView({ behavior: "smooth" });
+
 }
 
 let isPaused = false;
@@ -149,6 +150,11 @@ function startTimer() {
 function pauseResumeTimer() {
     isPaused = !isPaused;
 }
+
+function pauseTimer() {
+    isPaused = true;
+}
+
 function beep(frequency = 1000, duration = 200) {
 
     if (!audioContext) return
@@ -176,9 +182,13 @@ function updateTimerDisplay() {
 
 function updateScoreBoard() {
     const board = document.getElementById('score-board');
+    const resultGame = document.getElementById('result');
     board.innerHTML = '';
+    resultGame.innerHTML = ''
     const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
     const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
+    resultGame.textContent = `🔴 ${redGoals} - ${whiteGoals} ⚪ `;
+
     ['red', 'white'].forEach(team => {
         const wrapper = document.createElement('div');
         // wrapper.className = team === 'red' ? 'team-section red' : 'team-section white';
@@ -186,17 +196,17 @@ function updateScoreBoard() {
         wrapper.classList.add(team === 'red' ? 'red' : 'white')
 
         const title = document.createElement('h3');
-        title.textContent = team === 'red' ? `Equipa Vermelha - ${redGoals}` : `Equipa Branca - ${whiteGoals}`;
+        title.textContent = team === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
 
         wrapper.appendChild(title);
 
         currentGame[team].forEach(player => {
             const div = document.createElement('div');
             div.classList.add('score-controls')
-            div.innerHTML = `<span class="player-name">${player.name}</span> - ${player.goals} Golo(s) | ${player.ownGoals} Autogolo(s) ` +
-                `<div class="score-controls">
+            div.innerHTML = `<span class="player-name">${player.name}</span> - ${player.goals} Golo(s) | ${player.ownGoals} Autogolo(s)` +
+                `<div class="score-controls-buttons">
                             <button onclick="addGoal('${team}', '${player.id}')" onTouchStart="touchStartGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Golo</button>
-                            <button  style="background-color:#ff0000" onclick="addOwnGoal('${team}', '${player.id}')" onTouchStart="touchStartOwnGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Autogolo</button>
+                            <button  style="background-color:#ff4646" onclick="addOwnGoal('${team}', '${player.id}')" onTouchStart="touchStartOwnGoal('${team}', '${player.id}')" onTouchEnd="touchEnd()">+ Autogolo</button>
                         </div>`;
             wrapper.appendChild(div);
         });
@@ -228,31 +238,34 @@ function touchStartOwnGoal(team, id) {
 
 }
 
-
-
 function touchEnd() {
     clearTimeout(longPressTimer);
 }
+
 function addGoal(team, id) {
-    const player = currentGame[team].find(p => p.id === id);
-    player.goals++;
-    const playerScore = playersScore.find(player => player.id === id);
+    const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
+    const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
 
-    if (!playerScore) {
-        playersScore.push({
-            id: id,
-            name: playersList.find(player => player.id === id).name,
-            goals: 1,
-            ownGoals: 0
-        });
-    } else {
-        playerScore.goals += 1;
+    if ((team === 'red' && redGoals < 3) || (team === 'white' && whiteGoals < 3)) {
+        const player = currentGame[team].find(p => p.id === id);
+        player.goals++;
+        const playerScore = playersScore.find(player => player.id === id);
+
+        if (!playerScore) {
+            playersScore.push({
+                id: id,
+                name: playersList.find(player => player.id === id).name,
+                goals: 1,
+                ownGoals: 0
+            });
+        } else {
+            playerScore.goals += 1;
+        }
+
+        updateScoreBoard();
+        checkWinner();
     }
-
-    updateScoreBoard();
-    checkWinner();
 }
-
 
 function removeGoal(team, id) {
     const player = currentGame[team].find(p => p.id === id);
@@ -275,22 +288,27 @@ function removeGoal(team, id) {
 }
 
 function addOwnGoal(team, id) {
-    const player = currentGame[team].find(p => p.id === id);
-    player.ownGoals++;
-    const playerScore = playersScore.find(player => player.id === id);
+    const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
+    const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
 
-    if (!playerScore) {
-        playersScore.push({
-            id: id,
-            name: playersList.find(player => player.id === id).name,
-            goals: 0,
-            ownGoals: 1
-        });
-    } else {
-        playerScore.ownGoals += 1;
+    if ((team === 'red' && whiteGoals < 3) || (team === 'white' && redGoals < 3)) {
+        const player = currentGame[team].find(p => p.id === id);
+        player.ownGoals++;
+        const playerScore = playersScore.find(player => player.id === id);
+
+        if (!playerScore) {
+            playersScore.push({
+                id: id,
+                name: playersList.find(player => player.id === id).name,
+                goals: 0,
+                ownGoals: 1
+            });
+        } else {
+            playerScore.ownGoals += 1;
+        }
+        updateScoreBoard();
+        checkWinner();
     }
-    updateScoreBoard();
-    checkWinner();
 }
 
 function removeOwnGoal(team, id) {
@@ -318,10 +336,12 @@ function checkWinner() {
     const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
     const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
 
-    if (redGoals >= 3 || whiteGoals >= 3) {
+    if ((redGoals === 3 && whiteGoals < 3) || (whiteGoals === 3 && redGoals < 3)) {
         currentGame.winner = redGoals > whiteGoals ? 'red' : 'white';
-        finalizeGame();
-    } else if (timeLeft <= 0 && redGoals === whiteGoals) {
+        pauseTimer();
+        showView('view-summary');
+        // finalizeGame();
+    } else if (timeLeft <= 0 && redGoals === whiteGoals && redGoals != 3) {
         const select = document.getElementById('winner-team');
         select.innerHTML = `
                     <option value="red">Equipa Vermelha</option>
@@ -329,10 +349,13 @@ function checkWinner() {
                 `;
         document.getElementById('score-board').style.display = 'none';
         document.getElementById('tie-breaker').style.display = 'block';
-    } else if (timeLeft <= 0) {
+    } else if (timeLeft <= 0 && redGoals != whiteGoals) {
         currentGame.winner = redGoals > whiteGoals ? 'red' : 'white';
-        finalizeGame();
+        pauseTimer();
+        showView('view-summary');
+        // finalizeGame();
     }
+
 }
 
 function finalizeGame() {
@@ -351,7 +374,13 @@ function finalizeGame() {
     if (!currentGame.winner) {
         currentGame.winner = document.getElementById('winner-team').value;
     }
-    showSummary();
+    // showSummary();
+}
+
+function reftifyGame() {
+    document.getElementById('score-board').style.display = 'block';
+    document.getElementById('tie-breaker').style.display = 'none';
+    showView('view-game');
 }
 
 function showSummary() {
@@ -369,12 +398,11 @@ function showSummary() {
     //     text += `${player.name} -> Golos: ${player.goals} | Autogolos: ${player.ownGoals}\n`;
     // });
     // summary.textContent = text;
-    console.log(playersScore);
-    console.log(games);
     showView('view-summary');
 }
 
 function newGame() {
+    finalizeGame();
     const winningTeam = currentGame[currentGame.winner];
     if (currentGame.winner === 'red') {
         document.getElementById('team-red').style.display = 'none';
@@ -401,6 +429,7 @@ function newGame() {
 }
 
 async function endTournament() {
+    finalizeGame();
     const summary = document.getElementById('tournament-summary');
     let text = '';
     games.forEach((game, idx) => {
@@ -472,20 +501,18 @@ document.addEventListener("DOMContentLoaded", () => {
     populatePlayerSelect('team-red');
     populatePlayerSelect('team-white');
 
-    
-  const popup = document.getElementById('popup');
-  popup.classList.add('show');
 
-setTimeout(() => {
-   //popup.classList.remove('show');
-    popup.remove(); 
- }, 5000);
+    const popup = document.getElementById('popup');
+    popup.remove();
+    // popup.classList.add('show');
+
+    // setTimeout(() => {
+    //     //popup.classList.remove('show');
+    //     popup.remove();
+    // }, 5000);
+
 });
-document.addEventListener('gesturestart', function (e) {
-    e.preventDefault();
-});
-// window.addEventListener('beforeunload', function (e) {
-//     e.preventDefault(); // Necessário para alguns browsers
-//     e.returnValue = ''; // Requerido para mostrar o diálogo de confirmação
-// });
+
+
+
 

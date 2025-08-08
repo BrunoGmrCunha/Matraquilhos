@@ -81,6 +81,10 @@ function populatePlayerSelect(containerId) {
     }
 }
 
+function backToTeam(){
+    showView("view-select");
+}
+
 function initAudioContext() {
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();

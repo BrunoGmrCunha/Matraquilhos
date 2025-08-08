@@ -503,9 +503,9 @@ async function sendTextToApi(text) {
 
 document.addEventListener("DOMContentLoaded", () => {
     populateRandomPlayerSelect('player-1');
-    //populateRandomPlayerSelect('player-2');
-    //populateRandomPlayerSelect('player-3');
-  //  populateRandomPlayerSelect('player-4');
+    populateRandomPlayerSelect('player-2');
+    populateRandomPlayerSelect('player-3');
+     populateRandomPlayerSelect('player-4');
     populatePlayerSelect('team-red');
     populatePlayerSelect('team-white');
 

@@ -124,6 +124,10 @@ function populatePlayerSelect(selectId, selectedPlayer = null) {
 
 }
 
+function backToTeam(){
+    showView("view-select");
+}
+
 function initAudioContext() {
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -550,13 +554,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const popup = document.getElementById('popup');
-    popup.remove();
-    // popup.classList.add('show');
+   // popup.remove();
+     popup.classList.add('show');
 
-    // setTimeout(() => {
-    //     //popup.classList.remove('show');
-    //     popup.remove();
-    // }, 5000);
+    setTimeout(() => {
+        popup.classList.remove('show');
+   popup.remove();
+     }, 5000);
 
 });
 

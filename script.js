@@ -35,6 +35,26 @@ function showView(id) {
 
 
 function random() {
+
+    let randomPlayers = document.getElementById("random-players");
+    let selectedPlayers = Array.from(randomPlayers.selectedOptions).map(o => o.value);
+
+    if (selectedPlayers.length !== 4) {
+        alert("Selecione exatamente 4 jogadores.");
+        return;
+    }
+
+    for (let i = selectedPlayers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [selectedPlayers[i], selectedPlayers[j]] = [selectedPlayers[j], selectedPlayers[i]];
+    }
+
+    populatePlayerSelect('player-red-1', selectedPlayers[0]);
+    populatePlayerSelect('player-red-2', selectedPlayers[1]);
+    populatePlayerSelect('player-white-1', selectedPlayers[2]);
+    populatePlayerSelect('player-white-2', selectedPlayers[3]);
+    showView('view-select');
+
     // console.log(document.getElementById("player-1").querySelectorAll('select')[0].value)
     // const selectedPlayers = [
     //     document.getElementById("player-1").querySelectorAll('select')[0].value,
@@ -70,16 +90,38 @@ function random() {
     // });
 }
 
-function populatePlayerSelect(containerId) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
+function populatePlayerSelect(selectId, selectedPlayer = null) {
+    // const container = document.getElementById(containerId);
+    // container.innerHTML = '';
+    // playersList.sort((a, b) => a.name.localeCompare(b.name));
+    // for (let i = 0; i < 2; i++) {
+    //     const select = document.createElement('select');
+    //     select.innerHTML = `<option value="" disabled selected>-- Escolher Jogador --</option>` +
+    //         playersList.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+    //     container.appendChild(select);
+    // }
+
+    const select = document.getElementById(selectId);
+    select.innerHTML = '';
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.text = "seleciona um jogador"
+    if (!selectedPlayer) defaultOption.disabled = true;
+
+    select.appendChild(defaultOption);
     playersList.sort((a, b) => a.name.localeCompare(b.name));
-    for (let i = 0; i < 2; i++) {
-        const select = document.createElement('select');
-        select.innerHTML = `<option value="" disabled selected>-- Escolher Jogador --</option>` +
-            playersList.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-        container.appendChild(select);
-    }
+
+    playersList.forEach(player => {
+        const option = document.createElement("option");
+        option.value = player.id;
+        option.text = player.name;
+        if (player.id === selectedPlayer) {
+            option.selected = true;
+        }
+        select.appendChild(option);
+    });
+
+
 }
 
 function initAudioContext() {
@@ -91,19 +133,19 @@ function initAudioContext() {
 function populateRandomPlayerSelect(selectId) {
     const select = document.getElementById(selectId);
     select.innerHTML = '';
-         const defaultOption = document.createElement("option");
-         defaultOption.value="";
-         defaultOption.text="seleciona um jogador"
-         defaultOption.disabled=true;
-         defaultOption.selected=true;
-         select.appendChild(defaultOption);
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.text = "seleciona 4 jogadores"
+    defaultOption.disabled = true;
+
+    select.appendChild(defaultOption);
     playersList.sort((a, b) => a.name.localeCompare(b.name));
 
     playersList.forEach(player => {
-             const option = document.createElement("option");
-             option.value=player.id;
-             option.text=player.name;
-             select.appendChild(option);
+        const option = document.createElement("option");
+        option.value = player.id;
+        option.text = player.name;
+        select.appendChild(option);
     });
 }
 
@@ -502,12 +544,9 @@ async function sendTextToApi(text) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    populateRandomPlayerSelect('player-1');
-    populateRandomPlayerSelect('player-2');
-    populateRandomPlayerSelect('player-3');
-     populateRandomPlayerSelect('player-4');
-    populatePlayerSelect('team-red');
-    populatePlayerSelect('team-white');
+    populateRandomPlayerSelect('random-players');
+    // populatePlayerSelect('team-red');
+    // populatePlayerSelect('team-white');
 
 
     const popup = document.getElementById('popup');

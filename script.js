@@ -22,7 +22,7 @@ let playersScore = [];
 let currentGame = null;
 let timer = null;
 let timeLeft = 0;
-let gameTime = 15;
+let gameTime = 60;
 let audioContext = null;
 
 function debug(msg) {
@@ -142,6 +142,8 @@ function startGame() {
     document.getElementById('score-board').style.display = 'block';
     document.getElementById('tie-breaker').style.display = 'none';
     document.getElementById('game').style.display = 'block';
+    document.getElementById('next-player-1').value = ""
+    document.getElementById('next-player-2').value = "";
 
     showView('view-game');
     document.getElementById('view-game').scrollIntoView({ behavior: "smooth" });

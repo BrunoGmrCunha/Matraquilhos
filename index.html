@@ -12,63 +12,73 @@
 <body>
     <h1>NIUP - Matraquilhos</h1>
     <div id="popup">Nova versão disponível!</div>
-    <div id="view-random" class="view">
-        <h1>Selecionar Jogadores</h1>
+    <div id="view-random" class="view active">
         <div class="team-section">
-            <h2>Jogadores Iniciais</h2>
-            <div class="player-list">
-                <select id="random-players" multiple></select>
+            <h3>Jogadores iniciais</h3>
+            <div class="player-list" style="display: flex;">
+                <select id="random-players" multiple onchange="onChangeSelect('random-players')"></select>
             </div>
+            <button id = 'random-btn' onclick="random()" disabled>Escolher aleatório</button>
         </div>
-        <button onclick="random()">Escolher aleatório</button>
+        <button class="jump" onclick="jumpRandom()">Saltar</button>
     </div>
     <div id="view-select" class="view">
-        <h1>Selecionar jogadores</h1>
+        <h2>Selecionar jogadores</h2>
         <div class="team-section red">
             <h2>🔴 Equipa Vermelha</h2>
             <div class="player-list" id="team-red">
-                <select id="player-red-1"></select>
-                <select id="player-red-2"></select>
+                <select id="player-red-1" onchange="onChangeSelect('player-red-1')"></select>
+                <select id="player-red-2" onchange="onChangeSelect('player-red-2')"></select>
             </div>
         </div>
         <div class="team-section white">
             <h2>⚪ Equipa Branca</h2>
             <div class="player-list" id="team-white">
-                <select id="player-white-1"></select>
-                <select id="player-white-2"></select>
+                <select id="player-white-1" onchange="onChangeSelect('player-white-1')"></select>
+                <select id="player-white-2" onchange="onChangeSelect('player-white-2')"></select>
             </div>
         </div>
-        <button onclick="initAudioContext(); startGame(); ">Iniciar Jogo</button>
+        <button id = 'start-button' onclick="initAudioContext(); startGame();" disabled>Iniciar jogo</button>
     </div>
 
     <div id="view-game" class="view">
-        <div class="title-timer">
-            <!-- <h2>Jogo em Progresso</h2> -->
-            <h2 id="result">Jogo em progresso</h2>
-            <div class="game-timer" onclick="pauseResumeTimer()" id="game-timer">04:00</div>
+        <div id="game">
+            <div class="title-timer">
+                <h2 id="result">Jogo em progresso</h2>
+                <div class="game-timer" onclick="pauseResumeTimer()" id="game-timer">04:00</div>
+            </div>
+            <div id="score-board"></div>
+            <button class="back" onclick="backToTeam()">Voltar</button>
+            <hr>
+            <div class="team-section" id="next-players">
+                <h3>Próximos jogadores</h3>
+                <div class="player-list">
+                    <select id="next-player-1" onchange="onChangeSelect('next-player-1')" ></select>
+                    <select id="next-player-2" onchange="onChangeSelect('next-player-2')"></select>
+                </div>
+            </div>
         </div>
-        <div id="score-board"></div>
-        <!-- <div class="team-section">
-            <h2>Jogador 1</h2>
-            <div class="player-list" id="player-1"></div>
-            <h2>Jogador 2</h2>
-            <div class="player-list" id="player-2"></div>
-        </div> -->
-        <button onclick="backToTeam()">Voltar</button>
-        <div class="winner-select" id="tie-breaker" style="display:none;">
-            <label for="winner-team">Selecionar Equipa Vencedora:</label>
-            <select id="winner-team"></select>
-            <button onclick="showView('view-summary');">Finalizar Jogo</button>
+        <div class="team-section" id="tie-breaker" style="display:none;">
+            <h3>Vencedor 🪨 📄 ✂️</h3>
+            <div class="player-list">
+                <select id="winner-team" onchange="onChangeSelect('winner-team')">
+                    <option value="" disabled selected>seleciona uma equipa</option>
+                    <option value="red">🔴 Equipa Vermelha</option>
+                    <option value="white">⚪ Equipa Branca</option>
+                </select>
+                <button id="end-game-button" onclick="endGame()" disabled>Finalizar jogo</button>
+            </div>
         </div>
     </div>
 
     <div id="view-summary" class="view">
-        <h1>Fim de Jogo</h1>
+        <h2>Fim do jogo</h2>
+        <h3>Equipa vencedora: <span id = 'winner-team-label'></span></h3>
 
-        <button onclick="newGame()">Novo Jogo</button>
-        <button onclick="reftifyGame()">Corrigir Jogo Anterior</button>
+        <button onclick="newGame()">Novo jogo</button>
+        <button onclick="reftifyGame()">Corrigir jogo anterior</button>
         <hr>
-        <button onclick="endTournament()">Finalizar Torneio</button>
+        <button onclick="endTournament()">Finalizar torneio</button>
         <div class="summary-section" id="tournament-summary"></div>
     </div>
 

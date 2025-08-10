@@ -22,7 +22,7 @@ let playersScore = [];
 let currentGame = null;
 let timer = null;
 let timeLeft = 0;
-let gameTime = 60;
+let gameTime = 150;
 let audioContext = null;
 
 function debug(msg) {

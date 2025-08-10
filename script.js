@@ -144,6 +144,7 @@ function startGame() {
     document.getElementById('game').style.display = 'block';
     document.getElementById('next-player-1').value = ""
     document.getElementById('next-player-2').value = "";
+    document.getElementById('winner-team').value = ""
 
     showView('view-game');
     document.getElementById('view-game').scrollIntoView({ behavior: "smooth" });

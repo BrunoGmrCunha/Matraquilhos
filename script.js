@@ -151,10 +151,16 @@ function startGame() {
 }
 
 function endGame() {
-    document.getElementById('winner-team-label').innerHTML = ''
+        document.getElementById('winner-team-label').innerHTML = ''
+
+    if(currentGame.winner===null){
+            document.getElementById('winner-team-label').innerHTML = document.getElementById('winner-team').value === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
+
+    }else{
+
     document.getElementById('winner-team-label').innerHTML = currentGame.winner === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
     // title.textContent = team === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
-
+}
     showView('view-summary');
 }
 

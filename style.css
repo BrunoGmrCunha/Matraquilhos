@@ -48,29 +48,34 @@
    }
 
    .team-section.red {
-       background-color: #ffcccc;
-       color: #800000;
+       /* background-color: #ffcccc; */
+       border-color: #a40000;
+       border-style: solid;
+       color: #a40000;
    }
 
    .team-section.red h2 {
-       background-color: #ffcccc;
+       /* background-color: #ffcccc; */
        color: #800000;
        margin-top: 2px;
        margin-bottom: 10px;
        font-size: 20px;
        text-align: center;
-  
+
    }
 
    .team-section.white {
-       background-color: #333;
-       color: #ffffff;
+       /* background-color: #333; */
+       border-color: #333;
+       border-style: solid;
+       color: #333;
    }
 
    .team-section.white h2 {
-       background-color: #333;
-       color: #ffffff;
-              margin-top: 2px;
+       /* background-color: #333; */
+       /* color: #ffffff; */
+       color: #333;
+       margin-top: 2px;
        margin-bottom: 10px;
        font-size: 20px;
        text-align: center;
@@ -83,7 +88,10 @@
        height: 40px;
        font-size: 15px;
        border-radius: 5px;
+       /* background-color: #fefefe; */
        background-color: #fefefe;
+       border-color: #333;
+
    }
 
    button {
@@ -91,7 +99,6 @@
        font-weight: 800;
        background-color: #0061A8;
        color: white;
-       /* padding: 10px 15px; */
        padding: 0px;
        border: none;
        border-radius: 10px;
@@ -106,6 +113,13 @@
        /* Para Firefox */
        -ms-user-select: none;
        /* Para IE/Edge */
+   }
+
+   button:disabled {
+       background-color: #cccccc;
+       color: #666666;
+       cursor: not-allowed;
+       opacity: 0.7;
    }
 
    .score-controls button {
@@ -189,7 +203,7 @@
    .score-controls div {
        display: flex;
        justify-content: center;
-       
+
 
    }
 
@@ -217,7 +231,7 @@
    .title-timer h2 {
        text-align: left;
        color: white;
-       
+
    }
 
    .player-name {
@@ -226,7 +240,7 @@
 
    .hold-label {
        margin-top: 5px;
-    text-align: center;
+       text-align: center;
        /* margin-top: 100px;
        padding-top: 50px; */
    }
@@ -252,4 +266,14 @@
 
    #popup.show {
        opacity: 1;
+   }
+
+   .jump,
+   .back {
+       background-color: #fefefe;
+       /* color:#333; */
+       border-color: #0061A8;
+       color: #0061A8;
+       font-weight: 400;
+       border-style: solid;
    }

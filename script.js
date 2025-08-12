@@ -21,7 +21,8 @@ let games = [];
 let playersScore = [];
 let currentGame = null;
 let timer = null;
-let timeLeft = 150;
+let timeLeft = 0;
+let gameTime = 150;
 let audioContext = null;
 
 function debug(msg) {
@@ -34,54 +35,64 @@ function showView(id) {
 }
 
 function random() {
-    // console.log(document.getElementById("player-1").querySelectorAll('select')[0].value)
-    // const selectedPlayers = [
-    //     document.getElementById("player-1").querySelectorAll('select')[0].value,
-    //     document.getElementById("player-2").querySelectorAll('select')[0].value,
-    //     document.getElementById("player-3").querySelectorAll('select')[0].value,
-    //     document.getElementById("player-4").querySelectorAll('select')[0].value,
-    // ];
-    // console.log(selectedPlayers)
-    // Validar se todos os jogadores foram selecionados
-    // if (selectedPlayers.includes("")) {
-    //     alert("Por favor, seleciona os 4 jogadores.");
-    //     return;
-    // }
+    let randomPlayers = document.getElementById("random-players");
+    let selectedPlayers = Array.from(randomPlayers.selectedOptions).map(o => o.value);
 
-    // Embaralhar a lista (algoritmo de Fisher-Yates)
-    // for (let i = selectedPlayers.length - 1; i > 0; i--) {
-    //     const j = Math.floor(Math.random() * (i + 1));
-    //     [selectedPlayers[i], selectedPlayers[j]] = [selectedPlayers[j], selectedPlayers[i]];
-    // }
-
-    // Dividir em duas equipas
-    // const equipa1 = selectedPlayers.slice(0, 2);
-    // const equipa2 = selectedPlayers.slice(2, 4);
-
-    // console.log(equipa1)
-    // console.log(equipa2)
-
-    // document.getElementById('team-white').innerHTML = '';
-    // winningTeam.forEach((p, i) => {
-    //     const select = document.createElement('select');
-    //     select.innerHTML = `<option value="${p.id}" selected>${p.name}</option>`;
-    //     document.getElementById('team-white').appendChild(select);
-    // });
-}
-
-function populatePlayerSelect(containerId) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    playersList.sort((a, b) => a.name.localeCompare(b.name));
-    for (let i = 0; i < 2; i++) {
-        const select = document.createElement('select');
-        select.innerHTML = `<option value="" disabled selected>-- Escolher Jogador --</option>` +
-            playersList.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-        container.appendChild(select);
+    if (selectedPlayers.length !== 4) {
+        alert("Selecione exatamente 4 jogadores.");
+        return;
     }
+
+    for (let i = selectedPlayers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [selectedPlayers[i], selectedPlayers[j]] = [selectedPlayers[j], selectedPlayers[i]];
+    }
+
+    populatePlayerSelect('player-red-1', selectedPlayers[0]);
+    populatePlayerSelect('player-red-2', selectedPlayers[1]);
+    populatePlayerSelect('player-white-1', selectedPlayers[2]);
+    populatePlayerSelect('player-white-2', selectedPlayers[3]);
+    populatePlayerSelect('next-player-1');
+    populatePlayerSelect('next-player-2');
+    document.getElementById("start-button").disabled = false;
+    checkPlayers()
+
+    showView('view-select');
 }
 
-function backToTeam(){
+function jumpRandom() {
+    populatePlayerSelect('player-red-1');
+    populatePlayerSelect('player-red-2');
+    populatePlayerSelect('player-white-1');
+    populatePlayerSelect('player-white-2');
+    populatePlayerSelect('next-player-1');
+    populatePlayerSelect('next-player-2');
+    showView('view-select');
+}
+
+function populatePlayerSelect(selectId, selectedPlayer = null) {
+    const select = document.getElementById(selectId);
+    select.innerHTML = '';
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.text = "seleciona um jogador"
+    defaultOption.disabled = true;
+    if (!selectedPlayer) defaultOption.selected = true;
+
+    select.appendChild(defaultOption);
+    playersList.sort((a, b) => a.name.localeCompare(b.name));
+    playersList.forEach(player => {
+        const option = document.createElement("option");
+        option.value = player.id;
+        option.text = player.name;
+        if (player.id === selectedPlayer) {
+            option.selected = true;
+        }
+        select.appendChild(option);
+    });
+}
+
+function backToTeam() {
     showView("view-select");
 }
 
@@ -91,20 +102,29 @@ function initAudioContext() {
     }
 }
 
-function populateRandomPlayerSelect(containerId) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
+function populateRandomPlayerSelect(selectId) {
+    const select = document.getElementById(selectId);
+    select.innerHTML = '';
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.text = "seleciona 4 jogadores"
+    defaultOption.disabled = true;
+
+    select.appendChild(defaultOption);
     playersList.sort((a, b) => a.name.localeCompare(b.name));
 
-    const select = document.createElement('select');
-    select.innerHTML = `<option value="" disabled selected>-- Escolher Jogador --</option>` +
-        playersList.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-    container.appendChild(select);
-
+    playersList.forEach(player => {
+        const option = document.createElement("option");
+        option.value = player.id;
+        option.text = player.name;
+        select.appendChild(option);
+    });
+    select.size = select.options.length;
 }
 
 
 function startGame() {
+
     const redPlayers = [...document.getElementById('team-red').querySelectorAll('select')].map(s => playersList.find(p => p.id === s.value));
     const whitePlayers = [...document.getElementById('team-white').querySelectorAll('select')].map(s => playersList.find(p => p.id === s.value));
 
@@ -116,15 +136,52 @@ function startGame() {
         endTime: null
     };
 
-    timeLeft = 150;
+    timeLeft = gameTime;
     startTimer();
     updateScoreBoard();
     document.getElementById('score-board').style.display = 'block';
     document.getElementById('tie-breaker').style.display = 'none';
+    document.getElementById('game').style.display = 'block';
+    document.getElementById('next-player-1').value = ""
+    document.getElementById('next-player-2').value = "";
+    document.getElementById('winner-team').value = ""
+
     showView('view-game');
     document.getElementById('view-game').scrollIntoView({ behavior: "smooth" });
 
 }
+
+function endGame() {
+        document.getElementById('winner-team-label').innerHTML = ''
+
+    if(currentGame.winner===null){
+            document.getElementById('winner-team-label').innerHTML = document.getElementById('winner-team').value === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
+
+    }else{
+
+    document.getElementById('winner-team-label').innerHTML = currentGame.winner === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
+    // title.textContent = team === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
+}
+    showView('view-summary');
+}
+
+// function populateNextPlayers() {
+//     const selectIds = ["next-payer-1", "naext-player-2"];
+//     const selects = selectIds.map(id => document.getElementById(id));
+
+//     // Obter todos os valores selecionados
+//     const selectedValues = selects
+//         .map(s => s.value)
+//         .filter(v => v !== "");
+
+//     // Atualizar opções nas outras selects
+//     selects.forEach(select => {
+//         Array.from(select.options).forEach(option => {
+//             if (option.value === "") return; // ignorar vazio
+//             option.disabled = selectedValues.includes(option.value) && option.value !== select.value;
+//         });
+//     });
+// }
 
 let isPaused = false;
 
@@ -336,6 +393,61 @@ function removeOwnGoal(team, id) {
     }
 }
 
+function onChangeSelect(id) {
+    switch (id) {
+        case 'random-players':
+            {
+                const randomPlayers = document.getElementById("random-players");
+                const selectedPlayers = Array.from(randomPlayers.selectedOptions).map(o => o.value);
+                const randomButton = document.getElementById('random-btn');
+                if (selectedPlayers.length !== 4) {
+                    randomButton.disabled = true;
+                }
+                else {
+                    randomButton.disabled = false;
+                }
+            }
+            break;
+        case 'player-red-1':
+            {
+                checkPlayers()
+            }
+            break;
+        case 'player-red-2':
+            {
+                checkPlayers()
+            }
+            break;
+        case 'player-white-1':
+            {
+                checkPlayers()
+            }
+            break;
+        case 'player-white-2':
+            {
+                checkPlayers()
+            }
+            break;
+        case 'next-player-1':
+            {
+                checkNextPlayers()
+            }
+            break;
+        case 'next-player-2':
+            {
+                checkNextPlayers()
+            }
+            break;
+        case 'winner-team': {
+            const winnerTeamSelect = document.getElementById('winner-team');
+            const endGameButton = document.getElementById('end-game-button');
+            endGameButton.disabled = (winnerTeamSelect.value === "")
+        }
+            break;
+    }
+
+}
+
 function checkWinner() {
     const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
     const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
@@ -343,24 +455,77 @@ function checkWinner() {
     if ((redGoals === 3 && whiteGoals < 3) || (whiteGoals === 3 && redGoals < 3)) {
         currentGame.winner = redGoals > whiteGoals ? 'red' : 'white';
         pauseTimer();
-        showView('view-summary');
-        // finalizeGame();
+        endGame();
     } else if (timeLeft <= 0 && redGoals === whiteGoals && redGoals != 3) {
-        const select = document.getElementById('winner-team');
-        select.innerHTML = `
-                    <option value="red">Equipa Vermelha</option>
-                    <option value="white">Equipa Branca</option>
-                `;
-        document.getElementById('score-board').style.display = 'none';
+        // document.getElementById('score-board').style.display = 'none';
+
+        // document.getElementById('next-players').style.display = 'none';
+        // document.getElementById('next-players').style.display = 'none';
+        document.getElementById('game').style.display = 'none';
         document.getElementById('tie-breaker').style.display = 'block';
     } else if (timeLeft <= 0 && redGoals != whiteGoals) {
         currentGame.winner = redGoals > whiteGoals ? 'red' : 'white';
         pauseTimer();
-        showView('view-summary');
-        // finalizeGame();
+        endGame();
     }
 
 }
+
+function checkPlayers() {
+    const selectIds = ["player-red-1", "player-red-2", "player-white-1", "player-white-2"];
+    const selects = selectIds.map(id => document.getElementById(id));
+
+    const nextPlayersSelectIds = ["next-player-1", "next-player-2"];
+    const nextPlayersSelect = nextPlayersSelectIds.map(id => document.getElementById(id));
+
+
+    // Obter todos os valores selecionados
+    const selectedValues = selects
+        .map(s => s.value)
+        .filter(v => v !== "");
+
+    // Atualizar opções nas outras selects
+    selects.forEach(select => {
+        Array.from(select.options).forEach(option => {
+            if (option.value === "") return; // ignorar vazio
+            option.disabled = selectedValues.includes(option.value) && option.value !== select.value;
+        });
+    });
+
+    nextPlayersSelect.forEach(select => {
+        Array.from(select.options).forEach(option => {
+            if (option.value === "") return; // ignorar vazio
+            option.disabled = selectedValues.includes(option.value) && option.value !== select.value;
+        });
+    });
+
+    // Habilitar ou desabilitar o botão
+    const allSelected = selects.every(s => s.value !== "");
+    document.getElementById("start-button").disabled = !allSelected;
+}
+
+
+function checkNextPlayers() {
+
+    const nextPlayersSelectIds = ["next-player-1", "next-player-2"];
+    const nextPlayersSelect = nextPlayersSelectIds.map(id => document.getElementById(id));
+
+
+    // Obter todos os valores selecionados
+    const selectedValues = nextPlayersSelect
+        .map(s => s.value)
+        .filter(v => v !== "");
+
+
+    nextPlayersSelect.forEach(select => {
+        Array.from(select.options).forEach(option => {
+            if (option.value === "") return; // ignorar vazio
+            option.disabled = selectedValues.includes(option.value) && option.value !== select.value;
+        });
+    });
+
+}
+
 
 function finalizeGame() {
     clearInterval(timer);
@@ -378,57 +543,50 @@ function finalizeGame() {
     if (!currentGame.winner) {
         currentGame.winner = document.getElementById('winner-team').value;
     }
-    // showSummary();
 }
 
 function reftifyGame() {
     document.getElementById('score-board').style.display = 'block';
-    document.getElementById('tie-breaker').style.display = 'none';
+    document.getElementById('game').style.display = 'block';
+    const winnerTeamSelect = document.getElementById('winner-team');
+    if (winnerTeamSelect.value === "") {
+
+        document.getElementById('tie-breaker').style.display = 'none';
+    }
+    else {
+        document.getElementById('tie-breaker').style.display = 'block';
+    }
     showView('view-game');
 }
 
-function showSummary() {
-    const summary = document.getElementById('tournament-summary');
-    let text = '';
-    // games.forEach((game, idx) => {
-    //     const redGoals = game.red.reduce((s, p) => s + p.goals, 0) + game.white.reduce((s, p) => s + p.ownGoals, 0);
-    //     const whiteGoals = game.white.reduce((s, p) => s + p.goals, 0) + game.red.reduce((s, p) => s + p.ownGoals, 0);
-    //     text += `Jogo ${idx + 1}\nEquipa Vermelha: ${redGoals} | Equipa Branca: ${whiteGoals}\n`;
-    //     game.red.forEach(p => text += `  ${p.name} - Golos: ${p.goals} | Autogolos: ${p.ownGoals}\n`);
-    //     game.white.forEach(p => text += `  ${p.name} - Golos: ${p.goals} | Autogolos: ${p.ownGoals}\n`);
-    //     text += `Vencedor: ${game.winner === 'red' ? 'Equipa Vermelha' : 'Equipa Branca'}\n---\n`;
-    // });
-    // playersScore.forEach((player, idx) => {
-    //     text += `${player.name} -> Golos: ${player.goals} | Autogolos: ${player.ownGoals}\n`;
-    // });
-    // summary.textContent = text;
-    showView('view-summary');
-}
 
 function newGame() {
     finalizeGame();
     const winningTeam = currentGame[currentGame.winner];
     if (currentGame.winner === 'red') {
-        document.getElementById('team-red').style.display = 'none';
+        document.getElementById('team-red').style.display = 'block';
         document.getElementById('team-white').style.display = 'block';
-        populatePlayerSelect('team-white');
-        document.getElementById('team-red').innerHTML = '';
-        winningTeam.forEach((p, i) => {
-            const select = document.createElement('select');
-            select.innerHTML = `<option value="${p.id}" selected>${p.name}</option>`;
-            document.getElementById('team-red').appendChild(select);
-        });
+        document.getElementById('player-red-1').disabled = true;
+        document.getElementById('player-red-2').disabled = true;
+        document.getElementById('player-white-1').disabled = false;
+        document.getElementById('player-white-2').disabled = false;
+        populatePlayerSelect('player-white-1', document.getElementById('next-player-1').value);
+        populatePlayerSelect('player-white-2', document.getElementById('next-player-2').value);
+        populatePlayerSelect('player-red-1', winningTeam[0].id);
+        populatePlayerSelect('player-red-2', winningTeam[1].id);
     } else {
         document.getElementById('team-red').style.display = 'block';
-        document.getElementById('team-white').style.display = 'none';
-        populatePlayerSelect('team-red');
-        document.getElementById('team-white').innerHTML = '';
-        winningTeam.forEach((p, i) => {
-            const select = document.createElement('select');
-            select.innerHTML = `<option value="${p.id}" selected>${p.name}</option>`;
-            document.getElementById('team-white').appendChild(select);
-        });
+        document.getElementById('team-white').style.display = 'block';
+        document.getElementById('player-white-1').disabled = true;
+        document.getElementById('player-white-2').disabled = true;
+        document.getElementById('player-red-1').disabled = false;
+        document.getElementById('player-red-2').disabled = false;
+        populatePlayerSelect('player-red-1', document.getElementById('next-player-1').value);
+        populatePlayerSelect('player-red-2', document.getElementById('next-player-2').value);
+        populatePlayerSelect('player-white-1', winningTeam[0].id);
+        populatePlayerSelect('player-white-2', winningTeam[1].id);
     }
+    checkPlayers();
     showView('view-select');
 }
 
@@ -498,22 +656,19 @@ async function sendTextToApi(text) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    populateRandomPlayerSelect('player-1');
-    populateRandomPlayerSelect('player-2');
-    populateRandomPlayerSelect('player-3');
-    populateRandomPlayerSelect('player-4');
-    populatePlayerSelect('team-red');
-    populatePlayerSelect('team-white');
+    populateRandomPlayerSelect('random-players');
+    // populatePlayerSelect('team-red');
+    // populatePlayerSelect('team-white');
 
 
     const popup = document.getElementById('popup');
-   // popup.remove();
-     popup.classList.add('show');
+    //popup.remove();
+    popup.classList.add('show');
 
     setTimeout(() => {
-        popup.classList.remove('show');
-   popup.remove();
-     }, 5000);
+    popup.classList.remove('show');
+    popup.remove();
+          }, 5000);
 
 });
 

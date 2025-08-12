@@ -590,9 +590,39 @@ function newGame() {
     showView('view-select');
 }
 
+function computeStats(data) {
+  const players = {};
+  const gamesSummary = data.map((game, idx) => {
+    const redGoals = game.red.reduce((sum, p) => sum + p.goals, 0) + game.white.reduce((sum, p) => sum + p.ownGoals, 0);
+    const whiteGoals = game.white.reduce((sum, p) => sum + p.goals, 0) + game.red.reduce((sum, p) => sum + p.ownGoals, 0);
+
+    [...game.red, ...game.white].forEach(player => {
+      if (!players[player.name]) players[player.name] = { name: player.name, goals: 0, ownGoals: 0, wins: 0, losses: 0 };
+      players[player.name].goals += player.goals;
+      players[player.name].ownGoals += player.ownGoals;
+      if (game.winner === 'red' && game.red.some(p => p.name === player.name)) players[player.name].wins++;
+      if (game.winner === 'white' && game.white.some(p => p.name === player.name)) players[player.name].wins++;
+      if (game.winner === 'red' && game.white.some(p => p.name === player.name)) players[player.name].losses++;
+      if (game.winner === 'white' && game.red.some(p => p.name === player.name)) players[player.name].losses++;
+    });
+
+    return { id: idx + 1, redGoals, whiteGoals, winner: game.winner };
+  });
+  return { gamesSummary, playersArr: Object.values(players) };
+}
+
+
+
 async function endTournament() {
     finalizeGame();
     const summary = document.getElementById('tournament-summary');
+    
+    const { gamesSummary, playersArr } = computeStats(games);
+  document.getElementById('tournament-summary').innerHTML += gamesSummary.map(g => `<div>Game ${g.id}: Red ${g.redGoals} – ${g.whiteGoals} White (Winner: ${g.winner})</div>`).join('');
+  
+document.getElementById('tournament-summary').innerHTML += "<br> <br>";
+document.getElementById('tournament-summary').innerHTML += `<table><tr><th>Name</th><th>Goals</th><th>Own Goals</th><th>Wins</th><th>Losses</th></tr>${playersArr.map(p => `<tr><td>${p.name}</td><td>${p.goals}</td><td>${p.ownGoals}</td><td>${p.wins}</td><td>${p.losses}</td></tr>`).join('')}</table>`;
+    
     let text = '';
     games.forEach((game, idx) => {
         const redGoals = game.red.reduce((s, p) => s + p.goals, 0) + game.white.reduce((s, p) => s + p.ownGoals, 0);
@@ -605,7 +635,7 @@ async function endTournament() {
     playersScore.forEach((player, idx) => {
         text += `${player.name} -> Golos: ${player.goals} | Autogolos: ${player.ownGoals}\n`;
     });
-    summary.textContent = text;
+    //summary.textContent = text;
     console.log(playersScore);
     console.log(games);
 

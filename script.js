@@ -618,10 +618,10 @@ async function endTournament() {
     const summary = document.getElementById('tournament-summary');
     
     const { gamesSummary, playersArr } = computeStats(games);
-  document.getElementById('tournament-summary').innerHTML += gamesSummary.map(g => `<div>Game ${g.id}: Red ${g.redGoals} – ${g.whiteGoals} White (Winner: ${g.winner})</div>`).join('');
+  document.getElementById('tournament-summary').innerHTML += gamesSummary.map(g => `<div>Jogo ${g.id}: 🔴 Vermelha ${g.redGoals} – ${g.whiteGoals} Branca ⚪️ (Winner: ${g.winner})</div>`).join('');
   
 document.getElementById('tournament-summary').innerHTML += "<br> <br>";
-document.getElementById('tournament-summary').innerHTML += `<table><tr><th>Name</th><th>Goals</th><th>Own Goals</th><th>Wins</th><th>Losses</th></tr>${playersArr.map(p => `<tr><td>${p.name}</td><td>${p.goals}</td><td>${p.ownGoals}</td><td>${p.wins}</td><td>${p.losses}</td></tr>`).join('')}</table>`;
+document.getElementById('tournament-summary').innerHTML += `<table><tr><th>Nome</th><th>Golos</th><th>AutoGolos</th><th>Vitórias</th><th>Derrotas</th></tr>${playersArr.map(p => `<tr><td>${p.name}</td><td>${p.goals}</td><td>${p.ownGoals}</td><td>${p.wins}</td><td>${p.losses}</td></tr>`).join('')}</table>`;
     
     let text = '';
     games.forEach((game, idx) => {

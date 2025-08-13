@@ -133,7 +133,8 @@ function startGame() {
         white: whitePlayers.map(p => ({ ...p, goals: 0, ownGoals: 0 })),
         winner: null,
         startTime: new Date(),
-        endTime: null
+        endTime: null,
+        isTie:false
     };
 
     timeLeft = gameTime;
@@ -155,6 +156,7 @@ function endGame() {
         document.getElementById('winner-team-label').innerHTML = ''
 
     if(currentGame.winner===null){
+        currentGame.isTie=true;
             document.getElementById('winner-team-label').innerHTML = document.getElementById('winner-team').value === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
 
     }else{

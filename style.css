@@ -277,3 +277,36 @@
        font-weight: 400;
        border-style: solid;
    }
+
+   .summary-section{
+       width: 100%;
+       overflow-x: auto;
+       /* Rolagem horizontal em mobile */
+   }
+
+   table {
+       border-collapse: collapse;
+       width: 100%;
+       min-width: 500px;
+       /* Evita “apertar” demais */
+       text-align: center;
+   }
+
+   th,
+   td {
+       padding: 8px;
+       border: 1px solid #000;
+       text-align: center;
+       white-space: nowrap;
+       /* Evita quebrar texto */
+   }
+
+   /* Ajustes para telas menores */
+   @media (max-width: 600px) {
+
+       th,
+       td {
+           padding: 6px;
+           font-size: 14px;
+       }
+   }

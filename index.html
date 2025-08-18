@@ -5,6 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css" /> -->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-quartz.css" />
+
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css" /> -->
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+
+
     <title>Jogo de Matraquilhos</title>
     <link rel="stylesheet" href="style.css" />
 </head>
@@ -13,16 +21,17 @@
     <h1>NIUP - Matraquilhos</h1>
     <div id="popup">Nova versão disponível!
         <br>Escolha aleatória ✅
-            <br>Correção Equipas ✅
-                <br>Próximos Jogadores ✅
+        <br>Correção Equipas ✅
+        <br>Próximos Jogadores ✅
     </div>
     <div id="view-random" class="view active">
         <div class="team-section">
             <h3>Jogadores iniciais</h3>
             <div class="player-list" style="display: flex;">
-                <select id="random-players" multiple onchange="onChangeSelect('random-players')"></select>
+                <select id="random-players" multiple onchange="onChangeSelect('random-players')"
+                    style="height: auto;"></select>
             </div>
-            <button id = 'random-btn' onclick="random()" disabled>Escolher aleatório</button>
+            <button id='random-btn' onclick="random()" disabled>Escolher aleatório</button>
         </div>
         <button class="jump" onclick="jumpRandom()">Saltar</button>
     </div>
@@ -42,7 +51,7 @@
                 <select id="player-white-2" onchange="onChangeSelect('player-white-2')"></select>
             </div>
         </div>
-        <button id = 'start-button' onclick="initAudioContext(); startGame();" disabled>Iniciar jogo</button>
+        <button id='start-button' onclick="initAudioContext(); startGame();" disabled>Iniciar jogo</button>
     </div>
 
     <div id="view-game" class="view">
@@ -57,7 +66,7 @@
             <div class="team-section" id="next-players">
                 <h3>Próximos jogadores</h3>
                 <div class="player-list">
-                    <select id="next-player-1" onchange="onChangeSelect('next-player-1')" ></select>
+                    <select id="next-player-1" onchange="onChangeSelect('next-player-1')"></select>
                     <select id="next-player-2" onchange="onChangeSelect('next-player-2')"></select>
                 </div>
             </div>
@@ -77,13 +86,29 @@
 
     <div id="view-summary" class="view">
         <h2>Fim do jogo</h2>
-        <h3>Equipa vencedora: <span id = 'winner-team-label'></span></h3>
+        <h3>Equipa vencedora: <span id='winner-team-label'></span></h3>
 
         <button onclick="newGame()">Novo jogo</button>
         <button onclick="reftifyGame()">Corrigir jogo anterior</button>
         <hr>
         <button onclick="endTournament()">Finalizar torneio</button>
-        <div class="summary-section" id="tournament-summary"></div>
+        <div class="summary-section" id="tournament-summary">
+            <div id="tournament-summary-grid" class="ag-theme-alpine" style="height: 400px; width: 100%;"></div>
+            <!-- <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Golos</th>
+                        <th>AutoGolos</th>
+                        <th>Vitórias</th>
+                        <th>Derrotas</th>
+                        <th>Empates</th>
+                    </tr>
+                </thead>
+                <tbody id="tournament-summary-table-body">
+
+                </tbody> -->
+        </div>
     </div>
 
     <div id="debug">

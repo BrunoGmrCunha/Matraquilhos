@@ -22,8 +22,10 @@ let playersScore = [];
 let currentGame = null;
 let timer = null;
 let timeLeft = 0;
-let gameTime = 150;
+let gameTime = 10;
 let audioContext = null;
+let gridApi; // Referência para manipular a grid
+
 
 function debug(msg) {
     document.getElementById('debug').textContent += msg + '\n';
@@ -134,7 +136,7 @@ function startGame() {
         winner: null,
         startTime: new Date(),
         endTime: null,
-        isTie:false
+        isTie: false
     };
 
     timeLeft = gameTime;
@@ -153,18 +155,21 @@ function startGame() {
 }
 
 function endGame() {
-        document.getElementById('winner-team-label').innerHTML = ''
+    document.getElementById('winner-team-label').innerHTML = ''
 
-    if(currentGame.winner===null){
-        currentGame.isTie=true;
-            document.getElementById('winner-team-label').innerHTML = document.getElementById('winner-team').value === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
+    if (currentGame.winner === null) {
+        currentGame.isTie = true;
+        document.getElementById('winner-team-label').innerHTML = document.getElementById('winner-team').value === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
 
-    }else{
+    } else {
 
-    document.getElementById('winner-team-label').innerHTML = currentGame.winner === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
-    // title.textContent = team === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
-}
+        document.getElementById('winner-team-label').innerHTML = currentGame.winner === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
+        // title.textContent = team === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
+    }
+
+
     showView('view-summary');
+
 }
 
 // function populateNextPlayers() {
@@ -593,38 +598,135 @@ function newGame() {
 }
 
 function computeStats(data) {
-  const players = {};
-  const gamesSummary = data.map((game, idx) => {
-    const redGoals = game.red.reduce((sum, p) => sum + p.goals, 0) + game.white.reduce((sum, p) => sum + p.ownGoals, 0);
-    const whiteGoals = game.white.reduce((sum, p) => sum + p.goals, 0) + game.red.reduce((sum, p) => sum + p.ownGoals, 0);
+    const players = {};
+    const gamesSummary = data.map((game, idx) => {
+        const redGoals = game.red.reduce((sum, p) => sum + p.goals, 0) + game.white.reduce((sum, p) => sum + p.ownGoals, 0);
+        const whiteGoals = game.white.reduce((sum, p) => sum + p.goals, 0) + game.red.reduce((sum, p) => sum + p.ownGoals, 0);
 
-    [...game.red, ...game.white].forEach(player => {
-      if (!players[player.name]) players[player.name] = { name: player.name, goals: 0, ownGoals: 0, wins: 0, losses: 0 };
-      players[player.name].goals += player.goals;
-      players[player.name].ownGoals += player.ownGoals;
-      if (game.winner === 'red' && game.red.some(p => p.name === player.name)) players[player.name].wins++;
-      if (game.winner === 'white' && game.white.some(p => p.name === player.name)) players[player.name].wins++;
-      if (game.winner === 'red' && game.white.some(p => p.name === player.name)) players[player.name].losses++;
-      if (game.winner === 'white' && game.red.some(p => p.name === player.name)) players[player.name].losses++;
+        [...game.red, ...game.white].forEach(player => {
+            if (!players[player.name]) players[player.name] = { name: player.name, goals: 0, ownGoals: 0, wins: 0, losses: 0, ties: 0 };
+            players[player.name].goals += player.goals;
+            players[player.name].ownGoals += player.ownGoals;
+            if (game.isTie && (game.red.some(p => p.name === player.name) || game.white.some(p => p.name === player.name))) players[player.name].ties++;
+            else {
+                if (game.winner === 'red' && game.red.some(p => p.name === player.name) && !game.isTie) players[player.name].wins++;
+                if (game.winner === 'white' && game.white.some(p => p.name === player.name) && !game.isTie) players[player.name].wins++;
+                if (game.winner === 'red' && game.white.some(p => p.name === player.name)) players[player.name].losses++;
+                if (game.winner === 'white' && game.red.some(p => p.name === player.name)) players[player.name].losses++;
+            }
+
+        });
+
+        return { id: idx + 1, redGoals, whiteGoals, winner: game.winner, isTie: game.isTie };
     });
 
-    return { id: idx + 1, redGoals, whiteGoals, winner: game.winner };
-  });
-  return { gamesSummary, playersArr: Object.values(players) };
+    return { gamesSummary, playersArr: Object.values(players) };
 }
+
+const columnDefs = [
+    { headerName: "Nome", field: "name", sortable: true, filter: true },
+    { headerName: "Golos", field: "goals", sortable: true, filter: "agNumberColumnFilter", cellStyle: { textAlign: "center" } },
+    { headerName: "AutoGolos", field: "ownGoals", sortable: true, filter: "agNumberColumnFilter", cellStyle: { textAlign: "center" } },
+    { headerName: "Vitórias", field: "wins", sortable: true, filter: "agNumberColumnFilter", cellStyle: { textAlign: "center" } },
+    { headerName: "Derrotas", field: "losses", sortable: true, filter: "agNumberColumnFilter", cellStyle: { textAlign: "center" } },
+    { headerName: "Empates", field: "ties", sortable: true, filter: "agNumberColumnFilter", cellStyle: { textAlign: "center" } }
+];
+const { themeQuartz } = agGrid;
+// Opções do grid
+// const gridOptions = {
+//     columnDefs,
+//     rowData: [], // Começa vazio
+//     defaultColDef: {
+//         flex: 1,
+//         resizable: true,
+//         cellStyle: { textAlign: "center" }
+//     },
+//     onFirstDataRendered: params => {
+//         params.api.sizeColumnsToFit();
+//     },
+//     animateRows: true,
+//     theme: themeQuartz, // tema novo
+
+// };
+
+const gridOptions = {
+    columnDefs: columnDefs,
+    rowData: [],
+    rowSelection: {
+        mode: "singleRow",
+        checkboxes: false,
+        enableClickSelection: true,
+    },
+};
 
 
 
 async function endTournament() {
     finalizeGame();
+
     const summary = document.getElementById('tournament-summary');
-    
+
     const { gamesSummary, playersArr } = computeStats(games);
-  document.getElementById('tournament-summary').innerHTML += gamesSummary.map(g => `<div>Jogo ${g.id}: 🔴 Vermelha ${g.redGoals} – ${g.whiteGoals} Branca ⚪️ (Winner: ${g.winner})</div>`).join('');
-  
-document.getElementById('tournament-summary').innerHTML += "<br> <br>";
-document.getElementById('tournament-summary').innerHTML += `<table><tr><th>Nome</th><th>Golos</th><th>AutoGolos</th><th>Vitórias</th><th>Derrotas</th></tr>${playersArr.map(p => `<tr><td>${p.name}</td><td>${p.goals}</td><td>${p.ownGoals}</td><td>${p.wins}</td><td>${p.losses}</td></tr>`).join('')}</table>`;
-    
+    document.getElementById('tournament-summary').innerHTML += (`<div>Total de jogos: ${gamesSummary.length} </div>`);
+    document.getElementById('tournament-summary').innerHTML += gamesSummary.map(g => `<div>Jogo ${g.id}: 🔴 ${g.redGoals} – ${g.whiteGoals} ⚪️ </div>`).join('');
+    playersArr.sort((a, b) => b.goals - a.goals);
+    // document.getElementById('tournament-summary-table-body').innerHTML += "<br> <br>";
+    // const tbody = document.getElementById('tournament-summary-table-body');
+    // playersArr.forEach(p => {
+    //     const row = document.createElement('tr');
+    //     row.innerHTML = `
+    //         <td>${p.name}</td>
+    //         <td>${p.goals}</td>
+    //         <td>${p.ownGoals}</td>
+    //         <td>${p.wins}</td>
+    //         <td>${p.losses}</td>
+    //         <td>${p.ties}</td>
+    //     `;
+    //     tbody.appendChild(row);
+    // });
+    // Atualiza os dados
+    // const gridOptions = {
+    //     columnDefs: columnDefs,
+    //     rowData: playersArr,
+    //     rowSelection: {
+    //         mode: "singleRow",
+    //         checkboxes: false,
+    //         enableClickSelection: true,
+    //     },
+    // };
+    const gridOptions = {
+        columnDefs,
+        rowData: playersArr, // Começa vazio
+        defaultColDef: {
+            // flex: 1,
+            // resizable: true,
+            cellStyle: { textAlign: "center" }
+        },
+
+        animateRows: true,
+        theme: themeQuartz, // tema novo
+
+    };
+
+    const gridDiv = document.getElementById("tournament-summary-grid");
+    gridDiv.innerHTML = ``;
+    gridApi = agGrid.createGrid(gridDiv, gridOptions);
+    console.log("array: " + playersArr)
+    playersArr.forEach((p, i) => {
+        console.log(`Index ${i}:`, p);
+        console.log("Nome:", p.name, "Golos:", p.goals, "Vitórias:", p.wins);
+    });
+
+    // gridApi.setGridOption("rowData", playersArr);
+
+
+    // Ajusta as colunas para caber no ecrã
+    // gridApi.sizeColumnsToFit();
+
+
+
+    // document.getElementById('tournament-summary').innerHTML += `<table><tr><th>Nome</th><th>Golos</th><th>AutoGolos</th><th>Vitórias</th><th>Derrotas</th><th>Empates</th></tr>${playersArr.map(p => `<tr><td>${p.name}</td><td>${p.goals}</td><td>${p.ownGoals}</td><td>${p.wins}</td><td>${p.losses}</td><td>${p.ties}</td></tr>`).join('')}</table>`;
+
     let text = '';
     games.forEach((game, idx) => {
         const redGoals = game.red.reduce((s, p) => s + p.goals, 0) + game.white.reduce((s, p) => s + p.ownGoals, 0);
@@ -688,19 +790,22 @@ async function sendTextToApi(text) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+
+
+
     populateRandomPlayerSelect('random-players');
     // populatePlayerSelect('team-red');
     // populatePlayerSelect('team-white');
 
 
     const popup = document.getElementById('popup');
-    //popup.remove();
-    popup.classList.add('show');
+    popup.remove();
+    // popup.classList.add('show');
 
     setTimeout(() => {
-    popup.classList.remove('show');
-    popup.remove();
-          }, 5000);
+        popup.classList.remove('show');
+        popup.remove();
+    }, 5000);
 
 });
 

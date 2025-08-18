@@ -548,9 +548,9 @@ function finalizeGame() {
 function reftifyGame() {
     document.getElementById('score-board').style.display = 'block';
     document.getElementById('game').style.display = 'block';
+    currentGame.winner = null;
     const winnerTeamSelect = document.getElementById('winner-team');
     if (winnerTeamSelect.value === "") {
-
         document.getElementById('tie-breaker').style.display = 'none';
     }
     else {

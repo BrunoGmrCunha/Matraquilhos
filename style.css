@@ -18,7 +18,29 @@
        background-color: #fefefe;
        color: #0061A8;
    }
+/* Overlay da notch */
+#notch-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: env(safe-area-inset-top); /* altura dinâmica da notch */
+  background: rgba(255, 255, 255, 0); /* começa transparente */
+  backdrop-filter: blur(0px); /* sem blur no início */
+  -webkit-backdrop-filter: blur(0px); /* Safari */
+  pointer-events: none; /* não bloqueia cliques */
+  z-index: 9999;
+  box-shadow: 0 0 0 transparent; /* sem sombra no início */
+  transition: background 0.3s ease, 
+              backdrop-filter 0.3s ease, 
+              -webkit-backdrop-filter 0.3s ease,
+              box-shadow 0.3s ease;
+}
 
+#content {
+  padding-top: calc(env(safe-area-inset-top) + 20px); 
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
    .view {
        display: none;
        padding: 20px;
@@ -276,4 +298,5 @@
        color: #0061A8;
        font-weight: 400;
        border-style: solid;
+
    }

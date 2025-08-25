@@ -348,15 +348,17 @@ function removeGoal(team, id) {
     }
 }
 
+
+
 function addOwnGoal(team, id) {
     const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
     const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
-
+    
     if ((team === 'red' && whiteGoals < 3) || (team === 'white' && redGoals < 3)) {
         const player = currentGame[team].find(p => p.id === id);
         player.ownGoals++;
         const playerScore = playersScore.find(player => player.id === id);
-
+        
         if (!playerScore) {
             playersScore.push({
                 id: id,
@@ -659,19 +661,29 @@ document.addEventListener("DOMContentLoaded", () => {
     populateRandomPlayerSelect('random-players');
     // populatePlayerSelect('team-red');
     // populatePlayerSelect('team-white');
-
+// usarVideoFallback()
 
     const popup = document.getElementById('popup');
-    //popup.remove();
-    popup.classList.add('show');
-
-    setTimeout(() => {
-    popup.classList.remove('show');
     popup.remove();
-          }, 5000);
+    // popup.classList.add('show');
+
+    // setTimeout(() => {
+    // popup.classList.remove('show');
+    // popup.remove();
+    //       }, 5000);
 
 });
 
 
 
 
+// function usarVideoFallback() {
+//   const video = document.createElement("video");
+//   video.src = "blank.mp4"; // caminho para o vídeo de 1 min
+//   video.autoplay = true;
+//   video.muted = true;
+//   video.loop = true;        // roda infinitamente
+//   video.playsInline = true;
+//   video.style.display = "none"; // escondido
+//   document.body.appendChild(video);
+// }

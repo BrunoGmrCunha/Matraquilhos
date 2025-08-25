@@ -673,6 +673,26 @@ document.addEventListener("DOMContentLoaded", () => {
     //       }, 5000);
 
 });
+const overlay = document.getElementById('notch-overlay');
+
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const maxScroll = 200; // altura em px até o efeito máximo
+    const ratio = Math.min(scrollY / maxScroll, 1); // de 0 a 1
+
+    // Opacidade dinâmica
+    const opacity = 0.8 * ratio; // até 80%
+    overlay.style.background = `rgba(255, 255, 255, ${opacity})`;
+
+    // Blur dinâmico
+    const blur = 10 * ratio; // até 10px
+    overlay.style.backdropFilter = `blur(${blur}px)`;
+    overlay.style.webkitBackdropFilter = `blur(${blur}px)`;
+
+    // Sombra dinâmica
+    const shadowOpacity = 0.2 * ratio; 
+    overlay.style.boxShadow = `0 2px 10px rgba(0,0,0,${shadowOpacity})`;
+  });
 
 
 
@@ -687,3 +707,4 @@ document.addEventListener("DOMContentLoaded", () => {
 //   video.style.display = "none"; // escondido
 //   document.body.appendChild(video);
 // }
+

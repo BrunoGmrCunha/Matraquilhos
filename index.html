@@ -6,9 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
     <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" sizes="120x120" href="/images/apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/images/apple-touch-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="167x167" href="/images/apple-touch-icon-167x167.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-180x180.png">
 
-    <title>Jogo de Matraquilhos</title>
+    <title>NIUP - Matraquilhos</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -16,8 +20,8 @@
     <h1>NIUP - Matraquilhos</h1>
     <div id="popup">Nova versão disponível!
         <br>Escolha aleatória ✅
-            <br>Correção Equipas ✅
-                <br>Próximos Jogadores ✅
+        <br>Correção Equipas ✅
+        <br>Próximos Jogadores ✅
     </div>
     <div id="view-random" class="view active">
         <div class="team-section">
@@ -25,7 +29,7 @@
             <div class="player-list" style="display: flex;">
                 <select id="random-players" multiple onchange="onChangeSelect('random-players')"></select>
             </div>
-            <button id = 'random-btn' onclick="random()" disabled>Escolher aleatório</button>
+            <button id='random-btn' onclick="random()" disabled>Escolher aleatório</button>
         </div>
         <button class="jump" onclick="jumpRandom()">Saltar</button>
     </div>
@@ -45,7 +49,7 @@
                 <select id="player-white-2" onchange="onChangeSelect('player-white-2')"></select>
             </div>
         </div>
-        <button id = 'start-button' onclick="initAudioContext(); startGame();" disabled>Iniciar jogo</button>
+        <button id='start-button' onclick="initAudioContext(); startGame();" disabled>Iniciar jogo</button>
     </div>
 
     <div id="view-game" class="view">
@@ -60,7 +64,7 @@
             <div class="team-section" id="next-players">
                 <h3>Próximos jogadores</h3>
                 <div class="player-list">
-                    <select id="next-player-1" onchange="onChangeSelect('next-player-1')" ></select>
+                    <select id="next-player-1" onchange="onChangeSelect('next-player-1')"></select>
                     <select id="next-player-2" onchange="onChangeSelect('next-player-2')"></select>
                 </div>
             </div>
@@ -80,7 +84,7 @@
 
     <div id="view-summary" class="view">
         <h2>Fim do jogo</h2>
-        <h3>Equipa vencedora: <span id = 'winner-team-label'></span></h3>
+        <h3>Equipa vencedora: <span id='winner-team-label'></span></h3>
 
         <button onclick="newGame()">Novo jogo</button>
         <button onclick="reftifyGame()">Corrigir jogo anterior</button>
@@ -94,9 +98,8 @@
     </div>
 
     <video id="keep-awake" autoplay muted loop playsinline style="width:1px; height:1px; opacity:0.01;">
-  <source src="blank.mp4" type="video/mp4">
-</video>
-
+        <source src="blank.mp4" type="video/mp4">
+    </video>
 
     <script src="script.js"></script>
 </body>

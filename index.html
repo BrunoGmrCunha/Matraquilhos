@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <title>Jogo de Matraquilhos</title>
     <link rel="stylesheet" href="style.css" />
 </head>
@@ -90,9 +93,11 @@
 
     </div>
 
-    <video id="keepAwake" muted autoplay loop playsinline style="display: none;">
-        <source src="./images/blank.mp4" type="video/mp4">
-    </video>
+    <video id="keep-awake" autoplay muted loop playsinline style="width:1px; height:1px; opacity:0.01;">
+  <source src="blank.mp4" type="video/mp4">
+</video>
+
+
     <script src="script.js"></script>
 </body>
 

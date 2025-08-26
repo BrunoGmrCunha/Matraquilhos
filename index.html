@@ -7,92 +7,131 @@
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="https://brunogmrcunha.github.io/Matraquilhos/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" href="https://brunogmrcunha.github.io/Matraquilhos/images/apple-touch-icon.png">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css" /> -->
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-quartz.css" />
+
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css" /> -->
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
     <title>NIUP - Matraquilhos</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-     <div id="notch-overlay"></div>
-      <div id="content">
-    <h1>NIUP - Matraquilhos</h1>
-    <div id="popup">Nova versão disponível!
-        <br>Escolha aleatória ✅
-        <br>Correção Equipas ✅
-        <br>Próximos Jogadores ✅
-    </div>
-    <div id="view-random" class="view active">
-        <div class="team-section">
-            <h3>Jogadores iniciais</h3>
-            <div class="player-list" style="display: flex;">
-                <select id="random-players" multiple onchange="onChangeSelect('random-players')"></select>
-            </div>
-            <button id='random-btn' onclick="random()" disabled>Escolher aleatório</button>
+    <div id="notch-overlay"></div>
+    <div id="content">
+        <h1>NIUP - Matraquilhos</h1>
+        <div id="popup">Nova versão disponível!
+            <br>Escolha aleatória ✅
+            <br>Correção Equipas ✅
+            <br>Próximos Jogadores ✅
         </div>
-        <button class="jump" onclick="jumpRandom()">Saltar</button>
-    </div>
-    <div id="view-select" class="view">
-        <h2>Selecionar jogadores</h2>
-        <div class="team-section red">
-            <h2>🔴 Equipa Vermelha</h2>
-            <div class="player-list" id="team-red">
-                <select id="player-red-1" onchange="onChangeSelect('player-red-1')"></select>
-                <select id="player-red-2" onchange="onChangeSelect('player-red-2')"></select>
-            </div>
-        </div>
-        <div class="team-section white">
-            <h2>⚪ Equipa Branca</h2>
-            <div class="player-list" id="team-white">
-                <select id="player-white-1" onchange="onChangeSelect('player-white-1')"></select>
-                <select id="player-white-2" onchange="onChangeSelect('player-white-2')"></select>
-            </div>
-        </div>
-        <button id='start-button' onclick="initAudioContext(); startGame();" disabled>Iniciar jogo</button>
-    </div>
-
-    <div id="view-game" class="view">
-        <div id="game">
-            <div class="title-timer">
-                <h2 id="result">Jogo em progresso</h2>
-                <div class="game-timer" onclick="pauseResumeTimer()" id="game-timer">04:00</div>
-            </div>
-            <div id="score-board"></div>
-            <hr>
-            <div class="team-section" id="next-players">
-                <h3>Próximos jogadores</h3>
-                <div class="player-list">
-                    <select id="next-player-1" onchange="onChangeSelect('next-player-1')"></select>
-                    <select id="next-player-2" onchange="onChangeSelect('next-player-2')"></select>
+        <div class="modal" id="customModal">
+            <div class="modal-content">
+                <p id="modalMessage">Mensagem aqui</p>
+                <div class="modal-buttons">
+                    <button id="btnConfirm">✔ Sim</button>
+                    <button class="btn-cancel" onclick="closeModal()">✖ Não</button>
                 </div>
             </div>
-            <br>
-            <button class="back" onclick="backToTeam()">Voltar</button>
         </div>
-        <div class="team-section" id="tie-breaker" style="display:none;">
-            <h3>Vencedor 🪨 📄 ✂️</h3>
-            <div class="player-list">
-                <select id="winner-team" onchange="onChangeSelect('winner-team')">
-                    <option value="" disabled selected>seleciona uma equipa</option>
-                    <option value="red">🔴 Equipa Vermelha</option>
-                    <option value="white">⚪ Equipa Branca</option>
-                </select>
-                <button id="end-game-button" onclick="endGame()" disabled>Finalizar jogo</button>
+        <div id="view-random" class="view active">
+            <div class="team-section">
+                <h3>Jogadores iniciais</h3>
+                <div class="player-list" style="display: flex;">
+                    <select id="random-players" multiple onchange="onChangeSelect('random-players')"
+                        style="height: auto;"></select>
+                </div>
+                <button id='random-btn' onclick="random()" disabled>Escolher aleatório</button>
+            </div>
+            <button class="jump" onclick="jumpRandom()">Ignorar</button>
+        </div>
+        <div id="view-select" class="view">
+            <h2>Selecionar jogadores</h2>
+            <div class="team-section red">
+                <h2>🔴 Equipa Vermelha</h2>
+                <div class="player-list" id="team-red">
+                    <select id="player-red-1" onchange="onChangeSelect('player-red-1')"></select>
+                    <select id="player-red-2" onchange="onChangeSelect('player-red-2')"></select>
+                </div>
+            </div>
+            <div class="team-section white">
+                <h2>⚪ Equipa Branca</h2>
+                <div class="player-list" id="team-white">
+                    <select id="player-white-1" onchange="onChangeSelect('player-white-1')"></select>
+                    <select id="player-white-2" onchange="onChangeSelect('player-white-2')"></select>
+                </div>
+            </div>
+            <button id='start-button' onclick="initAudioContext(); startGame();" disabled>Iniciar jogo</button>
+            <button id = 'back-to-random-button'class="back" onclick="backToRandom()">Voltar</button>
+        </div>
+
+        <div id="view-game" class="view">
+            <div id="game">
+                <div class="title-timer">
+                    <h2 id="result">Jogo em progresso</h2>
+                    <div class="game-timer" onclick="pauseResumeTimer()" id="game-timer">04:00</div>
+                </div>
+                <div id="score-board"></div>
+                <hr>
+                <div class="team-section" id="next-players">
+                    <h3>Próximos jogadores</h3>
+                    <div class="player-list">
+                        <select id="next-player-1" onchange="onChangeSelect('next-player-1')"></select>
+                        <select id="next-player-2" onchange="onChangeSelect('next-player-2')"></select>
+                    </div>
+                </div>
+                <br>
+                <button class="back"
+                    onclick="openConfirmModal('Deseja cancelar o jogo atual?', backToTeam)">Voltar</button>
+            </div>
+            <div class="team-section" id="tie-breaker" style="display:none;">
+                <h3>Vencedor 🪨 📄 ✂️</h3>
+                <div class="player-list">
+                    <select id="winner-team" onchange="onChangeSelect('winner-team')">
+                        <option value="" disabled selected>seleciona uma equipa</option>
+                        <option value="red">🔴 Equipa Vermelha</option>
+                        <option value="white">⚪ Equipa Branca</option>
+                    </select>
+                    <button id="end-game-button" onclick="endGame()" disabled>Finalizar jogo</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-summary" class="view">
+            <h2>Fim do jogo</h2>
+            <h3>Equipa vencedora: <span id='winner-team-label'></span></h3>
+
+            <button id="new-game-button" onclick="newGame()">Novo jogo</button>
+            <button id="new-tournament-button" style="display: none;"
+                onclick="openConfirmModal('Deseja iniciar novo torneio?', newTournament)">Novo torneio</button>
+            <button id="retify-game-button" class="repair" onclick="reftifyGame()">Corrigir jogo anterior</button>
+            <hr>
+            <button id="end-tournament-button" style="background-color:#ff4646"
+                onclick="openConfirmModal('Deseja finalizar o torneio?', endTournament)">Finalizar torneio</button>
+
+            <button id="file-download-button" style="display: none;" onclick="fileDownload()">Download
+                ficheiro</button>
+
+            <div class="summary-section" id="tournament-summary">
+                <div id="tournament-summary-grid" class="ag-theme-alpine" style="height: 400px; width: 100%;"></div>
+                <!-- <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Golos</th>
+                        <th>AutoGolos</th>
+                        <th>Vitórias</th>
+                        <th>Derrotas</th>
+                        <th>Empates</th>
+                    </tr>
+                </thead>
+                <tbody id="tournament-summary-table-body">
+                </tbody> -->
             </div>
         </div>
     </div>
-
-    <div id="view-summary" class="view">
-        <h2>Fim do jogo</h2>
-        <h3>Equipa vencedora: <span id='winner-team-label'></span></h3>
-
-        <button onclick="newGame()">Novo jogo</button>
-        <button class="repair" onclick="reftifyGame()">Corrigir jogo anterior</button>
-        <hr>
-        <button style="background-color:#ff4646" onclick="endTournament()">Finalizar torneio</button>
-        <div class="summary-section" id="tournament-summary"></div>
-    </div>
-      </div>
     <div id="debug">
 
     </div>

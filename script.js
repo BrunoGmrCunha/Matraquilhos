@@ -1,5 +1,6 @@
 
 const playersList = [
+    { id: "ef102edb-b061-4b6a-8ecb-985e227f6656", name: "Jean Marc" },
     { id: "77fa5014-7468-4ccf-a91e-92050c32116a", name: "Bernardo" },
     { id: "980c4d5f-e4c3-4408-859b-13b089ab32d9", name: "Bruno" },
     { id: "cd3e99e4-dda0-46c2-bf3b-e75d52989a2d", name: "João" },
@@ -707,4 +708,5 @@ const overlay = document.getElementById('notch-overlay');
 //   video.style.display = "none"; // escondido
 //   document.body.appendChild(video);
 // }
+
 

@@ -431,3 +431,35 @@
            opacity: 1;
        }
    }
+
+       /* Splash screen */
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #007BFF; /* Azul de fundo */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
+
+    #splash-screen img {
+      max-width: 80%;
+      margin-bottom: 20px;
+    }
+
+    #splash-screen h1 {
+      color: white;
+      font-size: 2em;
+      margin: 0;
+    }
+
+    #splash-screen p {
+      color: white;
+      margin: 5px 0 0;
+      font-size: 1.2em;
+    }

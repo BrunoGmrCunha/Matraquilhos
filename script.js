@@ -857,6 +857,11 @@ async function sendTextToApi(text) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    // setTimeout(() => {
+    //     document.getElementById("splash-screen").style.display = "none";
+    //     document.getElementById("content").style.display = "block";
+    //   }, 3000); // 3 segundos
+
     populateRandomPlayerSelect('random-players');
     // populatePlayerSelect('team-red');
     // populatePlayerSelect('team-white');

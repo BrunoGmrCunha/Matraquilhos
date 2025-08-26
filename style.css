@@ -25,7 +25,7 @@
   left: 0;
   width: 100%;
   height: env(safe-area-inset-top); /* altura dinâmica da notch */
-  background: rgba(255, 255, 255, 0); /* começa transparente */
+  background: rgba(255, 255, 255, 100); /* começa transparente */
   backdrop-filter: blur(0px); /* sem blur no início */
   -webkit-backdrop-filter: blur(0px); /* Safari */
   pointer-events: none; /* não bloqueia cliques */
@@ -300,3 +300,4 @@
        border-style: solid;
 
    }
+

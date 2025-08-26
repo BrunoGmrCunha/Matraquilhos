@@ -192,8 +192,8 @@
    }
 
    .summary-section {
-       white-space: pre-wrap;
-       background: #f0f8ff;
+       /*white-space: pre-wrap;*/
+       
        padding: 10px;
        border-radius: 10px;
    }

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload JSON e Criar Produtos</title>
+</head>
+<body>
+  <h2>Upload de Ficheiro JSON</h2>
+  <input type="file" id="fileInput" accept=".json" />
+  <button onclick="processFile()">Enviar para API</button>
+
+  <pre id="output"></pre>
+
+  <script>
+    let jsonData = null;
+
+    // Lê o ficheiro JSON ao selecionar
+    document.getElementById("fileInput").addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          jsonData = JSON.parse(e.target.result);
+          document.getElementById("output").textContent = 
+            JSON.stringify(jsonData, null, 2);
+        } catch (err) {
+          alert("Erro ao ler JSON: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // Função para enviar os produtos à API
+    async function processFile() {
+      if (!jsonData || !jsonData.Produtos) {
+        alert("Nenhum JSON válido carregado!");
+        return;
+      }
+
+      for (const produto of jsonData.Produtos) {
+        try {
+          const response = await fetch("http://localhost:3000/api/produtos", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(produto)
+          });
+
+          if (!response.ok) {
+            throw new Error("Erro HTTP " + response.status);
+          }
+
+          const data = await response.json();
+          console.log("Produto criado:", data);
+        } catch (err) {
+          console.error("Erro ao criar produto:", err);
+        }
+      }
+      alert("Todos os produtos foram enviados para a API!");
+    }
+  </script>
+</body>
+</html>

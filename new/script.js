@@ -168,7 +168,8 @@ function startGame() {
         winner: null,
         startTime: new Date(),
         endTime: null,
-        isTie: false
+        isTie: false,
+        isGameOfDay: false
     };
 
     timeLeft = gameTime;
@@ -199,10 +200,13 @@ function endGame() {
     showView('view-summary');
 }
 
-function finalizeGame() {
+function finalizeGame(isGameOfDay = false) {
     clearInterval(timer);
     if (!currentGame.winner) {
         currentGame.winner = null
+    }
+    else {
+        currentGame.isGameOfDay = isGameOfDay;
     }
     currentGame.endTime = new Date();
     const durationMs = currentGame.endTime - currentGame.startTime;
@@ -642,7 +646,7 @@ function computeStats(data) {
     return { gamesSummary, playersArr: Object.values(players) };
 }
 async function endTournament() {
-    finalizeGame();
+    finalizeGame(true);
 
     const summary = document.getElementById('tournament-summary');
     document.getElementById('retify-game-button').disabled = true;
@@ -803,17 +807,17 @@ async function sendTextToApi(text) {
 }
 
 async function login(username, password) {
-  const response = await fetch("http://localhost:8004/api/Thebox/Login/Local", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
-  });
+    const response = await fetch("http://localhost:8004/api/Thebox/Login/Local", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+    });
 
-  if (!response.ok) throw new Error("Erro no login");
+    if (!response.ok) throw new Error("Erro no login");
 
-  const tokenData = await response.json();
-  localStorage.setItem("thebox_token", tokenData.accessToken); // ou "token"
-  return tokenData;
+    const tokenData = await response.json();
+    localStorage.setItem("thebox_token", tokenData.accessToken); // ou "token"
+    return tokenData;
 }
 
 

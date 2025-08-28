@@ -39,18 +39,17 @@
 
     // Função para enviar os produtos à API
     async function processFile() {
-      //let token = login("Admin", "Admin");
-console.log(jsonData)
+      let token = login("Admin", "Admin");
+      console.log(token)
+      console.log(jsonData)
       if (!jsonData || !jsonData.jogos) {
         alert("Nenhum JSON válido carregado!");
         return;
       }
       let convertedData = convertGamesToForm(jsonData);
 
-
-      // let jsonConvertedData = JSON.parse(convertedData);
-          document.getElementById("output").textContent =
-            JSON.stringify(convertedData, null, 2);
+      document.getElementById("output").textContent =
+        JSON.stringify(convertedData, null, 2);
     }
 
     async function login(username, password) {
@@ -64,7 +63,7 @@ console.log(jsonData)
 
       const tokenData = await response.json();
       localStorage.setItem("thebox_token", tokenData.accessToken); // ou "token"
-      return tokenData;
+      return tokenData.accessToken;
     }
 
     async function criarFormInstance() {
@@ -113,209 +112,80 @@ console.log(jsonData)
           currencyFields: null,
           booleanFields: [
             {
-              value: game.isGameOfDay,
-              configuration: {
-                defaultValue: null,
-                editable: true,
-                editableOnceProcessed: true,
-                getValueFromImportedForm: true,
-                label: "Campeão do dia",
-                validationMode: 0,
-                validationMessage: "Este campo permite adicionar um campo boleano a um formulário!"
-              },
               id: generateUUID(),
-              fieldId: "00000000-0157-0000-0001-000000000e01",
-              fieldType: 11,
-              fieldName: "Campeão",
-              fieldCode: "DAYCHAMP"
+              value: game.isGameOfDay,
+              fieldId: "00000000-0157-0000-0001-000000000e01"
             }
           ],
           dateFields: [
             {
-              fieldMain: true,
               value: game.startTime,
-              configuration: {
-                main: true,
-                hasTime: false,
-                editable: true,
-                editableOnceProcessed: false,
-                getValueFromImportedForm: false,
-                label: "Data do jogo",
-                validationMode: 1,
-                validationMessage: "A data do registo não está preenchida."
-              },
               id: generateUUID(),
               fieldId: "00000000-0157-0000-0001-000000000003",
-              fieldType: 2,
-              fieldName: "Data do jogo",
-              fieldCode: "DRBM"
             }
           ],
           decimalFields: [
             {
               value: 1,
-              configuration: {
-                variable: "[P002]",
-                calculationFormula: null,
-                numberOfDecimalPlaces: 0,
-                minimumValue: 0,
-                maximumValue: 3,
-                defaultValue: 1,
-                editable: true,
-                editableOnceProcessed: true,
-                getValueFromImportedForm: true,
-                label: "Pontos extra como campeão do dia",
-                validationMode: 0,
-                validationMessage: "Insira o valor de pontos por vitória de campeão do dia"
-              },
               id: generateUUID(),
-              fieldId: "00000000-0157-0000-0001-000000000009",
-              fieldType: 12,
-              fieldName: "Day Champ",
-              fieldCode: "DAYCHMP"
+              fieldId: "00000000-0157-0000-0001-000000000009"
             },
             {
               value: 1,
-              configuration: {
-                variable: "[P001]",
-                calculationFormula: null,
-                numberOfDecimalPlaces: 0,
-                minimumValue: 0,
-                maximumValue: 2,
-                defaultValue: 1,
-                editable: true,
-                editableOnceProcessed: true,
-                getValueFromImportedForm: true,
-                label: "Pontos por vitória",
-                validationMode: 0,
-                validationMessage: "Insira o valor de pontos por vitória"
-              },
               id: generateUUID(),
-              fieldId: "00000000-0157-0000-0001-000000000008",
-              fieldType: 12,
-              fieldName: "Jogo Vencido",
-              fieldCode: "WINPNT"
+              fieldId: "00000000-0157-0000-0001-000000000008"
             }
           ],
           entityClassificationFields: null,
           entityFields: [
             {
+              id: generateUUID(),
+              fieldId: "00000000-0157-0000-0001-0000000000a1",
               fieldMain: true,
               entityId: winnerPlayers[0].id,
               entityFirstName: winnerPlayers[0].name,
               entityMiddleName: null,
               entityLastName: null,
               entityAlias: null,
-              entityNiupId: null,
-              configuration: {
-                generateUpdate: true,
-                receiveUpdate: false,
-                relatedFields: null,
-                main: true,
-                setUserAsEntity: false,
-                filterId: "96f85ae2-0782-4bd9-93db-6e71aa9bbdd2",
-                editable: true,
-                editableOnceProcessed: false,
-                getValueFromImportedForm: false,
-                label: "Atleta vencedor 1/2",
-                validationMode: 1,
-                validationMessage: null
-              },
-              id: generateUUID(),
-              fieldId: "00000000-0157-0000-0001-0000000000a1",
-              fieldType: 3,
-              fieldName: "Atleta 1/2",
-              fieldCode: "WIN01"
+              entityNiupId: null
             },
             {
+              id: generateUUID(),
               fieldMain: false,
               entityId: winnerPlayers[1].id,
               entityFirstName: winnerPlayers[1].name,
               entityMiddleName: null,
               entityLastName: null,
               entityAlias: null,
-              entityNiupId: null,
-              configuration: {
-                generateUpdate: true,
-                receiveUpdate: false,
-                relatedFields: null,
-                main: false,
-                setUserAsEntity: false,
-                filterId: "96f85ae2-0782-4bd9-93db-6e71aa9bbdd2",
-                editable: true,
-                editableOnceProcessed: false,
-                getValueFromImportedForm: false,
-                label: "Atleta vencedor 2/2",
-                validationMode: 1,
-                validationMessage: null
-              },
-              id: generateUUID(),
-              fieldId: "00000000-0157-0000-0001-0000000000a2",
-              fieldType: 3,
-              fieldName: "Atleta 2/2",
-              fieldCode: "WIN02"
+              entityNiupId: null
             },
             {
+              id: generateUUID(),
               fieldMain: false,
               entityId: loserPlayers[0].id,
               entityFirstName: loserPlayers[0].name,
               entityMiddleName: null,
               entityLastName: null,
               entityAlias: null,
-              entityNiupId: null,
-              configuration: {
-                generateUpdate: true,
-                receiveUpdate: false,
-                relatedFields: null,
-                main: false,
-                setUserAsEntity: false,
-                filterId: "96f85ae2-0782-4bd9-93db-6e71aa9bbdd2",
-                editable: true,
-                editableOnceProcessed: false,
-                getValueFromImportedForm: false,
-                label: "Atleta derrotado 1/2",
-                validationMode: 0,
-                validationMessage: null
-              },
-              id: generateUUID(),
-              fieldId: "00000000-0157-0000-0001-0000000000a3",
-              fieldType: 3,
-              fieldName: "Atleta derrotado 1/2",
-              fieldCode: "LOSE01"
+              entityNiupId: null
             },
             {
+              id: generateUUID(),
               fieldMain: false,
               entityId: loserPlayers[1].id,
               entityFirstName: loserPlayers[1].name,
               entityMiddleName: null,
               entityLastName: null,
               entityAlias: null,
-              entityNiupId: null,
-              configuration: {
-                generateUpdate: true,
-                receiveUpdate: false,
-                relatedFields: null,
-                main: false,
-                setUserAsEntity: false,
-                filterId: "96f85ae2-0782-4bd9-93db-6e71aa9bbdd2",
-                editable: true,
-                editableOnceProcessed: false,
-                getValueFromImportedForm: false,
-                label: "Atleta derrotado 2/2",
-                validationMode: 0,
-                validationMessage: null
-              },
-              id: generateUUID(),
-              fieldId: "00000000-0157-0000-0001-0000000000a4",
-              fieldType: 3,
-              fieldName: "Atleta derrotado 2/2",
-              fieldCode: "LOSE02"
+              entityNiupId: null
             }
           ],
           identityDocumentFields: null,
           numberingFields: [],
           optionFields: [
             {
+              id: generateUUID(),
+              fieldId: "00000000-0157-0000-0001-000000000011",
               values: [
                 {
                   id: winnerTeam === 'red'
@@ -323,27 +193,7 @@ console.log(jsonData)
                     : "00000000-0157-0000-0001-000000000001",
                   name: winnerTeam === 'red' ? "Vermelho" : "Branco"
                 }
-              ],
-              options: [
-                { id: "00000000-0157-0000-0001-000000000001", name: "Branco", order: 0, configuration: null },
-                { id: "00000000-0157-0000-0001-000000000002", name: "Vermelho", order: 1, configuration: null }
-              ],
-              configuration: {
-                generateUpdate: false,
-                receiveUpdate: false,
-                defaultOptionId: null,
-                editable: true,
-                editableOnceProcessed: false,
-                getValueFromImportedForm: true,
-                label: "Campo",
-                validationMode: 0,
-                validationMessage: "Escolher o campo da equipa vencedora"
-              },
-              id: generateUUID(),
-              fieldId: "00000000-0157-0000-0001-000000000011",
-              fieldType: 13,
-              fieldName: "Campo",
-              fieldCode: "SIDE"
+              ]
             }
           ],
           paymentTermFields: null,
@@ -351,44 +201,19 @@ console.log(jsonData)
           projectInstanceFields: null,
           textFields: [
             {
-              value: game.time,
-              configuration: {
-                regex: null,
-                editable: true,
-                editableOnceProcessed: true,
-                getValueFromImportedForm: true,
-                label: "Tempo de jogo",
-                validationMode: 0,
-                validationMessage: "Este campo permite registar o tempo de um jogo"
-              },
               id: generateUUID(),
               fieldId: "00000000-0157-0000-0001-000000000010",
-              fieldType: 10,
-              fieldName: "Duração",
-              fieldCode: "TIME"
+              value: game.time,
             }
           ],
           movementDocumentInstanceFields: null,
           fileFields: null,
           itemFields: [
             {
-              itemId: "669c4bff-f094-4713-96f5-4b23b6358a41",
-              itemName: "LIGA 2025",
-              configuration: {
-                generateUpdate: true,
-                filterId: "bf37f328-81e0-4700-8206-2f4181ba3f3f",
-                editable: true,
-                editableOnceProcessed: true,
-                getValueFromImportedForm: true,
-                label: "Tipo de partida",
-                validationMode: 0,
-                validationMessage: "Este campo é opcional"
-              },
               id: generateUUID(),
               fieldId: "00000000-0157-0000-0001-000000000036",
-              fieldType: 18,
-              fieldName: "Competição",
-              fieldCode: "GAMETYPE"
+              itemId: "669c4bff-f094-4713-96f5-4b23b6358a41",
+              itemName: "LIGA 2025"
             }
           ],
           itemClassificationFields: null,

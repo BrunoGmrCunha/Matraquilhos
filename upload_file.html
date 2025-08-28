@@ -3,28 +3,41 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Upload JSON e Criar Produtos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="blank">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <link rel="apple-touch-icon" href="https://brunogmrcunha.github.io/Matraquilhos/images/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-quartz.css">
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+
+  <title>NIUP - Matraquilhos</title>
+  <link rel="stylesheet" href="new/style.css">
 </head>
 
 <body>
-  <h2>Upload de Ficheiro JSON</h2>
-  <input type="file" id="fileInput" accept=".json" />
-  <button onclick="processFile()">Enviar para API</button>
-  <table id="resultTable" border="1">
-    <thead>
-      <tr>
-        <th>Instância</th>
-        <th>Criar</th>
-        <th>Guardar</th>
-        <th>Validar</th>
-        <th>Processar</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <div id="content">
+    <h2>Upload de Ficheiro das partidas</h2>
+    <input type="file" id="fileInput" accept=".json" />
+    <button onclick="processFile()">Enviar para API</button>
+    <table id="resultTable" border="1">
+      <thead>
+        <tr>
+          <th>Instância</th>
+          <th>Criar</th>
+          <th>Guardar</th>
+          <th>Validar</th>
+          <th>Processar</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-  <pre id="output"></pre>
-
+    <pre id="output"></pre>
+  </div>
   <script>
     let jsonData = null;
     let token = null;
@@ -52,7 +65,7 @@
     // Função para enviar os produtos à API
     async function processFile() {
       try {
-        const token = await login("user", "pass");
+        const token = await login("Admin", "Admin");
         if (!token) {
           console.error("Login falhou, abortando.");
           return;
@@ -127,7 +140,7 @@
         console.error("Erro no processFile:", err);
       }
     }
-    
+
     function renderResultsTable(results) {
       const tbody = document.querySelector("#resultTable tbody");
       tbody.innerHTML = ""; // limpa antes
@@ -293,12 +306,12 @@
           ],
           decimalFields: [
             {
-              value: 1,
+              value: game.isTie && game.isGameOfDay ? 0 : 1,
               id: generateUUID(),
               fieldId: "00000000-0157-0000-0001-000000000009"
             },
             {
-              value: 1,
+              value: game.isTie ? 0 : 1,
               id: generateUUID(),
               fieldId: "00000000-0157-0000-0001-000000000008"
             }
@@ -318,6 +331,7 @@
             },
             {
               id: generateUUID(),
+              fieldId: "00000000-0157-0000-0001-0000000000a2",
               fieldMain: false,
               entityId: winnerPlayers[1].id,
               entityFirstName: winnerPlayers[1].name,
@@ -328,6 +342,8 @@
             },
             {
               id: generateUUID(),
+              fieldId: "00000000-0157-0000-0001-0000000000a3",
+
               fieldMain: false,
               entityId: loserPlayers[0].id,
               entityFirstName: loserPlayers[0].name,
@@ -338,6 +354,8 @@
             },
             {
               id: generateUUID(),
+              fieldId: "00000000-0157-0000-0001-0000000000a4",
+
               fieldMain: false,
               entityId: loserPlayers[1].id,
               entityFirstName: loserPlayers[1].name,

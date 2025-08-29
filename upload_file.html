@@ -264,7 +264,7 @@
           alert("❌ Erro no Login: " +loginResult.error  )
           return;
         }
-        const token = loginResult.accessToken;
+        const token = loginResult.data.accessToken;
         if (!token) {
           alert("Erro no Login!");
           console.error("Login falhou, abortando.");

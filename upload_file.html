@@ -380,8 +380,8 @@
           return { success: false, error: `Erro HTTP ${response.status}: ${errorText}` };
         }
 
-        const tokenData = await response.json();
-        return { success: true, tokenData };
+        const data = await response.json();
+        return { success: true, data };
 
       }
       catch (err) {

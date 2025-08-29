@@ -330,6 +330,13 @@
             continue;
           }
           row.process = "✅";
+          
+          // 4. Get
+          const getInstanceResult = await getFormInstance(apiUrl,token);
+          if (!getInstanceResult.success) {
+            continue;
+          }
+          row.id = getInstanceResult.data.instanceNumber;
 
           results.push(row);
           renderResultsTable(results);
@@ -487,6 +494,27 @@
       }
     }
 
+    async function getFormInstance(api, instanceId, token) {
+      try {
+        const response = await fetch(`${api}/api/Thebox/Forms/FormInstances/${instanceId}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+          }
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          return { success: false, error: `Erro HTTP ${response.status}: ${errorText}` };
+        }
+
+        const data = await response.json();
+        return { success: true, data };
+      } catch (err) {
+        return { success: false, error: err.message };
+      }
+    }
 
 
     function convertGamesToForm(json) {

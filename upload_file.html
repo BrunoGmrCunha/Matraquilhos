@@ -294,6 +294,7 @@
           if (!createResult.success) {
             row.create = "❌ " + createResult.error;
             results.push(row);
+            renderResultsTable(results);
             continue;
           }
           row.id = createResult.data.id;
@@ -304,6 +305,7 @@
           if (!saveResult.success) {
             row.save = "❌ " + saveResult.error;
             results.push(row);
+            renderResultsTable(results);
             continue;
           }
           row.save = "✅";
@@ -313,11 +315,13 @@
           if (!validateResult.success) {
             row.validate = "❌ " + validateResult.error;
             results.push(row);
+            renderResultsTable(results);
             continue;
           }
           if (validateResult.data && validateResult.data.length > 0) {
             row.validate = "❌ " + JSON.stringify(validateResult.data);
             results.push(row);
+            renderResultsTable(results);
             continue;
           }
           row.validate = "✅";
@@ -327,12 +331,13 @@
           if (!processResult.success) {
             row.process = "❌ " + processResult.error;
             results.push(row);
+            renderResultsTable(results);
             continue;
           }
           row.process = "✅";
           
           // 4. Get
-          const getInstanceResult = await getFormInstance(apiUrl,token);
+          const getInstanceResult = await getFormInstance(apiUrl,row.id, token);
           if (!getInstanceResult.success) {
             continue;
           }

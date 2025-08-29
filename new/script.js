@@ -206,8 +206,8 @@ function finalizeGame(isGameOfDay = false) {
         currentGame.winner = null
     }
     else {
+        currentGame.isGameOfDay = isGameOfDay;
     }
-    currentGame.isGameOfDay = isGameOfDay;
     currentGame.endTime = new Date();
     const durationMs = currentGame.endTime - currentGame.startTime;
     const durationSecs = Math.floor(durationMs / 1000);

@@ -16,14 +16,155 @@
 
   <title>NIUP - Matraquilhos</title>
   <link rel="stylesheet" href="new/style.css">
+
+  <style>
+    .upload-section {
+      background-color: white;
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .upload-section h1 {
+      text-align: center;
+      color: #0061A8;
+      margin-bottom: 10px;
+    }
+
+    .upload-section p {
+      text-align: center;
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .drop {
+      border: 2px dashed #0061A8;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      background-color: #fefefe;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      display: block;
+    }
+
+    .drop:hover {
+      background-color: #f0f8ff;
+    }
+
+    .drop strong {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    input[type="file"] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .actions {
+      margin-top: 20px;
+    }
+
+    button {
+      font-size: 18px;
+      font-weight: 600;
+      background-color: #0061A8;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      width: 100%;
+      height: 50px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      color: #666;
+    }
+
+    .result-section {
+      background-color: white;
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      text-align: center;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      border: 1px solid #000;
+      text-align: center;
+    }
+
+    th {
+      background-color: #0061A8;
+      color: white;
+    }
+  </style>
 </head>
 
 <body>
   <div id="content">
-    <h2>Upload de Ficheiro das partidas</h2>
+    <!-- <h2>Upload de Ficheiro das partidas</h2>
     <input type="file" id="fileInput" accept=".json" />
-    <button onclick="processFile()">Enviar para API</button>
-    <table id="resultTable" border="1">
+    <button onclick="processFile()">Enviar para API</button> -->
+
+    <div class="upload-section">
+      <h1>Enviar ficheiro</h1>
+      <p>Selecione um ficheiro JSON e submeta para a API.</p>
+      <form onsubmit="processFile(event)">
+        <div>
+          <label for="apiUrl">API URL:</label>
+          <input id="apiUrl" type="text" value="http://localhost:8004" />
+
+          <label for="username">Utilizador:</label>
+          <input id="username" type="text" value="Admin" />
+
+          <label for="password">Password:</label>
+          <input id="password" type="password" value="Admin" />
+        </div>
+
+        <label class="drop" for="fileInput">
+          <strong>Clique para escolher um ficheiro JSON</strong>
+          <span>(ou use a janela do sistema)</span>
+        </label>
+        <input id="fileInput" name="file" type="file" accept="application/json" required />
+
+        <div class="actions">
+          <button type="submit">Submeter para a API</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- <table id="resultTable" border="1">
       <thead>
         <tr>
           <th>Instância</th>
@@ -34,7 +175,23 @@
         </tr>
       </thead>
       <tbody></tbody>
-    </table>
+    </table> -->
+    <div class="result-section">
+      <h2>Resultados</h2>
+      <table id="resultTable">
+        <thead>
+          <tr>
+            <th>Instância</th>
+            <th>Criar</th>
+            <th>Guardar</th>
+            <th>Validar</th>
+            <th>Processar</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
 
     <pre id="output"></pre>
   </div>
@@ -64,8 +221,29 @@
 
     // Função para enviar os produtos à API
     async function processFile() {
+      event.preventDefault();
+      const apiUrl = document.getElementById("apiUrl").value;
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const file = document.getElementById("fileInput").files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            jsonData = JSON.parse(e.target.result);
+            console.log("Conteúdo JSON:", jsonData);
+            // Aqui podes usar jsonData para enviar para a API
+          } catch (err) {
+            console.error("Erro ao ler o JSON:", err);
+            return;
+          }
+        };
+        reader.readAsText(file);
+      }
+
       try {
-        const token = await login("Admin", "Admin");
+        const token = await login(apiUrl, username, password);
         if (!token) {
           console.error("Login falhou, abortando.");
           return;
@@ -90,7 +268,7 @@
           };
 
           // 1. Criar instância
-          const createResult = await createFormInstance("28065e82-5b13-4102-a8d4-0e5b657c6d1e", instanceFields, token);
+          const createResult = await createFormInstance(apiUrl, "28065e82-5b13-4102-a8d4-0e5b657c6d1e", instanceFields, token);
           if (!createResult.success) {
             row.create = "❌ " + createResult.error;
             results.push(row);
@@ -100,7 +278,7 @@
           row.create = "✅";
 
           // 2. Guardar
-          const saveResult = await saveFormInstance(row.id, token);
+          const saveResult = await saveFormInstance(apiUrl, row.id, token);
           if (!saveResult.success) {
             row.save = "❌ " + saveResult.error;
             results.push(row);
@@ -109,7 +287,7 @@
           row.save = "✅";
 
           // 3. Validar
-          const validateResult = await validateFormInstance(row.id, token);
+          const validateResult = await validateFormInstance(apiUrl, row.id, token);
           if (!validateResult.success) {
             row.validate = "❌ " + validateResult.error;
             results.push(row);
@@ -123,7 +301,7 @@
           row.validate = "✅";
 
           // 4. Processar
-          const processResult = await processFormInstance(row.id, token);
+          const processResult = await processFormInstance(apiUrl, row.id, token);
           if (!processResult.success) {
             row.process = "❌ " + processResult.error;
             results.push(row);
@@ -162,8 +340,8 @@
 
 
 
-    async function login(username, password) {
-      const response = await fetch(`${BASE_URL}/api/Thebox/Login/Local`, {
+    async function login(api, username, password) {
+      const response = await fetch(`${api}/api/Thebox/Login/Local`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
@@ -176,9 +354,9 @@
       return tokenData.accessToken;
     }
 
-    async function createFormInstance(formId, fields, token) {
+    async function createFormInstance(api, formId, fields, token) {
       try {
-        const response = await fetch(`${BASE_URL}/api/Thebox/Forms/FormInstances`, {
+        const response = await fetch(`${api}/api/Thebox/Forms/FormInstances`, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -204,9 +382,9 @@
       }
     }
 
-    async function saveFormInstance(instanceId, token) {
+    async function saveFormInstance(api, instanceId, token) {
       try {
-        const response = await fetch(`${BASE_URL}/api/Thebox/Forms/FormInstances/${instanceId}/Saved`, {
+        const response = await fetch(`${api}/api/Thebox/Forms/FormInstances/${instanceId}/Saved`, {
           method: "PATCH",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -228,9 +406,9 @@
       }
     }
 
-    async function validateFormInstance(instanceId, token) {
+    async function validateFormInstance(api, instanceId, token) {
       try {
-        const response = await fetch(`${BASE_URL}/api/Thebox/Forms/FormInstances/${instanceId}/ValidationMessages`, {
+        const response = await fetch(`${api}/api/Thebox/Forms/FormInstances/${instanceId}/ValidationMessages`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -250,9 +428,9 @@
       }
     }
 
-    async function processFormInstance(instanceId, token) {
+    async function processFormInstance(api, instanceId, token) {
       try {
-        const response = await fetch(`${BASE_URL}/api/Thebox/Forms/FormInstances/${instanceId}/Process`, {
+        const response = await fetch(`${api}/api/Thebox/Forms/FormInstances/${instanceId}/Process`, {
           method: "PATCH",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -306,7 +484,7 @@
           ],
           decimalFields: [
             {
-              value: game.isTie && game.isGameOfDay ? 0 : 1,
+              value: game.isTie ? 0 : 1,
               id: generateUUID(),
               fieldId: "00000000-0157-0000-0001-000000000009"
             },

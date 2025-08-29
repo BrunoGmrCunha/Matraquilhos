@@ -211,7 +211,7 @@
         return;
       }
 
-        statusEl.textContent = `Ficheiro selecionado e pronto!`;
+      statusEl.textContent = `Ficheiro selecionado e pronto!`;
 
 
       const reader = new FileReader();
@@ -258,8 +258,15 @@
       // }
 
       try {
-        const token = await login(apiUrl, username, password);
+
+        const loginResult = await login(apiUrl, username, password);
+        if (!loginResult.success) {
+          alert("❌ Erro no Login: " +loginResult.error  )
+          return;
+        }
+        const token = loginResult.accessToken;
         if (!token) {
+          alert("Erro no Login!");
           console.error("Login falhou, abortando.");
           return;
         }
@@ -325,14 +332,14 @@
           row.process = "✅";
 
           results.push(row);
-                  renderResultsTable(results);
+          renderResultsTable(results);
 
         }
 
         renderResultsTable(results);
 
-          document.getElementById("fileStatus").textContent = 
-            `Ficheiro submetido com sucesso!`;
+        document.getElementById("fileStatus").textContent =
+          `Ficheiro submetido com sucesso!`;
 
       } catch (err) {
         console.error("Erro no processFile:", err);
@@ -361,17 +368,26 @@
 
 
     async function login(api, username, password) {
-      const response = await fetch(`${api}/api/Thebox/Login/Local`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
+      try {
+        const response = await fetch(`${api}/api/Thebox/Login/Local`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
 
-      if (!response.ok) throw new Error("Erro no login");
+        if (!response.ok) {
+          const errorText = await response.text();
+          return { success: false, error: `Erro HTTP ${response.status}: ${errorText}` };
+        }
 
-      const tokenData = await response.json();
-      localStorage.setItem("thebox_token", tokenData.accessToken); // ou "token"
-      return tokenData.accessToken;
+        const tokenData = await response.json();
+        return { success: true, tokenData };
+
+      }
+      catch (err) {
+        return { success: false, error: err.message };
+      }
+
     }
 
     async function createFormInstance(api, formId, fields, token) {

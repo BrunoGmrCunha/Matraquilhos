@@ -157,7 +157,7 @@
           <span>(ou use a janela do sistema)</span>
         </label>
         <input id="fileInput" name="file" type="file" accept="application/json" required />
-
+        <div id="fileStatus" style="margin-top: 10px; color: #0061A8; font-weight: 600;"></div>
         <div class="actions">
           <button type="submit">Submeter para a API</button>
         </div>
@@ -202,8 +202,17 @@
 
     // Lê o ficheiro JSON ao selecionar
     document.getElementById("fileInput").addEventListener("change", function (event) {
+      const statusEl = document.getElementById("fileStatus");
+
       const file = event.target.files[0];
-      if (!file) return;
+      if (!file) {
+        statusEl.textContent = "";
+        jsonData = null;
+        return;
+      }
+
+        statusEl.textContent = `Ficheiro selecionado e pronto!`;
+
 
       const reader = new FileReader();
       reader.onload = function (e) {
@@ -213,6 +222,7 @@
             JSON.stringify(jsonData, null, 2);
         } catch (err) {
           alert("Erro ao ler JSON: " + err.message);
+          statusEl.textContent = "";
         }
       };
       reader.readAsText(file);
@@ -227,20 +237,25 @@
       const password = document.getElementById("password").value;
       const file = document.getElementById("fileInput").files[0];
 
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          try {
-            jsonData = JSON.parse(e.target.result);
-            console.log("Conteúdo JSON:", jsonData);
-            // Aqui podes usar jsonData para enviar para a API
-          } catch (err) {
-            console.error("Erro ao ler o JSON:", err);
-            return;
-          }
-        };
-        reader.readAsText(file);
+      if (!jsonData) {
+        alert("Por favor, selecione um ficheiro JSON antes de submeter.");
+        return;
       }
+
+      // if (file) {
+      //   const reader = new FileReader();
+      //   reader.onload = function (e) {
+      //     try {
+      //       jsonData = JSON.parse(e.target.result);
+      //       console.log("Conteúdo JSON:", jsonData);
+      //       // Aqui podes usar jsonData para enviar para a API
+      //     } catch (err) {
+      //       console.error("Erro ao ler o JSON:", err);
+      //       return;
+      //     }
+      //   };
+      //   reader.readAsText(file);
+      // }
 
       try {
         const token = await login(apiUrl, username, password);
@@ -313,6 +328,9 @@
         }
 
         renderResultsTable(results);
+
+          document.getElementById("fileStatus").textContent = 
+            `Ficheiro submetido com sucesso!`;
 
       } catch (err) {
         console.error("Erro no processFile:", err);

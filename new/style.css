@@ -294,6 +294,30 @@ td {
     }
 }
 
+    /* Apenas para as tabelas de jogos */
+    .game-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .game-table th,
+    .game-table td {
+      border: 1px solid black;
+      padding: 8px;
+    }
+    .game-table thead th:nth-child(1),
+    .game-table thead th:nth-child(3) {
+      width: 25%;
+    }
+    .game-table thead th:nth-child(2) {
+      width: 50%;
+    }
+    .game-table tbody td {
+      width: 50%;
+    }
+
+
 /* =====================
    Modal
 ===================== */

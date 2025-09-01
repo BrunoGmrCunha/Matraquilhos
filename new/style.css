@@ -303,35 +303,30 @@ td {
       table-layout: fixed;
     }
 
-    /* Cabeçalho */
-    .game-table thead th {
+    /* remove todas as bordas por padrão */
+    .game-table th,
+    .game-table td {
+      border: none;
       padding: 8px;
-      font-weight: bold;
     }
 
-    /* Linha horizontal entre cabeçalho e corpo */
+    /* linha horizontal apenas abaixo do cabeçalho */
     .game-table thead tr {
       border-bottom: 2px solid black;
     }
 
-    /* Células do corpo */
-    .game-table tbody td {
-      padding: 8px;
-    }
-
-    /* Linha vertical entre vermelho e branco */
+    /* linha vertical apenas entre vermelho e branco */
     .game-table tbody td:first-child {
       border-right: 2px solid black;
     }
 
-    /* Container evita overflow */
+    /* container evita overflow */
     #tables-container {
       width: 100%;
       max-width: 100%;
       overflow-x: auto;
     }
 
-    
 
 
 /* =====================

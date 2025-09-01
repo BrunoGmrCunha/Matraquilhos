@@ -294,39 +294,39 @@ td {
     }
 }
 
-   .game-table {
-      width: 100%;
-      max-width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      text-align: center;
-      table-layout: fixed;
-    }
+    .game-table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    text-align: center;
+    table-layout: fixed;
+    border: 2px solid black; /* borda externa da tabela */
+  }
 
-    /* remove todas as bordas por padrão */
-    .game-table th,
-    .game-table td {
-      border: none;
-      padding: 8px;
-    }
+  /* remove todas as bordas por padrão */
+  .game-table th,
+  .game-table td {
+    border: none;
+    padding: 8px;
+  }
 
-    /* linha horizontal apenas abaixo do cabeçalho */
-    .game-table thead tr {
-      border-bottom: 2px solid black;
-    }
+  /* linha horizontal apenas abaixo do cabeçalho */
+  .game-table thead tr {
+    border-bottom: 2px solid black;
+  }
 
-    /* linha vertical apenas entre vermelho e branco */
-    .game-table tbody td:first-child {
-      border-right: 2px solid black;
-    }
+  /* linha vertical apenas entre vermelho e branco */
+  .game-table tbody td:first-child {
+    border-right: 2px solid black;
+  }
 
-    /* container evita overflow */
-    #tables-container {
-      width: 100%;
-      max-width: 100%;
-      overflow-x: auto;
-    }
-
+  /* container evita overflow */
+  #tables-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
 
 
 /* =====================

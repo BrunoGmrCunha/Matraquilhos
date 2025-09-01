@@ -822,7 +822,7 @@ function createTable(game, gameNumber) {
         const row = document.createElement("tr");
         row.innerHTML = `
         <td colspan = "2">${game.red[i] ? game.red[i].name : ""}</td>
-        <td> colspan = "2" ${game.white[i] ? game.white[i].name : ""}</td>
+        <td colspan = "2" >${game.white[i] ? game.white[i].name : ""}</td>
       `;
         tbody.appendChild(row);
     }

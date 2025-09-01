@@ -294,28 +294,41 @@ td {
     }
 }
 
-    /* Apenas para as tabelas de jogos */
-    .game-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      text-align: center;
-    }
-    .game-table th,
-    .game-table td {
-      border: 1px solid black;
-      padding: 8px;
-    }
-    .game-table thead th:nth-child(1),
-    .game-table thead th:nth-child(3) {
-      width: 25%;
-    }
-    .game-table thead th:nth-child(2) {
-      width: 50%;
-    }
-    .game-table tbody td {
-      width: 50%;
-    }
+  /* Apenas para as tabelas de jogos */
+  .game-table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    text-align: center;
+    table-layout: fixed; /* força colunas a respeitarem o espaço disponível */
+  }
+  .game-table th,
+  .game-table td {
+    border: 1px solid black;
+    padding: 8px;
+    word-wrap: break-word; /* quebra texto longo dentro da célula */
+  }
+  .game-table thead th:nth-child(1),
+  .game-table thead th:nth-child(3) {
+    width: 25%;
+  }
+  .game-table thead th:nth-child(2) {
+    width: 50%;
+  }
+  .game-table tbody td {
+    width: 50%;
+  }
+
+  /* Garante que o container controla o overflow */
+  #tables-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto; /* se for muito largo em mobile, ativa scroll horizontal */
+  }
+
+
+    
 
 
 /* =====================

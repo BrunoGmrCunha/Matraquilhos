@@ -791,10 +791,11 @@ function fileDownload() {
 // Function to create a game table
 function createTable(game, gameNumber) {
     const table = document.createElement("table");
+    
     table.classList.add("game-table"); // adiciona a classe específica
     // Calculate score (red team always first)
-    const redGoals = game.red.reduce((acc, p) => acc + p.goals - p.ownGoals, 0);
-    const whiteGoals = game.white.reduce((acc, p) => acc + p.goals - p.ownGoals, 0);
+    const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
+    const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
 
     // Define result with winner mark (*)
     let result;

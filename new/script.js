@@ -696,12 +696,12 @@ async function endTournament() {
     //summary.textContent = text;
     console.log(playersScore);
     console.log(games);
-    
-     // Render tables in container
-  const container = document.getElementById("tables-container");
-  games.forEach((game, idx) => {
-    container.appendChild(createTable(game, idx + 1));
-  });
+
+    // Render tables in container
+    const container = document.getElementById("tables-container");
+    games.forEach((game, idx) => {
+        container.appendChild(createTable(game, idx + 1));
+    });
 
 
     const dados = {
@@ -788,10 +788,10 @@ function fileDownload() {
     URL.revokeObjectURL(link.href);
 }
 
-  // Function to create a game table
-  function createTable(game, gameNumber) {
+// Function to create a game table
+function createTable(game, gameNumber) {
     const table = document.createElement("table");
-table.classList.add("game-table"); // adiciona a classe específica
+    table.classList.add("game-table"); // adiciona a classe específica
     // Calculate score (red team always first)
     const redGoals = game.red.reduce((acc, p) => acc + p.goals - p.ownGoals, 0);
     const whiteGoals = game.white.reduce((acc, p) => acc + p.goals - p.ownGoals, 0);
@@ -799,19 +799,18 @@ table.classList.add("game-table"); // adiciona a classe específica
     // Define result with winner mark (*)
     let result;
     if (redGoals > whiteGoals) {
-      result = `*${redGoals} - ${whiteGoals}`;
+        result = `*${redGoals} - ${whiteGoals}`;
     } else if (whiteGoals > redGoals) {
-      result = `${redGoals} - ${whiteGoals}*`;
+        result = `${redGoals} - ${whiteGoals}*`;
     } else {
-      result = `${redGoals} - ${whiteGoals}`; // tie
+        result = `${redGoals} - ${whiteGoals}`; // tie
     }
-
     // Header
     const thead = document.createElement("thead");
     thead.innerHTML = `
       <tr>
         <th>Jogo ${gameNumber}</th>
-        <th>${result}</th>
+        <th colspan = "2">🔴 ${redGoals} – ${whiteGoals} ⚪️</th>
         <th>${game.time}</th>
       </tr>
     `;
@@ -820,17 +819,17 @@ table.classList.add("game-table"); // adiciona a classe específica
     // Body
     const tbody = document.createElement("tbody");
     for (let i = 0; i < Math.max(game.red.length, game.white.length); i++) {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${game.red[i] ? game.red[i].name : ""}</td>
-        <td>${game.white[i] ? game.white[i].name : ""}</td>
+        const row = document.createElement("tr");
+        row.innerHTML = `
+        <td colspan = "2">${game.red[i] ? game.red[i].name : ""}</td>
+        <td> colspan = "2" ${game.white[i] ? game.white[i].name : ""}</td>
       `;
-      tbody.appendChild(row);
+        tbody.appendChild(row);
     }
     table.appendChild(tbody);
 
     return table;
-  }
+}
 
 
 // =====================

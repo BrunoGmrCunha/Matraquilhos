@@ -10,7 +10,7 @@ const playersList = [
     { id: "6729004F-77AC-4CD7-9135-7C1536A7F44C", name: "Bruno Cunha" },
     { id: "6614396B-804E-4DA1-B548-81F4C922C5E3", name: "Rita Ferreira" },
     { id: "7B726A6F-8821-41E7-95F7-8C70E456E6F4", name: "João Costa" },
-    { id: "EB41296B-5BF3-4624-AFDD-B0BB91007802", name: "Vera Silva" },
+ //   { id: "EB41296B-5BF3-4624-AFDD-B0BB91007802", name: "Vera Silva" },
     { id: "EA83D6DD-0409-47BF-936B-B58D325599BD", name: "Alexandre Abreu" },
     { id: "0271D9AE-13D1-4607-8F72-B9368BE2CAC2", name: "Diogo Melo" },
     { id: "86CFA583-4F61-47EB-ACB0-CBBADB75A754", name: "Rui Silva" },

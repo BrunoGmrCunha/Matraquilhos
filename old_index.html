@@ -1,34 +1,38 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="blank">
-        <meta name="mobile-web-app-capable" content="yes">
-
+    <meta name="mobile-web-app-capable" content="yes">
+ <!--   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> -->
     <link rel="apple-touch-icon" href="https://brunogmrcunha.github.io/Matraquilhos/images/apple-touch-icon.png">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css" /> -->
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-quartz.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-quartz.css" />
+
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css" /> -->
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
-
     <title>NIUP - Matraquilhos</title>
-    <link rel="stylesheet" href="new/style.css">
+    <link rel="stylesheet" href="/new/style.css" />
 </head>
-<body>
-    <div id="notch-overlay"></div>
-    <div id="content">
-        <h1>NIUP - Matraquilhos</h1>
 
-        <div id="popup">
-            Nova versão disponível!
+<body>
+            <div  id="notch-overlay"></div>
+    <!-- <div id="splash-screen">
+        <img src="https://brunogmrcunha.github.io/Matraquilhos/images/splash.png" alt="Logo NIUP">
+                <img src="/images/splash.png" alt="Logo NIUP">
+    </div> -->
+    <div id="content">
+
+        <h1>NIUP - Matraquilhos</h1>
+        <div id="popup">Nova versão disponível!
             <br>Escolha aleatória ✅
             <br>Correção Equipas ✅
             <br>Próximos Jogadores ✅
         </div>
-
-        <!-- Modal de confirmação -->
         <div class="modal" id="customModal">
             <div class="modal-content">
                 <p id="modalMessage">Mensagem aqui</p>
@@ -38,23 +42,19 @@
                 </div>
             </div>
         </div>
-
-        <!-- Seleção aleatória -->
         <div id="view-random" class="view active">
             <div class="team-section">
                 <h3>Jogadores iniciais</h3>
                 <div class="player-list" style="display: flex;">
-                    <select id="random-players" multiple onchange="onChangeSelect('random-players')" style="height: auto;"></select>
+                    <select id="random-players" multiple onchange="onChangeSelect('random-players')"
+                        style="height: auto;"></select>
                 </div>
-                <button id="random-btn" onclick="random()" disabled>🎲 Escolher aleatório</button>
+                <button id='random-btn' onclick="random()" disabled>🎲 Escolher aleatório</button>
             </div>
             <button class="jump" onclick="jumpRandom()">Ignorar</button>
         </div>
-
-        <!-- Seleção de equipas -->
         <div id="view-select" class="view">
             <h2>Selecionar jogadores</h2>
-
             <div class="team-section red">
                 <h2>🔴 Equipa Vermelha</h2>
                 <div class="player-list" id="team-red">
@@ -62,7 +62,6 @@
                     <select id="player-red-2" onchange="onChangeSelect('player-red-2')"></select>
                 </div>
             </div>
-
             <div class="team-section white">
                 <h2>⚪ Equipa Branca</h2>
                 <div class="player-list" id="team-white">
@@ -70,12 +69,10 @@
                     <select id="player-white-2" onchange="onChangeSelect('player-white-2')"></select>
                 </div>
             </div>
-
-            <button id="start-button" onclick="initAudioContext(); startGame();" disabled>🏁 Iniciar jogo</button>
-            <button id="back-to-random-button" class="back" onclick="backToRandom()">Voltar</button>
+            <button id='start-button' onclick="initAudioContext(); startGame();" disabled>🏁 Iniciar jogo</button>
+            <button id='back-to-random-button' class="back" onclick="backToRandom()">Voltar</button>
         </div>
 
-        <!-- Jogo em andamento -->
         <div id="view-game" class="view">
             <div id="game">
                 <div class="title-timer">
@@ -92,9 +89,9 @@
                     </div>
                 </div>
                 <br>
-                <button class="back" onclick="openConfirmModal('Deseja cancelar o jogo atual?', backToTeam)">Voltar</button>
+                <button class="back"
+                    onclick="openConfirmModal('Deseja cancelar o jogo atual?', backToTeam)">Voltar</button>
             </div>
-
             <div class="team-section" id="tie-breaker" style="display:none;">
                 <h3>Vencedor 🪨 📄 ✂️</h3>
                 <div class="player-list">
@@ -108,32 +105,48 @@
             </div>
         </div>
 
-        <!-- Resumo -->
         <div id="view-summary" class="view">
             <h2>Fim do jogo</h2>
-            <h3>Equipa vencedora: <span id="winner-team-label"></span></h3>
+            <h3>Equipa vencedora: <span id='winner-team-label'></span></h3>
 
             <button id="new-game-button" onclick="newGame()">Novo jogo</button>
-            <button id="new-tournament-button" style="display: none;" onclick="openConfirmModal('Deseja iniciar novo torneio?', newTournament)">Novo torneio</button>
+            <button id="new-tournament-button" style="display: none;"
+                onclick="openConfirmModal('Deseja iniciar novo torneio?', newTournament)">Novo torneio</button>
             <button id="retify-game-button" class="repair" onclick="reftifyGame()">Corrigir jogo anterior</button>
             <hr>
-            <button id="end-tournament-button" style="background-color:#ff4646" onclick="openConfirmModal('Deseja finalizar o torneio?', endTournament)">Finalizar torneio</button>
-            <button id="file-download-button" style="display: none;" onclick="fileDownload()">Download ficheiro</button>
+            <button id="end-tournament-button" style="background-color:#ff4646"
+                onclick="openConfirmModal('Deseja finalizar o torneio?', endTournament)">Finalizar torneio</button>
+
+            <button id="file-download-button" style="display: none;" onclick="fileDownload()">Download
+                ficheiro</button>
 
             <div class="summary-section" id="tournament-summary">
                 <div id="tournament-summary-grid" class="ag-theme-alpine" style="height: 400px; width: 100%;"></div>
-                <div id="tables-container"></div>
+                <!-- <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Golos</th>
+                        <th>AutoGolos</th>
+                        <th>Vitórias</th>
+                        <th>Derrotas</th>
+                        <th>Empates</th>
+                    </tr>
+                </thead>
+                <tbody id="tournament-summary-table-body">
+                </tbody> -->
             </div>
         </div>
     </div>
+    <div id="debug">
 
-    <div id="debug"></div>
+    </div>
 
-    <!-- Hack para evitar standby -->
     <video id="keep-awake" autoplay muted loop playsinline style="width:1px; height:1px; opacity:0.01;">
         <source src="https://brunogmrcunha.github.io/Matraquilhos/blank.mp4" type="video/mp4">
     </video>
 
-    <script src="new/script.js"></script>
+    <script src="/new/script.js"></script>
 </body>
+
 </html>

@@ -1,19 +1,19 @@
 
 const playersList = [
-    { id: "ef102edb-b061-4b6a-8ecb-985e227f6656", name: "Jean Marc" },
-    { id: "77fa5014-7468-4ccf-a91e-92050c32116a", name: "Bernardo" },
-    { id: "980c4d5f-e4c3-4408-859b-13b089ab32d9", name: "Bruno" },
-    { id: "cd3e99e4-dda0-46c2-bf3b-e75d52989a2d", name: "João" },
-    { id: "0d091081-8906-4bbc-89cd-befce683a5e5", name: "Cátia" },
-    { id: "c67bcfd7-bfe8-472f-a0f5-5868c3ea6f64", name: "David" },
-    { id: "b91a961a-2229-49ef-8b98-2f3e4b17f764", name: "Rita" },
-    { id: "a96679ef-d54f-437b-991f-0715058298a2", name: "Rui Silva" },
-    { id: "47c7e177-5847-4361-8c6f-23aa3bd0a8b2", name: "Rui Paulo" },
-    { id: "47c7e177-5847-4361-8c6f-23aa3bd0a8b3", name: "Vera" },
-    { id: "47c7e177-5847-4361-8c6f-23aa3bd0a8b4", name: "Melo" },
-    { id: "47c7e177-5847-4361-8c6f-23aa3bd0a8b5", name: "Jéssica" },
-    { id: "47c7e177-5847-4361-8c6d-23aa3bd0a8b8", name: "Alexandre" },
-    { id: "84d8c358-2efd-4e38-9eb8-21d671a2aceb", name: "Ricardo Cunha" },
+    { id: "44FCF28D-6B18-45B1-AEDF-37D8E2351827", name: "Ricardo Cunha" },
+    { id: "79D89805-0B9E-42A2-83FA-3A8BF8FF9273", name: "Rui Oliveira" },
+    { id: "03B5261F-8DFB-4A26-963C-3C01074E7321", name: "Jéssica Beatriz" },
+    { id: "B3DAA032-8B61-495E-B15C-69AB95CCFB61", name: "David Cunha" },
+    { id: "D330F617-1CBF-4E83-AD32-76C596BEEC88", name: "Cátia Oliveira" },
+    { id: "6729004F-77AC-4CD7-9135-7C1536A7F44C", name: "Bruno Cunha" },
+    { id: "6614396B-804E-4DA1-B548-81F4C922C5E3", name: "Rita Ferreira" },
+    { id: "7B726A6F-8821-41E7-95F7-8C70E456E6F4", name: "João Costa" },
+    //{ id: "EB41296B-5BF3-4624-AFDD-B0BB91007802", name: "Vera Silva" },
+    { id: "EA83D6DD-0409-47BF-936B-B58D325599BD", name: "Alexandre Abreu" },
+    { id: "0271D9AE-13D1-4607-8F72-B9368BE2CAC2", name: "Diogo Melo" },
+    { id: "86CFA583-4F61-47EB-ACB0-CBBADB75A754", name: "Rui Silva" },
+    { id: "44D286DF-8714-4AA8-8337-F621F5C21098", name: "Jean-Marc Barbosa" },
+    { id: "604702FC-41B0-4672-85E1-F994508227F2", name: "Bernardo Barbosa" },
     { id: "62f3f4e9-2219-47a8-b6fe-06c2b90588b0", name: "Zequinha 1" },
     { id: "1dceb530-8d3f-4b0c-84ce-e220754f3e4f", name: "Zequinha 2" }
 ];
@@ -25,6 +25,7 @@ let timer = null;
 let timeLeft = 0;
 let gameTime = 150;
 let audioContext = null;
+let gridApi; // Referência para manipular a grid
 
 function debug(msg) {
     document.getElementById('debug').textContent += msg + '\n';
@@ -95,8 +96,16 @@ function populatePlayerSelect(selectId, selectedPlayer = null) {
 
 function backToTeam() {
     showView("view-select");
+
 }
 
+function backToRandom() {
+    showView("view-random");
+}
+
+function closeModal() {
+    document.getElementById("customModal").style.display = "none";
+}
 function initAudioContext() {
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -134,7 +143,8 @@ function startGame() {
         white: whitePlayers.map(p => ({ ...p, goals: 0, ownGoals: 0 })),
         winner: null,
         startTime: new Date(),
-        endTime: null
+        endTime: null,
+        isTie: false
     };
 
     timeLeft = gameTime;
@@ -153,18 +163,86 @@ function startGame() {
 }
 
 function endGame() {
-        document.getElementById('winner-team-label').innerHTML = ''
+    document.getElementById('winner-team-label').innerHTML = ''
 
-    if(currentGame.winner===null){
-            document.getElementById('winner-team-label').innerHTML = document.getElementById('winner-team').value === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
+    if (currentGame.winner === null) {
+        currentGame.isTie = true;
+        document.getElementById('winner-team-label').innerHTML = document.getElementById('winner-team').value === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
 
-    }else{
+    } else {
 
-    document.getElementById('winner-team-label').innerHTML = currentGame.winner === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
-    // title.textContent = team === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
-}
+        document.getElementById('winner-team-label').innerHTML = currentGame.winner === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
+        // title.textContent = team === 'red' ? `🔴 Equipa Vermelha` : `⚪ Equipa Branca`;
+    }
+
+
     showView('view-summary');
+
 }
+
+function computeStats(data) {
+    const players = {};
+    const gamesSummary = data.map((game, idx) => {
+        const redGoals = game.red.reduce((sum, p) => sum + p.goals, 0) + game.white.reduce((sum, p) => sum + p.ownGoals, 0);
+        const whiteGoals = game.white.reduce((sum, p) => sum + p.goals, 0) + game.red.reduce((sum, p) => sum + p.ownGoals, 0);
+
+        [...game.red, ...game.white].forEach(player => {
+            if (!players[player.name]) players[player.name] = { name: player.name, goals: 0, ownGoals: 0, wins: 0, losses: 0, ties: 0 };
+            players[player.name].goals += player.goals;
+            players[player.name].ownGoals += player.ownGoals;
+            if (game.isTie && (game.red.some(p => p.name === player.name) || game.white.some(p => p.name === player.name))) players[player.name].ties++;
+            else {
+                if (game.winner === 'red' && game.red.some(p => p.name === player.name) && !game.isTie) players[player.name].wins++;
+                if (game.winner === 'white' && game.white.some(p => p.name === player.name) && !game.isTie) players[player.name].wins++;
+                if (game.winner === 'red' && game.white.some(p => p.name === player.name)) players[player.name].losses++;
+                if (game.winner === 'white' && game.red.some(p => p.name === player.name)) players[player.name].losses++;
+            }
+
+        });
+
+        return { id: idx + 1, redGoals, whiteGoals, winner: game.winner, isTie: game.isTie };
+    });
+
+    return { gamesSummary, playersArr: Object.values(players) };
+}
+
+const columnDefs = [
+    { headerName: "Nome", field: "name", sortable: true, filter: true },
+    { headerName: "Golos", field: "goals", sortable: true, filter: "agNumberColumnFilter", cellStyle: { textAlign: "center" } },
+    { headerName: "AutoGolos", field: "ownGoals", sortable: true, filter: "agNumberColumnFilter", cellStyle: { textAlign: "center" } },
+    { headerName: "Vitórias", field: "wins", sortable: true, filter: "agNumberColumnFilter", cellStyle: { textAlign: "center" } },
+    { headerName: "Derrotas", field: "losses", sortable: true, filter: "agNumberColumnFilter", cellStyle: { textAlign: "center" } },
+    { headerName: "Empates", field: "ties", sortable: true, filter: "agNumberColumnFilter", cellStyle: { textAlign: "center" } }
+];
+const { themeQuartz } = agGrid;
+// Opções do grid
+// const gridOptions = {
+//     columnDefs,
+//     rowData: [], // Começa vazio
+//     defaultColDef: {
+//         flex: 1,
+//         resizable: true,
+//         cellStyle: { textAlign: "center" }
+//     },
+//     onFirstDataRendered: params => {
+//         params.api.sizeColumnsToFit();
+//     },
+//     animateRows: true,
+//     theme: themeQuartz, // tema novo
+
+// };
+
+const gridOptions = {
+    columnDefs: columnDefs,
+    rowData: [],
+    rowSelection: {
+        mode: "singleRow",
+        checkboxes: false,
+        enableClickSelection: true,
+    },
+};
+
+
 
 // function populateNextPlayers() {
 //     const selectIds = ["next-payer-1", "naext-player-2"];
@@ -354,12 +432,12 @@ function removeGoal(team, id) {
 function addOwnGoal(team, id) {
     const redGoals = currentGame.red.reduce((sum, p) => sum + p.goals, 0) + currentGame.white.reduce((sum, p) => sum + p.ownGoals, 0);
     const whiteGoals = currentGame.white.reduce((sum, p) => sum + p.goals, 0) + currentGame.red.reduce((sum, p) => sum + p.ownGoals, 0);
-    
+
     if ((team === 'red' && whiteGoals < 3) || (team === 'white' && redGoals < 3)) {
         const player = currentGame[team].find(p => p.id === id);
         player.ownGoals++;
         const playerScore = playersScore.find(player => player.id === id);
-        
+
         if (!playerScore) {
             playersScore.push({
                 id: id,
@@ -513,12 +591,9 @@ function checkNextPlayers() {
     const nextPlayersSelectIds = ["next-player-1", "next-player-2"];
     const nextPlayersSelect = nextPlayersSelectIds.map(id => document.getElementById(id));
 
-
-    // Obter todos os valores selecionados
     const selectedValues = nextPlayersSelect
         .map(s => s.value)
         .filter(v => v !== "");
-
 
     nextPlayersSelect.forEach(select => {
         Array.from(select.options).forEach(option => {
@@ -527,6 +602,7 @@ function checkNextPlayers() {
         });
     });
 
+    if (selectedValues.length === 2) { document.getElementById('view-game').scrollIntoView({ behavior: "smooth" }); }
 }
 
 
@@ -562,8 +638,12 @@ function reftifyGame() {
     showView('view-game');
 }
 
+function newTournament() {
+    window.location.reload();
+}
 
 function newGame() {
+    document.getElementById('back-to-random-button').style.display = 'none';
     finalizeGame();
     const winningTeam = currentGame[currentGame.winner];
     if (currentGame.winner === 'red') {
@@ -593,7 +673,122 @@ function newGame() {
     showView('view-select');
 }
 
+let confirmCallback = null;
+
+function openConfirmModal(message, callback) {
+    document.getElementById("modalMessage").innerText = message;
+    document.getElementById("customModal").style.display = "flex";
+    confirmCallback = callback; // guarda a função para chamar depois
+}
+
+function closeModal() {
+    document.getElementById("customModal").style.display = "none";
+    confirmCallback = null;
+}
+
+document.getElementById("btnConfirm").addEventListener("click", function () {
+    if (confirmCallback) confirmCallback();
+    closeModal();
+});
+
+function fileDownload() {
+    const dados = {
+        jogos: games,
+        golos: playersScore
+    };
+    const conteudo = JSON.stringify(dados, null, 2);
+    const blob = new Blob([conteudo], { type: 'application/json' });
+
+    // Criar um link temporário
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `jogos_${new Date()}.json`; // Nome do ficheiro
+
+    // Adicionar e clicar no link
+    document.body.appendChild(link);
+    link.click();
+
+    // Limpar
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+}
+
 async function endTournament() {
+
+    finalizeGame();
+
+    const summary = document.getElementById('tournament-summary');
+    document.getElementById('retify-game-button').disabled = true;
+    document.getElementById('end-tournament-button').disabled = true;
+
+    document.getElementById('new-game-button').style.display = 'none';
+    document.getElementById('new-tournament-button').style.display = 'block';
+    document.getElementById('file-download-button').style.display = 'block';
+    const { gamesSummary, playersArr } = computeStats(games);
+    document.getElementById('tournament-summary').innerHTML += (`<div>Total de jogos: ${gamesSummary.length} </div>`);
+    document.getElementById('tournament-summary').innerHTML += gamesSummary.map(g => `<div>Jogo ${g.id}: 🔴 ${g.redGoals} – ${g.whiteGoals} ⚪️ </div>`).join('');
+    playersArr.sort((a, b) => b.goals - a.goals);
+
+    const gridOptions = {
+        columnDefs,
+        rowData: playersArr,
+        defaultColDef: {
+            cellStyle: { textAlign: "center" }
+        },
+
+        animateRows: true,
+        theme: themeQuartz, // tema novo
+
+    };
+
+    const gridDiv = document.getElementById("tournament-summary-grid");
+    gridDiv.innerHTML = ``;
+    gridApi = agGrid.createGrid(gridDiv, gridOptions);
+    console.log("array: " + playersArr)
+    playersArr.forEach((p, i) => {
+        console.log(`Index ${i}:`, p);
+        console.log("Nome:", p.name, "Golos:", p.goals, "Vitórias:", p.wins);
+    });
+
+    let text = '';
+    games.forEach((game, idx) => {
+        const redGoals = game.red.reduce((s, p) => s + p.goals, 0) + game.white.reduce((s, p) => s + p.ownGoals, 0);
+        const whiteGoals = game.white.reduce((s, p) => s + p.goals, 0) + game.red.reduce((s, p) => s + p.ownGoals, 0);
+        text += `Jogo ${idx + 1}\nEquipa Vermelha: ${redGoals} | Equipa Branca: ${whiteGoals}\n`;
+        game.red.forEach(p => text += `  ${p.name} - Golos: ${p.goals} | Autogolos: ${p.ownGoals}\n`);
+        game.white.forEach(p => text += `  ${p.name} - Golos: ${p.goals} | Autogolos: ${p.ownGoals}\n`);
+        text += `Vencedor: ${game.winner === 'red' ? 'Equipa Vermelha' : 'Equipa Branca'}\n---\n`;
+    });
+    playersScore.forEach((player, idx) => {
+        text += `${player.name} -> Golos: ${player.goals} | Autogolos: ${player.ownGoals}\n`;
+    });
+    //summary.textContent = text;
+    console.log(playersScore);
+    console.log(games);
+
+    const dados = {
+        jogos: games,
+        golos: playersScore
+    };
+    const conteudo = JSON.stringify(dados, null, 2);
+    const blob = new Blob([conteudo], { type: 'application/json' });
+
+    // Criar um link temporário
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `jogos_${new Date()}.json`; // Nome do ficheiro
+
+    // Adicionar e clicar no link
+    document.body.appendChild(link);
+    link.click();
+
+    // Limpar
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+
+}
+
+async function _endTournament() {
     finalizeGame();
     const summary = document.getElementById('tournament-summary');
     let text = '';
@@ -636,6 +831,9 @@ async function endTournament() {
     URL.revokeObjectURL(link.href);
 
 }
+
+
+
 async function sendTextToApi(text) {
     try {
         const response = await fetch('http://10.16.116.191:5066/save-text', {
@@ -659,10 +857,15 @@ async function sendTextToApi(text) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    // setTimeout(() => {
+    //     document.getElementById("splash-screen").style.display = "none";
+    //     document.getElementById("content").style.display = "block";
+    //   }, 3000); // 3 segundos
+
     populateRandomPlayerSelect('random-players');
     // populatePlayerSelect('team-red');
     // populatePlayerSelect('team-white');
-// usarVideoFallback()
+    // usarVideoFallback()
 
     const popup = document.getElementById('popup');
     popup.remove();
@@ -676,7 +879,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 const overlay = document.getElementById('notch-overlay');
 
-  window.addEventListener('scroll', () => {
+window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
     const maxScroll = 200; // altura em px até o efeito máximo
     const ratio = Math.min(scrollY / maxScroll, 1); // de 0 a 1
@@ -691,9 +894,9 @@ const overlay = document.getElementById('notch-overlay');
     overlay.style.webkitBackdropFilter = `blur(${blur}px)`;
 
     // Sombra dinâmica
-    const shadowOpacity = 0.2 * ratio; 
+    const shadowOpacity = 0.2 * ratio;
     overlay.style.boxShadow = `0 2px 10px rgba(0,0,0,${shadowOpacity})`;
-  });
+});
 
 
 

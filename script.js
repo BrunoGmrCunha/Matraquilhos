@@ -28,7 +28,7 @@ let playersScore = [];
 let currentGame = null;
 let timer = null;
 let timeLeft = 0;
-let gameTime = 150;
+let gameTime = 120;
 let audioContext = null;
 let gridApi;
 let isPaused = false;

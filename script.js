@@ -17,7 +17,9 @@ const playersList = [
     { id: "44D286DF-8714-4AA8-8337-F621F5C21098", name: "Jean-Marc Barbosa" },
     { id: "604702FC-41B0-4672-85E1-F994508227F2", name: "Bernardo Barbosa" },
     { id: "62f3f4e9-2219-47a8-b6fe-06c2b90588b0", name: "Zequinha 1" },
-    { id: "1dceb530-8d3f-4b0c-84ce-e220754f3e4f", name: "Zequinha 2" }
+    { id: "1dceb530-8d3f-4b0c-84ce-e220754f3e4f", name: "Zequinha 2" },
+        { id: "7c7ec656-3444-455f-8b9f-613dc8257e55", name: "Sara Gomes" }
+
 ];
 
 // =====================

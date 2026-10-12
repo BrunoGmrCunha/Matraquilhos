@@ -427,3 +427,151 @@ td {
     margin: 5px 0 0;
     font-size: 1.2em;
 }
+/* =====================
+   Accessibility & touch
+===================== */
+button:focus-visible,
+select:focus-visible,
+.game-timer:focus-visible {
+    outline: 3px solid #f5a300;
+    outline-offset: 2px;
+}
+
+.player-list select {
+    min-height: 44px;
+}
+
+.score-controls button {
+    height: 64px;
+    min-height: 44px;
+}
+
+.score-info {
+    margin: 0 0 4px;
+}
+
+.nicknames {
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 800;
+    color: #c76a00;
+}
+
+.score-controls button.own-goal {
+    background-color: #ff4646;
+}
+
+.game-timer {
+    cursor: pointer;
+}
+
+.game-timer.paused {
+    background-color: #fff3c4;
+    animation: blink 1s steps(2, start) infinite;
+}
+
+.hint {
+    font-size: 13px;
+    text-align: center;
+    opacity: 0.8;
+    margin: 8px 0 0;
+}
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+}
+
+.toolbar button.toggle {
+    height: 44px;
+    font-size: 15px;
+    width: 50%;
+}
+
+.resume-banner p {
+    margin: 6px 0;
+}
+
+/* =====================
+   Effects
+===================== */
+.goal-flash {
+    animation: goalFlash 0.7s ease-out;
+}
+
+@keyframes goalFlash {
+    0% { transform: scale(1.35); text-shadow: 0 0 14px #ffd600; }
+    100% { transform: scale(1); text-shadow: none; }
+}
+
+@keyframes blink {
+    to { opacity: 0.6; }
+}
+
+.confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 10000;
+}
+
+#toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translate(-50%, 120px);
+    max-width: 90%;
+    background: #222;
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 800;
+    text-align: center;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 10001;
+    pointer-events: none;
+}
+
+#toast.show {
+    transform: translate(-50%, 0);
+    opacity: 1;
+}
+
+/* =====================
+   Awards & summary
+===================== */
+#awards,
+#games-list {
+    white-space: normal;
+}
+
+.award {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 8px 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    color: #222;
+}
+
+.award-icon {
+    font-size: 30px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .goal-flash,
+    .game-timer.paused {
+        animation: none;
+    }
+
+    #toast {
+        transition: none;
+    }
+}

@@ -10,6 +10,7 @@
     <link rel="apple-touch-icon" href="https://brunogmrcunha.github.io/Matraquilhos/images/apple-touch-icon.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-quartz.css">
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nosleep.js@0.12.0/dist/NoSleep.min.js"></script>
 
     <title>NIUP - Matraquilhos</title>
     <link rel="stylesheet" href="./style.css">
@@ -27,7 +28,7 @@
         </div>
 
         <!-- Modal de confirmação -->
-        <div class="modal" id="customModal">
+        <div class="modal" id="customModal" role="dialog" aria-modal="true" aria-labelledby="modalMessage">
             <div class="modal-content">
                 <p id="modalMessage">Mensagem aqui</p>
                 <div class="modal-buttons">
@@ -39,6 +40,12 @@
 
         <!-- Seleção aleatória -->
         <div id="view-random" class="view active">
+            <div id="resume-banner" class="team-section resume-banner" style="display: none;">
+                <h3>Torneio em curso</h3>
+                <p id="resume-info"></p>
+                <button onclick="resumeTournament()">▶️ Retomar torneio</button>
+                <button class="back" onclick="openConfirmModal('Deseja descartar o torneio guardado?', discardSavedTournament)">🗑️ Descartar</button>
+            </div>
             <div class="team-section">
                 <h3>Jogadores iniciais</h3>
                 <div class="player-list" style="display: flex;">
@@ -69,7 +76,8 @@
                 </div>
             </div>
 
-            <button id="start-button" onclick="initAudioContext(); startGame();" disabled>🏁 Iniciar jogo</button>
+            <button id="start-button" onclick="initAudioContext(); enableKeepAwake(); startGame();" disabled>🏁 Iniciar jogo</button>
+            <button id="swap-sides-button" style="display: none;" onclick="swapSides()">🔄 Trocar de campo</button>
             <button id="back-to-random-button" class="back" onclick="backToRandom()">Voltar</button>
         </div>
 
@@ -77,9 +85,14 @@
         <div id="view-game" class="view">
             <div id="game">
                 <div class="title-timer">
-                    <h2 id="result">Jogo em progresso</h2>
-                    <div class="game-timer" onclick="pauseResumeTimer()" id="game-timer">04:00</div>
+                    <h2 id="result" aria-live="polite">Jogo em progresso</h2>
+                    <div class="game-timer" onclick="pauseResumeTimer()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); pauseResumeTimer(); }" id="game-timer" role="button" tabindex="0">04:00</div>
                 </div>
+                <div class="toolbar">
+                    <button type="button" id="toggle-sound" class="toggle" onclick="toggleSound()">🔊 Som: ligado</button>
+                    <button type="button" id="toggle-voice" class="toggle" onclick="toggleVoice()">📣 Voz: ligada</button>
+                </div>
+                <p class="hint">Toque no cronómetro para pausar. Toque longo num botão remove o golo.</p>
                 <div id="score-board"></div>
                 <hr>
                 <div class="team-section" id="next-players">
@@ -116,21 +129,20 @@
             <button id="retify-game-button" class="repair" onclick="reftifyGame()">Corrigir jogo anterior</button>
             <hr>
             <button id="end-tournament-button" style="background-color:#ff4646" onclick="openConfirmModal('Deseja finalizar o torneio?', endTournament)">Finalizar torneio</button>
+            <button id="share-image-button" style="display: none;" onclick="shareImage()">📲 Partilhar resumo (imagem)</button>
+            <button id="share-text-button" class="back" style="display: none;" onclick="shareText()">💬 Enviar texto no WhatsApp</button>
             <button id="file-download-button" style="display: none;" onclick="fileDownload()">Download ficheiro</button>
 
-            <div class="summary-section" id="tournament-summary">
+            <div class="summary-section" id="tournament-summary" style="display: none;">
+                <div id="awards"></div>
+                <div id="games-list"></div>
                 <div id="tournament-summary-grid" class="ag-theme-alpine" style="height: 400px; width: 100%;"></div>
                 <div id="tables-container"></div>
             </div>
         </div>
     </div>
 
-    <div id="debug"></div>
-
-    <!-- Hack para evitar standby -->
-    <video id="keep-awake" autoplay muted loop playsinline style="width:1px; height:1px; opacity:0.01;">
-        <source src="https://brunogmrcunha.github.io/Matraquilhos/blank.mp4" type="video/mp4">
-    </video>
+    <div id="toast" role="status" aria-live="polite"></div>
 
     <script src="./script.js"></script>
 </body>

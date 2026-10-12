@@ -63,6 +63,7 @@ const { themeQuartz } = agGrid;
 function showView(id) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    document.body.classList.toggle('in-game', id === 'view-game');
 }
 
 function closeModal() {
@@ -858,28 +859,31 @@ function updateScoreBoard() {
             const div = document.createElement('div');
             div.classList.add('score-controls')
 
-            const info = document.createElement('p');
-            info.classList.add('score-info');
+            const text = document.createElement('div');
+            text.classList.add('score-text');
             const name = document.createElement('span');
             name.classList.add('player-name');
             name.textContent = player.name;
-            info.appendChild(name);
-            info.appendChild(document.createTextNode(` - ${player.goals} Golo(s) | ${player.ownGoals} Autogolo(s)`));
-            div.appendChild(info);
+            const stats = document.createElement('span');
+            stats.classList.add('score-stats');
+            stats.textContent = `${player.goals} golo(s) · ${player.ownGoals} autogolo(s)`;
+            text.appendChild(name);
+            text.appendChild(stats);
 
             const nicknames = getNicknames(player.name);
             if (nicknames) {
-                const badge = document.createElement('p');
+                const badge = document.createElement('span');
                 badge.classList.add('nicknames');
                 badge.textContent = nicknames;
-                div.appendChild(badge);
+                text.appendChild(badge);
             }
+            div.appendChild(text);
 
             const buttons = document.createElement('div');
             buttons.classList.add('score-controls-buttons');
             buttons.appendChild(createScoreButton('+ Golo', `Golo de ${player.name}`, false,
                 () => addGoal(team, player.id), () => removeGoal(team, player.id)));
-            buttons.appendChild(createScoreButton('+ Autogolo', `Autogolo de ${player.name}`, true,
+            buttons.appendChild(createScoreButton('+ Auto', `Autogolo de ${player.name}`, true,
                 () => addOwnGoal(team, player.id), () => removeOwnGoal(team, player.id)));
             div.appendChild(buttons);
 

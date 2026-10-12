@@ -575,3 +575,95 @@ select:focus-visible,
         transition: none;
     }
 }
+
+/* =====================
+   Compact game screen (everything visible without scrolling)
+===================== */
+body.in-game h1 {
+    display: none;
+}
+
+body.in-game #content {
+    padding-top: calc(env(safe-area-inset-top) + 6px);
+}
+
+#view-game {
+    padding: 8px 12px;
+}
+
+#view-game .title-timer {
+    position: sticky;
+    top: calc(env(safe-area-inset-top) + 4px);
+    z-index: 5;
+    height: 46px;
+    box-sizing: border-box;
+}
+
+#view-game .title-timer h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+#score-board .team-section {
+    margin: 8px 0;
+    padding: 6px 8px;
+}
+
+#score-board .team-section h3 {
+    margin: 0 0 4px;
+    font-size: 16px;
+}
+
+#score-board .score-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0;
+    padding: 6px 8px;
+    text-align: left;
+}
+
+#score-board .score-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    box-shadow: none;
+    text-align: left;
+    justify-content: flex-start;
+}
+
+#score-board .score-text .player-name {
+    font-size: 16px;
+}
+
+#score-board .score-stats {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+#score-board .nicknames {
+    margin: 0;
+    font-size: 12px;
+}
+
+#score-board .score-controls-buttons {
+    display: flex;
+    gap: 6px;
+    padding: 0;
+    box-shadow: none;
+    flex: none;
+}
+
+#score-board .score-controls button {
+    width: 84px;
+    height: 56px;
+    margin: 0;
+    font-size: 15px;
+}
+
+#score-board hr,
+#view-game hr {
+    margin: 6px 0;
+}

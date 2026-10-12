@@ -667,3 +667,20 @@ body.in-game #content {
 #view-game hr {
     margin: 6px 0;
 }
+
+/* Undo button in the timer bar */
+.title-timer .undo-btn {
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    font-size: 22px;
+    background-color: #fefefe;
+    color: #0061A8;
+    flex: none;
+}
+
+.title-timer .undo-btn:disabled {
+    background-color: rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.7);
+}

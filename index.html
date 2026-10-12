@@ -86,6 +86,7 @@
             <div id="game">
                 <div class="title-timer">
                     <h2 id="result" aria-live="polite">Jogo em progresso</h2>
+                    <button type="button" id="undo-button" class="undo-btn" onclick="undoLastGoal()" aria-label="Desfazer último golo" disabled>↩</button>
                     <div class="game-timer" onclick="pauseResumeTimer()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); pauseResumeTimer(); }" id="game-timer" role="button" tabindex="0">04:00</div>
                 </div>
                 <div class="toolbar">
@@ -144,6 +145,13 @@
 
     <div id="toast" role="status" aria-live="polite"></div>
 
+    <script src="./js/players.js"></script>
+    <script src="./js/state.js"></script>
+    <script src="./js/utils.js"></script>
+    <script src="./js/audio.js"></script>
+    <script src="./js/storage.js"></script>
+    <script src="./js/tournament.js"></script>
+    <script src="./js/share.js"></script>
     <script src="./script.js"></script>
 </body>
 </html>

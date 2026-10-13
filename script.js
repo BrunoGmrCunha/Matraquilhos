@@ -134,7 +134,9 @@ function endGame(celebrate = true) {
     document.getElementById('winner-team-label').textContent = winnerTeam ? teamLabel(winnerTeam) : '';
 
     showView('view-summary');
+    const mustSwap = renderSwapPositionsNotice(winnerTeam);
     if (celebrate) celebrateWinner(winnerTeam);
+    if (celebrate && mustSwap) speak('Troquem de posições!');
     saveState();
 }
 

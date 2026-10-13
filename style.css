@@ -172,6 +172,17 @@ button:disabled {
     font-weight: 400;
 }
 
+.swap-notice {
+    margin: 12px 0;
+    padding: 12px 14px;
+    border: 2px solid #c8c800;
+    border-radius: 12px;
+    background: #fffbd1;
+    color: #222;
+    font-weight: 800;
+    text-align: center;
+}
+
 /* =====================
    Game Timer & Scoreboard
 ===================== */

@@ -58,6 +58,36 @@ function announceStreaks(winnerTeam) {
     });
 }
 
+/**
+ * Consecutive wins of the same pair of players, counting the game being played.
+ * A tie-breaker win counts as a win; a loss or a different pair breaks the streak.
+ */
+function getTeamWinStreak(winnerTeam) {
+    const pairKey = players => players.map(p => p.id).sort().join('|');
+    const key = pairKey(currentGame[winnerTeam]);
+    const finished = games.includes(currentGame) ? games : [...games, currentGame];
+    let streak = 0;
+    for (let i = finished.length - 1; i >= 0; i--) {
+        const game = finished[i];
+        const winner = game === currentGame ? winnerTeam : game.winner;
+        if (!winner || pairKey(game[winner]) !== key) break;
+        streak++;
+    }
+    return streak;
+}
+
+/** Shows (or hides) the notice that the winning team must swap goalkeeper and striker. */
+function renderSwapPositionsNotice(winnerTeam) {
+    const notice = document.getElementById('swap-positions-notice');
+    const streak = winnerTeam ? getTeamWinStreak(winnerTeam) : 0;
+    const mustSwap = streak > 0 && streak % 3 === 0;
+    notice.style.display = mustSwap ? 'block' : 'none';
+    notice.textContent = mustSwap
+        ? `🔄 ${teamLabel(winnerTeam)} ganhou ${streak} vezes seguidas! Têm de trocar de posições (guarda-redes ↔ avançado).`
+        : '';
+    return mustSwap;
+}
+
 function teamLabel(team) {
     return team === 'red' ? '🔴 Equipa Vermelha' : '⚪ Equipa Branca';
 }

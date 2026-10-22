@@ -72,7 +72,15 @@ function enforcePickLimit(side) {
     const current = Array.from(select.selectedOptions).map(o => o.value);
     const order = getPicked(side).filter(id => current.includes(id));
     current.filter(id => !order.includes(id)).forEach(id => order.push(id));
+    const overLimit = order.length > PICK_LIMIT;
     while (order.length > PICK_LIMIT) order.shift();
+    if (overLimit) {
+        // Rebuild the list so the dropped player is certainly shown as not picked (keeps the scroll)
+        const scrollTop = select.scrollTop;
+        setPicked(side, order);
+        select.scrollTop = scrollTop;
+        return;
+    }
     select.dataset.order = JSON.stringify(order);
     Array.from(select.options).forEach(option => { option.selected = order.includes(option.value); });
     renderPicked(side);

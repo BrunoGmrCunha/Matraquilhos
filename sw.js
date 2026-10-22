@@ -1,6 +1,6 @@
 // Service worker: lets the app open without network (e.g. bad signal at the table).
 // Network first, so a new version is always picked up when online; the cache is the fallback.
-const CACHE_NAME = 'matraquilhos-v1';
+const CACHE_NAME = 'matraquilhos-v2';
 const APP_SHELL = [
     './',
     './index.html',

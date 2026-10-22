@@ -28,7 +28,7 @@ function populateRandomPlayerSelect(selectId) {
 
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
-    defaultOption.text = "seleciona 4 jogadores";
+    defaultOption.text = "seleciona pelo menos 4 jogadores";
     defaultOption.disabled = true;
     select.appendChild(defaultOption);
 
@@ -54,29 +54,71 @@ function backToRandom() { showView("view-random"); }
 function random() {
     let randomPlayers = document.getElementById("random-players");
     let selectedPlayers = Array.from(randomPlayers.selectedOptions).map(o => o.value);
-    if (selectedPlayers.length !== 4) {
-        alert("Selecione exatamente 4 jogadores.");
+    if (selectedPlayers.length < 4) {
+        alert("Selecione pelo menos 4 jogadores.");
         return;
     }
 
-    for (let i = selectedPlayers.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [selectedPlayers[i], selectedPlayers[j]] = [selectedPlayers[j], selectedPlayers[i]];
-    }
+    shuffle(selectedPlayers);
+    roster = [...selectedPlayers];
 
-    populatePlayerSelect('player-red-1', selectedPlayers[0]);
-    populatePlayerSelect('player-red-2', selectedPlayers[1]);
-    populatePlayerSelect('player-white-1', selectedPlayers[2]);
-    populatePlayerSelect('player-white-2', selectedPlayers[3]);
-    populatePlayerSelect('next-player-1');
-    populatePlayerSelect('next-player-2');
+    // Pairs of players; a last odd player stays without a team
+    const teams = [];
+    for (let i = 0; i + 1 < selectedPlayers.length; i += 2) {
+        teams.push([selectedPlayers[i], selectedPlayers[i + 1]]);
+    }
+    const soloPlayer = selectedPlayers.length % 2 === 1 ? selectedPlayers[selectedPlayers.length - 1] : null;
+
+    // The first two teams play; which one is red or white is random as well
+    const sides = Math.random() < 0.5 ? [teams[0], teams[1]] : [teams[1], teams[0]];
+    const waiting = teams.slice(2);
+    const nextTeam = waiting[0] || [];
+
+    populatePlayerSelect('player-red-1', sides[0][0]);
+    populatePlayerSelect('player-red-2', sides[0][1]);
+    populatePlayerSelect('player-white-1', sides[1][0]);
+    populatePlayerSelect('player-white-2', sides[1][1]);
+    populatePlayerSelect('next-player-1', nextTeam[0] || null);
+    populatePlayerSelect('next-player-2', nextTeam[1] || null);
+    renderWaitingTeams(waiting, soloPlayer);
     document.getElementById("start-button").disabled = false;
     checkPlayers()
 
     showView('view-select');
 }
 
+function shuffle(list) {
+    for (let i = list.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [list[i], list[j]] = [list[j], list[i]];
+    }
+}
+
+function playerName(id) {
+    const player = playersList.find(p => p.id === id);
+    return player ? player.name : '';
+}
+
+/** Lists the teams that are waiting for their turn and the player left without a team. */
+function renderWaitingTeams(waiting, soloPlayer) {
+    const section = document.getElementById('waiting-teams');
+    const list = document.getElementById('waiting-teams-list');
+    list.innerHTML = '';
+    waiting.forEach((team, index) => {
+        const item = document.createElement('p');
+        item.textContent = `Em espera ${index + 1}: ${playerName(team[0])} & ${playerName(team[1])}`;
+        list.appendChild(item);
+    });
+    if (soloPlayer) {
+        const item = document.createElement('p');
+        item.textContent = `Sem equipa: ${playerName(soloPlayer)}`;
+        list.appendChild(item);
+    }
+    section.style.display = list.children.length > 0 ? 'block' : 'none';
+}
+
 function jumpRandom() {
+    renderWaitingTeams([], null);
     populatePlayerSelect('player-red-1');
     populatePlayerSelect('player-red-2');
     populatePlayerSelect('player-white-1');
@@ -107,8 +149,11 @@ function startGame() {
     document.getElementById('score-board').style.display = 'block';
     document.getElementById('tie-breaker').style.display = 'none';
     document.getElementById('game').style.display = 'block';
-    populatePlayerSelect('next-player-1');
-    populatePlayerSelect('next-player-2');
+    // Keep the next players already chosen (e.g. the third team of the random draw)
+    ['next-player-1', 'next-player-2'].forEach(id => {
+        const current = document.getElementById(id).value;
+        populatePlayerSelect(id, current || null);
+    });
     document.getElementById('winner-team').value = ""
     onChangeSelect('winner-team');
 
@@ -134,9 +179,11 @@ function endGame(celebrate = true) {
     document.getElementById('winner-team-label').textContent = winnerTeam ? teamLabel(winnerTeam) : '';
 
     showView('view-summary');
-    const mustSwap = renderSwapPositionsNotice(winnerTeam);
+    const rpsApplies = renderRockPaperScissors(winnerTeam);
+    const mustSwap = renderSwapPositionsNotice(winnerTeam, rpsApplies);
     if (celebrate) celebrateWinner(winnerTeam);
-    if (celebrate && mustSwap) speak('Troquem de posições!');
+    if (celebrate && rpsApplies) speak('Pedra, papel ou tesoura!');
+    else if (celebrate && mustSwap) speak('Troquem de posições!');
     saveState();
 }
 
@@ -162,13 +209,21 @@ function finalizeGame(isGameOfDay = false) {
 
 function newGame() {
     document.getElementById('back-to-random-button').style.display = 'none';
+    // After a rock-paper-scissors the players who are out were drawn into new waiting teams
+    const drawn = currentGame.rps;
+    renderWaitingTeams(drawn ? drawn.waitingTeams : [], drawn ? drawn.soloPlayer : null);
     finalizeGame();
     const winningTeam = currentGame[currentGame.winner];
-    const winnerIds = winningTeam.map(p => p.id);
+    let winnerIds = winningTeam.map(p => p.id);
+    let nextValues = ['next-player-1', 'next-player-2'].map(id => document.getElementById(id).value);
+    // Rock-paper-scissors: the loser leaves and the drawn player takes the same place
+    const rps = currentGame.rps;
+    if (rps) {
+        winnerIds = winnerIds.map(id => id === rps.outId ? rps.inId : id);
+        nextValues = nextValues.map(v => v === rps.inId ? rps.outId : v);
+    }
     // A next player that belongs to the winning team cannot also replace the losers
-    const nextIds = ['next-player-1', 'next-player-2']
-        .map(id => document.getElementById(id).value)
-        .map(v => winnerIds.includes(v) ? null : v);
+    const nextIds = nextValues.map(v => winnerIds.includes(v) ? null : v);
     const loserSide = currentGame.winner === 'red' ? 'white' : 'red';
 
     document.getElementById('team-red').style.display = 'block';
@@ -177,6 +232,9 @@ function newGame() {
     populatePlayerSelect(`player-${currentGame.winner}-2`, winnerIds[1]);
     populatePlayerSelect(`player-${loserSide}-1`, nextIds[0]);
     populatePlayerSelect(`player-${loserSide}-2`, nextIds[1]);
+    // The next players are now on the table, so the next challengers start empty again
+    populatePlayerSelect('next-player-1');
+    populatePlayerSelect('next-player-2');
     document.getElementById(`player-${currentGame.winner}-1`).disabled = true;
     document.getElementById(`player-${currentGame.winner}-2`).disabled = true;
     document.getElementById(`player-${loserSide}-1`).disabled = false;
@@ -213,6 +271,7 @@ function reftifyGame() {
     document.getElementById('game').style.display = 'block';
     currentGame.winner = null;
     currentGame.isTie = false;
+    delete currentGame.rps;
     const winnerTeamSelect = document.getElementById('winner-team');
     if (winnerTeamSelect.value === "") {
         document.getElementById('tie-breaker').style.display = 'none';
@@ -485,7 +544,7 @@ function onChangeSelect(id) {
                 const randomPlayers = document.getElementById("random-players");
                 const selectedPlayers = Array.from(randomPlayers.selectedOptions).map(o => o.value);
                 const randomButton = document.getElementById('random-btn');
-                randomButton.disabled = selectedPlayers.length !== 4;
+                randomButton.disabled = selectedPlayers.length < 4;
             }
             break;
         case 'player-red-1':

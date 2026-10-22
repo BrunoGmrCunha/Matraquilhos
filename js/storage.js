@@ -18,6 +18,7 @@ function saveState() {
             savedAt: new Date().toISOString(),
             games,
             playersScore,
+            roster,
             currentGame,
             timeLeft,
             tournamentEnded,
@@ -82,6 +83,7 @@ function resumeTournament() {
 
     games = (state.games || []).map(reviveGame);
     playersScore = state.playersScore || [];
+    roster = state.roster || [];
     currentGame = state.currentGame ? reviveGame(state.currentGame) : null;
     timeLeft = state.timeLeft || 0;
     tournamentEnded = !!state.tournamentEnded;

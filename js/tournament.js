@@ -2,6 +2,7 @@
 // Streaks e alcunhas
 // =====================
 let toastTimer = null;
+const RPS_STREAK = 2; // wins in a row that trigger the rock-paper-scissors (testing value, final is 6)
 
 function showToast(message) {
     const toast = document.getElementById('toast');
@@ -76,11 +77,88 @@ function getTeamWinStreak(winnerTeam) {
     return streak;
 }
 
+/** Adds every player currently in a selector or in the current game to the tournament roster. */
+function registerParticipants() {
+    const ids = SELECT_IDS.map(id => document.getElementById(id).value);
+    if (currentGame) ['red', 'white'].forEach(team => currentGame[team].forEach(p => ids.push(p.id)));
+    ids.filter(id => id && !roster.includes(id)).forEach(id => roster.push(id));
+}
+
+/**
+ * Players who can replace the loser of the rock-paper-scissors: everyone who is out
+ * (not the winners, not the next challengers); when nobody is left, everyone but the winners.
+ */
+function getRockPaperScissorsPool(winnerTeam) {
+    registerParticipants();
+    const winners = currentGame[winnerTeam].map(p => p.id);
+    const challengers = ['next-player-1', 'next-player-2'].map(id => document.getElementById(id).value);
+    const others = roster.filter(id => !winners.includes(id));
+    const outside = others.filter(id => !challengers.includes(id));
+    return outside.length > 0 ? outside : others;
+}
+
+/**
+ * Every 6 wins in a row the two winners play rock-paper-scissors: the winner stays and the
+ * loser is replaced by a random player who is out. Returns true while it applies to this game.
+ */
+function renderRockPaperScissors(winnerTeam) {
+    const section = document.getElementById('rps-section');
+    const streak = winnerTeam ? getTeamWinStreak(winnerTeam) : 0;
+    const applies = streak > 0 && streak % RPS_STREAK === 0 && getRockPaperScissorsPool(winnerTeam).length > 0;
+    const newGameButton = document.getElementById('new-game-button');
+    const text = document.getElementById('rps-text');
+    const buttons = document.getElementById('rps-buttons');
+    section.style.display = applies ? 'block' : 'none';
+    newGameButton.disabled = false;
+    if (!applies) return false;
+
+    buttons.innerHTML = '';
+    const rps = currentGame.rps;
+    if (rps) {
+        text.textContent = `✊✋✌️ ${playerName(rps.stayId)} ganhou e fica. `
+            + `${playerName(rps.outId)} sai e entra ${playerName(rps.inId)} (sorteio). `
+            + 'As equipas em espera foram sorteadas de novo.';
+        return true;
+    }
+
+    text.textContent = `✊✋✌️ ${streak} vitórias seguidas! Pedra-papel-tesoura entre os vencedores: quem ganhou?`;
+    currentGame[winnerTeam].forEach(player => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = player.name;
+        button.onclick = () => resolveRockPaperScissors(winnerTeam, player.id);
+        buttons.appendChild(button);
+    });
+    newGameButton.disabled = true;
+    return true;
+}
+
+function resolveRockPaperScissors(winnerTeam, stayId) {
+    const outId = currentGame[winnerTeam].map(p => p.id).find(id => id !== stayId);
+    const pool = getRockPaperScissorsPool(winnerTeam);
+    const inId = pool[Math.floor(Math.random() * pool.length)];
+
+    // Everyone still out is drawn again into new waiting teams
+    const challengers = ['next-player-1', 'next-player-2']
+        .map(id => document.getElementById(id).value)
+        .map(v => v === inId ? outId : v);
+    const out = roster.filter(id => id !== stayId && id !== inId && !challengers.includes(id));
+    shuffle(out);
+    const waitingTeams = [];
+    for (let i = 0; i + 1 < out.length; i += 2) waitingTeams.push([out[i], out[i + 1]]);
+    const soloPlayer = out.length % 2 === 1 ? out[out.length - 1] : null;
+
+    currentGame.rps = { stayId, outId, inId, waitingTeams, soloPlayer };
+    renderRockPaperScissors(winnerTeam);
+    speak(`${playerName(stayId)} fica. Entra ${playerName(inId)}!`);
+    saveState();
+}
+
 /** Shows (or hides) the notice that the winning team must swap goalkeeper and striker. */
-function renderSwapPositionsNotice(winnerTeam) {
+function renderSwapPositionsNotice(winnerTeam, rpsApplies = false) {
     const notice = document.getElementById('swap-positions-notice');
     const streak = winnerTeam ? getTeamWinStreak(winnerTeam) : 0;
-    const mustSwap = streak > 0 && streak % 3 === 0;
+    const mustSwap = streak > 0 && streak % 3 === 0 && !rpsApplies;
     notice.style.display = mustSwap ? 'block' : 'none';
     notice.textContent = mustSwap
         ? `🔄 ${teamLabel(winnerTeam)} ganhou ${streak} vezes seguidas! Têm de trocar de posições (guarda-redes ↔ avançado).`

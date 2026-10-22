@@ -76,6 +76,11 @@
                 </div>
             </div>
 
+            <div class="team-section" id="waiting-teams" style="display: none;">
+                <h3>Equipas em espera</h3>
+                <div id="waiting-teams-list"></div>
+            </div>
+
             <button id="start-button" onclick="initAudioContext(); enableKeepAwake(); startGame();" disabled>🏁 Iniciar jogo</button>
             <button id="swap-sides-button" style="display: none;" onclick="swapSides()">🔄 Trocar de campo</button>
             <button id="back-to-random-button" class="back" onclick="backToRandom()">Voltar</button>
@@ -125,6 +130,11 @@
             <h2>Fim do jogo</h2>
             <h3>Equipa vencedora: <span id="winner-team-label"></span></h3>
             <div id="swap-positions-notice" class="swap-notice" role="alert" style="display: none;"></div>
+
+            <div id="rps-section" class="swap-notice" style="display: none;">
+                <p id="rps-text"></p>
+                <div id="rps-buttons"></div>
+            </div>
 
             <button id="new-game-button" onclick="newGame()">Novo jogo</button>
             <button id="new-tournament-button" style="display: none;" onclick="openConfirmModal('Deseja iniciar novo torneio?', newTournament)">Novo torneio</button>

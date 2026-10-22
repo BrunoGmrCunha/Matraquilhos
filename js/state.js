@@ -3,6 +3,7 @@
 // =====================
 let games = [];
 let playersScore = [];
+let roster = []; // ids of every player taking part in the tournament
 let currentGame = null;
 let timer = null;
 let timeLeft = 0;

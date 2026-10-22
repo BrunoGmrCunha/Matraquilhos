@@ -2,7 +2,7 @@
 // Streaks e alcunhas
 // =====================
 let toastTimer = null;
-const RPS_STREAK = 2; // wins in a row that trigger the rock-paper-scissors (testing value, final is 6)
+const RPS_STREAK = 6; // wins in a row that trigger the rock-paper-scissors
 
 function showToast(message) {
     const toast = document.getElementById('toast');

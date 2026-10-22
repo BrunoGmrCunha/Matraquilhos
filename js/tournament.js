@@ -113,14 +113,23 @@ function renderRockPaperScissors(winnerTeam) {
     if (!applies) return false;
 
     buttons.innerHTML = '';
+    const drawArea = document.getElementById('rps-draw');
+    drawArea.style.display = 'none';
     const rps = currentGame.rps;
-    if (rps) {
+    if (rps && rps.partnerId) {
         text.textContent = `✅ ${playerName(rps.stayId)} fica com ${playerName(rps.partnerId)}\n`
             + `🆚 ${playerName(rps.nextTeam[0])} & ${playerName(rps.nextTeam[1])}`;
         return true;
     }
+    if (rps) {
+        text.textContent = `✅ ${playerName(rps.stayId)} fica\n🎲 Quem joga?`;
+        populateRpsPlayers(rps.stayId);
+        drawArea.style.display = 'block';
+        newGameButton.disabled = true;
+        return true;
+    }
 
-    text.textContent = '✊✋✌️ Pedra-papel-tesoura!\nQuem ganhou?';
+    text.textContent = '✊✋✌️ Quem ganhou?';
     currentGame[winnerTeam].forEach(player => {
         const button = document.createElement('button');
         button.type = 'button';
@@ -132,13 +141,46 @@ function renderRockPaperScissors(winnerTeam) {
     return true;
 }
 
+/** Lists every player; the ones taking part in the tournament (except who stays) come selected. */
+function populateRpsPlayers(stayId) {
+    const select = document.getElementById('rps-players');
+    select.innerHTML = '';
+    [...playersList].sort((a, b) => a.name.localeCompare(b.name))
+        .filter(player => player.id !== stayId)
+        .forEach(player => {
+            const option = document.createElement('option');
+            option.value = player.id;
+            option.text = player.name;
+            option.selected = roster.includes(player.id);
+            select.appendChild(option);
+        });
+    select.size = select.options.length;
+    updateRpsDrawButton();
+}
+
+function updateRpsDrawButton() {
+    const selected = document.getElementById('rps-players').selectedOptions.length;
+    document.getElementById('rps-draw-button').disabled = selected < 3;
+}
+
+/** Step 1: the winner of the rock-paper-scissors stays, the other one leaves. */
 function resolveRockPaperScissors(winnerTeam, stayId) {
     const outId = currentGame[winnerTeam].map(p => p.id).find(id => id !== stayId);
-    registerParticipants();
+    currentGame.rps = { stayId, outId };
+    renderRockPaperScissors(winnerTeam);
+    saveState();
+}
 
-    // Everyone but the player who stays is drawn; those idle for longest face the winner
-    // (random order breaks ties), the rest is drawn for the partner and the waiting teams
-    const candidates = roster.filter(id => id !== stayId);
+/** Step 2: draws the partner, the opponents and the waiting teams from the selected list. */
+function drawAfterRockPaperScissors() {
+    const { stayId, outId } = currentGame.rps;
+    const selected = Array.from(document.getElementById('rps-players').selectedOptions).map(o => o.value);
+    if (selected.length < 3) return;
+    selected.filter(id => !roster.includes(id)).forEach(id => roster.push(id));
+
+    // Those idle for longest face the winner (random order breaks ties); the rest is drawn
+    // for the partner and the waiting teams
+    const candidates = [...selected];
     shuffle(candidates);
     candidates.sort((a, b) => getIdleGames(b) - getIdleGames(a));
     const nextTeam = candidates.slice(0, 2);
@@ -157,9 +199,10 @@ function resolveRockPaperScissors(winnerTeam, stayId) {
     const soloPlayer = waiting.length % 2 === 1 ? waiting[waiting.length - 1] : null;
 
     currentGame.rps = { stayId, outId, partnerId, nextTeam, waitingTeams, soloPlayer };
-    renderRockPaperScissors(winnerTeam);
-    speak(`${playerName(stayId)} fica com ${playerName(partnerId)}!`);
+    roster = roster.filter(id => id === stayId || selected.includes(id));
     saveState();
+    // Straight to the teams: the table, the next opponents and the waiting teams are already set
+    newGame();
 }
 
 /** Shows (or hides) the notice that the winning team must swap goalkeeper and striker. */
@@ -169,7 +212,7 @@ function renderSwapPositionsNotice(winnerTeam, rpsApplies = false) {
     const mustSwap = streak > 0 && streak % 3 === 0 && !rpsApplies;
     notice.style.display = mustSwap ? 'block' : 'none';
     notice.textContent = mustSwap
-        ? `🔄 ${teamLabel(winnerTeam)} ganhou ${streak} vezes seguidas! Têm de trocar de posições (guarda-redes ↔ avançado).`
+        ? '🔄 Trocar guarda-redes ↔ avançado'
         : '';
     return mustSwap;
 }

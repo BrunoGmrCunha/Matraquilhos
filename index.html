@@ -134,6 +134,12 @@
             <div id="rps-section" class="swap-notice" style="display: none;">
                 <p id="rps-text"></p>
                 <div id="rps-buttons"></div>
+                <div id="rps-draw" style="display: none;">
+                    <div class="player-list" style="display: flex;">
+                        <select id="rps-players" multiple onchange="updateRpsDrawButton()" style="height: auto;"></select>
+                    </div>
+                    <button type="button" id="rps-draw-button" onclick="drawAfterRockPaperScissors()" disabled>🎲 Sortear</button>
+                </div>
             </div>
 
             <button id="new-game-button" onclick="newGame()">Novo jogo</button>

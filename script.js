@@ -4,6 +4,10 @@
 function populatePlayerSelect(selectId, selectedPlayer = null) {
     const select = document.getElementById(selectId);
     select.innerHTML = '';
+    if (selectId.startsWith('next-player')) {
+        populateNextPlayerSelect(select, selectedPlayer);
+        return;
+    }
 
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
@@ -19,6 +23,49 @@ function populatePlayerSelect(selectId, selectedPlayer = null) {
         option.text = player.name;
         if (player.id === selectedPlayer) option.selected = true;
         select.appendChild(option);
+    });
+}
+
+/**
+ * Next players: players on the table are left out, and the list is split in two groups -
+ * those already in the tournament (random draw or waiting) first, then everyone else.
+ */
+function populateNextPlayerSelect(select, selectedPlayer) {
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.text = "seleciona um jogador";
+    defaultOption.disabled = true;
+    if (!selectedPlayer) defaultOption.selected = true;
+    select.appendChild(defaultOption);
+
+    const onTable = ['player-red-1', 'player-red-2', 'player-white-1', 'player-white-2']
+        .map(id => document.getElementById(id).value);
+    const available = [...playersList]
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .filter(player => !onTable.includes(player.id));
+
+    const groups = [
+        { label: 'No torneio', players: available.filter(p => roster.includes(p.id)) },
+        { label: 'Outros jogadores', players: available.filter(p => !roster.includes(p.id)) }
+    ];
+    groups.filter(group => group.players.length > 0).forEach(group => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = group.label;
+        group.players.forEach(player => {
+            const option = document.createElement("option");
+            option.value = player.id;
+            option.text = player.name;
+            if (player.id === selectedPlayer) option.selected = true;
+            optgroup.appendChild(option);
+        });
+        select.appendChild(optgroup);
+    });
+}
+
+/** Rebuilds the next players lists (e.g. after the players on the table changed). */
+function refreshNextPlayerSelects() {
+    ['next-player-1', 'next-player-2'].forEach(id => {
+        populatePlayerSelect(id, document.getElementById(id).value || null);
     });
 }
 
@@ -584,8 +631,8 @@ function checkPlayers() {
         });
     });
 
-    // Os próximos jogadores podem ser qualquer um (inclusive quem está em jogo,
-    // por exemplo os que vierem a perder); só se impedem repetidos entre si.
+    // Os próximos jogadores não incluem quem está em jogo; impedem-se repetidos entre si.
+    refreshNextPlayerSelects();
     checkNextPlayers(false);
 
     // Habilitar ou desabilitar o botão

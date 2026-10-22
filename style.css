@@ -1,6 +1,42 @@
 /* =====================
+   NIUP design tokens
+   Same palette, scale and component radius as the other NIUP apps (variables.css).
+   Red is kept only as the colour of the red team.
+===================== */
+:root {
+    --primary-light: #4A9AFF;
+    --primary: #0B73F5;
+    --primary-dark: #003B84;
+    --white: #FFFFFF;
+    --s2: #F6F6F6;
+    --s3: #F2F2F2;
+    --s4: #E8E8E8;
+    --s5: #D4D4D4;
+    --s8: #B8B8B8;
+    --s9: #9A9A9A;
+    --s10: #787878;
+    --s11: #484848;
+    --s12: #181818;
+    --success: #4ECCA2;
+    --success-dark: #42AE8A;
+    --warning-light: #FFC44D;
+    --warning: #F6A400;
+    --warning-dark: #CC8800;
+    --error-light: #BE4040;
+    --error: #A80000;
+    --error-dark: #7E0000;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* =====================
    Base & Reset
 ===================== */
+* {
+    box-sizing: border-box;
+}
+
 html,
 body {
     margin: 0;
@@ -11,21 +47,15 @@ body {
     -webkit-touch-callout: none;
     overscroll-behavior: none;
     -webkit-text-size-adjust: 100%;
-    background-color: #fefefe;
-    color: #0061A8;
-    font-family: 'Inter';
+    background-color: var(--s2);
+    color: var(--s12);
+    font-family: var(--font);
+    font-size: 15px;
     touch-action: manipulation;
-      user-select: none;
+    user-select: none;
     -webkit-user-select: none;
-    /* Para Safari */
     -moz-user-select: none;
-    /* Para Firefox */
     -ms-user-select: none;
-}
-
-body {
-    background-color: #fefefe;
-    color: #0061A8;
 }
 
 /* =====================
@@ -37,7 +67,7 @@ body {
     left: 0;
     width: 100%;
     height: env(safe-area-inset-top);
-    background: rgba(255, 255, 255, 100);
+    background: rgba(246, 246, 246, 1);
     backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
     pointer-events: none;
@@ -47,239 +77,560 @@ body {
 }
 
 #content {
-    padding-top: calc(env(safe-area-inset-top) + 20px);
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    padding-top: calc(env(safe-area-inset-top) + 12px);
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
 }
 
 /* =====================
-   Views
+   Top bar: the NIUP logo on its blue block, like the other apps
+===================== */
+.topbar {
+    display: flex;
+    align-items: center;
+    height: 52px;
+    margin: 0 18px;
+    overflow: hidden;
+    background: var(--white);
+    border: 1px solid var(--s4);
+    border-radius: var(--radius);
+}
+
+.topbar .brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    height: 100%;
+    flex: none;
+    background: var(--primary);
+}
+
+.topbar .brand img {
+    height: 15px;
+    max-width: 62px;
+}
+
+.topbar h1 {
+    margin: 0 0 0 16px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--s12);
+}
+
+/* =====================
+   Views & typography
 ===================== */
 .view {
     display: none;
-    padding: 20px;
+    padding: 18px;
 }
 
 .active {
     display: block;
 }
 
-h1 {
-    text-align: center;
-    color: #0061A8;
-    margin-bottom: 0;
+h2 {
+    margin: 14px 0 10px;
+    text-align: left;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--s12);
 }
 
-h2 {
-    text-align: left;
-    color: #0061A8;
+h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--s11);
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--s4);
+    margin: 16px 0;
 }
 
 /* =====================
-   Team Sections
+   Cards and teams
 ===================== */
 .team-section {
-    background-color: white;
-    margin: 20px 0;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin: 14px 0;
+    padding: 12px 14px;
+    background: var(--white);
+    border: 1px solid var(--s4);
+    border-radius: var(--radius);
+}
+
+.team-section.red,
+.team-section.white {
+    border-left: 6px solid var(--error);
 }
 
 .team-section.red {
-    border: solid #a40000;
-    color: #a40000;
-}
-
-.team-section.red h2 {
-    color: #800000;
-    margin: 2px 0 10px;
-    font-size: 20px;
-    text-align: center;
+    background: rgba(168, 0, 0, 0.05);
 }
 
 .team-section.white {
-    border: solid #333;
-    color: #333;
+    border-left-color: var(--s12);
 }
 
-.team-section.white h2 {
-    color: #333;
-    margin: 2px 0 10px;
-    font-size: 20px;
-    text-align: center;
+.team-section.red h2,
+.team-section.red h3,
+.team-section.white h2,
+.team-section.white h3 {
+    margin: 0 0 8px;
+    text-align: left;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.team-section.red h2,
+.team-section.red h3 {
+    color: var(--error);
+}
+
+.team-section.white h2,
+.team-section.white h3 {
+    color: var(--s12);
+}
+
+.resume-banner {
+    border-left: 6px solid var(--primary);
+}
+
+.resume-banner p {
+    margin: 6px 0;
+}
+
+#waiting-teams p {
+    margin: 6px 0;
+    font-size: 15px;
 }
 
 /* =====================
-   Selects
+   Player lists
 ===================== */
 .player-list .picked {
-    margin: 2px 0 6px;
+    margin: 8px 0 2px;
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 600;
     text-align: center;
-    opacity: 0.7;
+    color: var(--s10);
 }
 
 .player-list .picked.complete {
-    opacity: 1;
+    color: var(--primary);
+}
+
+.team-section.red .picked.complete {
+    color: var(--error);
+}
+
+.team-section.white .picked.complete {
+    color: var(--s12);
+}
+
+.player-list select,
+select {
+    width: 100%;
+    min-height: 44px;
+    margin: 4px 0;
+    padding: 7px 10px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--s12);
+    background: var(--white);
+    border: 1px solid var(--s5);
+    border-radius: var(--radius-sm);
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(11, 115, 245, 0.15);
 }
 
 .player-list select[multiple] {
     min-height: 0;
+    padding: 4px;
 }
 
-.player-list select {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    height: 40px;
-    font-size: 15px;
-    border-radius: 5px;
-    background-color: #fefefe;
-    border-color: #333;
+.player-list select[multiple] option {
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+
+.player-list select option:checked {
+    background: var(--primary) linear-gradient(0deg, var(--primary), var(--primary));
+    color: var(--white);
+}
+
+.team-section.red select option:checked {
+    background: var(--error) linear-gradient(0deg, var(--error), var(--error));
+}
+
+.player-list select option:disabled {
+    color: var(--s9);
+}
+
+.player-list select optgroup {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--s10);
 }
 
 /* =====================
    Buttons
 ===================== */
 button {
-    font-size: 20px;
-    font-weight: 800;
-    background-color: #0061A8;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    margin-top: 10px;
     width: 100%;
-    height: 60px;
+    height: 54px;
+    margin-top: 10px;
+    padding: 0 14px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--white);
+    background-color: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius: var(--radius);
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
-    /* Para Safari */
     -moz-user-select: none;
-    /* Para Firefox */
     -ms-user-select: none;
-}
-
-/* Press feedback like a native button */
-button {
-    transition: transform 0.08s ease, filter 0.08s ease;
+    transition: transform 0.08s ease, background-color 0.08s ease;
 }
 
 button:active:not(:disabled) {
-    transform: scale(0.97);
-    filter: brightness(0.92);
+    transform: scale(0.98);
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
 }
 
 button:disabled {
-    background-color: #ccc;
-    color: #666;
+    color: var(--s9);
+    background-color: var(--s3);
+    border-color: var(--s4);
     cursor: not-allowed;
-    opacity: 0.7;
 }
 
-.score-controls button {
-    margin: 5px;
-    width: 50%;
-    font-size: 20px;
-    height: 50px;
-}
-
+/* Ghost buttons, as in the other NIUP apps */
 .jump,
-.back {
-    background-color: #fefefe;
-    border: solid #0061A8;
-    color: #0061A8;
-    font-weight: 400;
+.back,
+#share-image-button,
+#share-text-button,
+#file-download-button {
+    color: var(--s12);
+    background-color: var(--white);
+    border-color: var(--s5);
+}
+
+.jump:active:not(:disabled),
+.back:active:not(:disabled),
+#share-image-button:active:not(:disabled),
+#share-text-button:active:not(:disabled),
+#file-download-button:active:not(:disabled) {
+    color: var(--s12);
+    background-color: var(--s3);
+    border-color: var(--s5);
+}
+
+/* Share and export stay quiet next to the game controls */
+#share-image-button,
+#share-text-button,
+#file-download-button {
+    height: 46px;
+    font-size: 15px;
+    font-weight: 500;
 }
 
 .repair {
-    background-color: #fefefe;
-    border: solid #c8c800;
-    color: #c8c800;
-    font-weight: 400;
+    color: var(--warning-dark);
+    background-color: var(--white);
+    border-color: var(--warning);
 }
 
-.swap-notice {
-    margin: 12px 0;
-    padding: 12px 14px;
-    border: 2px solid #c8c800;
-    border-radius: 12px;
-    background: #fffbd1;
-    color: #222;
-    font-weight: 800;
-    text-align: center;
+.repair:active:not(:disabled) {
+    color: var(--warning-dark);
+    background-color: rgba(246, 164, 0, 0.12);
+    border-color: var(--warning);
 }
 
-#rps-text {
-    margin: 0 0 8px;
-    font-size: 18px;
-    white-space: pre-line;
+.danger,
+.btn-cancel {
+    color: var(--error);
+    background-color: var(--white);
+    border-color: var(--error-light);
+}
+
+.danger:active:not(:disabled),
+.btn-cancel:active:not(:disabled) {
+    color: var(--error);
+    background-color: rgba(168, 0, 0, 0.08);
+    border-color: var(--error-light);
 }
 
 /* =====================
-   Game Timer & Scoreboard
+   Notices
 ===================== */
-.game-timer {
-    font-size: 25px;
-    text-align: center;
-    padding: 10px;
-    background-color: white;
-    color: #0061A8;
-    width: 20%;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+.swap-notice {
+    margin: 14px 0;
+    padding: 12px 14px;
+    color: var(--s12);
+    background: rgba(246, 164, 0, 0.14);
+    border: 1px solid var(--warning);
+    border-radius: var(--radius);
+    font-weight: 600;
+    text-align: left;
 }
 
-#score-board h3 {
-    margin: 2px 0 10px;
+#swap-positions-notice {
+    font-size: 18px;
+}
+
+#rps-text {
+    margin: 0 0 4px;
+    text-align: center;
+    font-size: 19px;
+    font-weight: 700;
+    white-space: pre-line;
+}
+
+#winner-team-label {
     font-size: 20px;
-    text-align: center;
+    color: var(--s12);
 }
 
-#score-board div {
-    padding-top: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.score-controls {
-    text-align: center;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #000;
-    margin: 10px 0;
-    border-radius: 10px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-}
-
-.score-controls div {
-    display: flex;
-    justify-content: center;
-}
-
+/* =====================
+   Scoreboard
+   The goals and the time are the centre of the game screen.
+===================== */
 .title-timer {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    grid-template-areas: "undo score timer";
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    color: var(--white);
+    background-color: var(--primary-dark);
+    border-radius: var(--radius);
+}
+
+.title-timer h2,
+#result {
+    grid-area: score;
+    margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
-    padding-left: 10px;
-    background-color: #0061A8;
-    color: white;
-    width: 100%;
-    height: 50px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--white);
 }
 
-.title-timer h2 {
-    color: white;
+#result .score-num {
+    min-width: 0.7em;
+    text-align: center;
+    font-size: 50px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+#result .score-sep {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--warning-light);
+}
+
+#result .score-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    flex: none;
+}
+
+#result .score-dot.red {
+    background: var(--error-light);
+}
+
+#result .score-dot.white {
+    background: var(--white);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.game-timer {
+    grid-area: timer;
+    min-width: 96px;
+    padding: 6px 10px;
+    text-align: center;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    color: var(--white);
+    background-color: rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.game-timer.paused {
+    color: var(--s12);
+    background-color: var(--warning);
+    animation: blink 1s steps(2, start) infinite;
+}
+
+.title-timer .undo-btn {
+    grid-area: undo;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    font-size: 22px;
+    color: var(--white);
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-sm);
+}
+
+.title-timer .undo-btn:active:not(:disabled) {
+    color: var(--white);
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.title-timer .undo-btn:disabled {
+    color: rgba(255, 255, 255, 0.35);
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.toolbar {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.toolbar button.toggle {
+    width: 50%;
+    height: 40px;
+    margin-top: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--s12);
+    background-color: var(--white);
+    border: 1px solid var(--s5);
+    border-radius: var(--radius-sm);
+}
+
+.toolbar button.toggle:active:not(:disabled) {
+    color: var(--s12);
+    background-color: var(--s3);
+    border-color: var(--s5);
+}
+
+.hint {
+    margin: 8px 0 0;
+    font-size: 12.5px;
+    text-align: center;
+    color: var(--s10);
+}
+
+/* Players and goal buttons */
+#score-board .team-section {
+    margin: 10px 0;
+    padding: 8px 12px 4px;
+}
+
+#score-board .score-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 8px 0;
+    border-top: 1px solid rgba(24, 24, 24, 0.1);
+    text-align: left;
+    color: var(--s12);
+}
+
+#score-board .score-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-start;
 }
 
 .player-name {
-    font-weight: 800;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.15;
+}
+
+.score-stats {
+    margin-top: 2px;
+    font-size: 11.5px;
+    color: var(--s10);
+}
+
+.nicknames {
+    margin: 2px 0 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--warning-dark);
+}
+
+#score-board .score-controls-buttons {
+    display: flex;
+    gap: 10px;
+    flex: none;
+}
+
+/* A goal is the big, easy target; an own goal is smaller and outlined so it is not hit by mistake */
+#score-board .score-controls button {
+    width: 90px;
+    height: 56px;
+    margin: 0;
+    padding: 0;
+    font-size: 17px;
+}
+
+#score-board .score-controls button.own-goal {
+    width: 64px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--error);
+    background-color: var(--white);
+    border-color: var(--error-light);
+}
+
+#score-board .score-controls button.own-goal:active:not(:disabled) {
+    color: var(--error);
+    background-color: rgba(168, 0, 0, 0.08);
+    border-color: var(--error-light);
+}
+
+#score-board hr,
+#view-game hr {
+    margin: 8px 0;
 }
 
 /* =====================
@@ -291,8 +642,8 @@ button:disabled {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.85);
-    color: #fff;
+    background-color: rgba(0, 59, 132, 0.92);
+    color: var(--white);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -312,10 +663,12 @@ button:disabled {
    Summary
 ===================== */
 .summary-section {
+    margin-top: 16px;
+    padding: 14px;
     white-space: pre-wrap;
-    background: #f0f8ff;
-    padding: 10px;
-    border-radius: 10px;
+    background: var(--white);
+    border: 1px solid var(--s4);
+    border-radius: var(--radius);
 }
 
 table {
@@ -328,7 +681,7 @@ table {
 th,
 td {
     padding: 8px;
-    border: 1px solid #000;
+    border: 1px solid var(--s5);
     text-align: center;
     white-space: nowrap;
 }
@@ -342,40 +695,66 @@ td {
     }
 }
 
-    .game-table {
+.game-table {
     width: 100%;
     max-width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 16px 0;
     text-align: center;
     table-layout: fixed;
-    border: 2px solid black; /* borda externa da tabela */
-  }
+    border: 1px solid var(--s5);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
 
-  /* remove todas as bordas por padrão */
-  .game-table th,
-  .game-table td {
+/* no borders by default */
+.game-table th,
+.game-table td {
     border: none;
     padding: 8px;
-  }
+}
 
-  /* linha horizontal apenas abaixo do cabeçalho */
-  .game-table thead tr {
-    border-bottom: 2px solid black;
-  }
+.game-table thead th {
+    font-weight: 600;
+    background: var(--s3);
+    border-bottom: 1px solid var(--s5);
+}
 
-  /* linha vertical apenas entre vermelho e branco */
-  .game-table tbody td:first-child {
-    border-right: 2px solid black;
-  }
+/* a rule only between the red and the white team */
+.game-table tbody td:first-child {
+    border-right: 1px solid var(--s5);
+}
 
-  /* container evita overflow */
-  #tables-container {
+/* the container avoids overflow */
+#tables-container {
     width: 100%;
     max-width: 100%;
     overflow-x: auto;
-  }
+}
 
+#awards,
+#games-list {
+    white-space: normal;
+}
+
+#games-list div {
+    padding: 3px 0;
+    font-size: 15px;
+}
+
+.award {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--s4);
+    color: var(--s12);
+}
+
+.award-icon {
+    font-size: 28px;
+}
 
 /* =====================
    Modal
@@ -390,34 +769,33 @@ td {
     background: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
-    animation: fadeIn 0.3s;
+    animation: fadeIn 0.2s;
     z-index: 999;
 }
 
 .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    text-align: center;
     width: 320px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.3s;
+    padding: 22px;
+    text-align: center;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.2s;
 }
 
 .modal-content p {
     font-size: 16px;
-    margin: 10px 0 20px;
+    margin: 6px 0 18px;
 }
 
 .modal-buttons {
     display: flex;
-    gap: 15px;
+    gap: 12px;
     justify-content: space-around;
 }
 
-.btn-cancel {
-    background: #ff4646;
-    color: white;
+.modal-buttons button {
+    margin-top: 0;
 }
 
 @keyframes fadeIn {
@@ -432,7 +810,7 @@ td {
 
 @keyframes slideUp {
     from {
-        transform: translateY(50px);
+        transform: translateY(30px);
         opacity: 0;
     }
 
@@ -451,7 +829,7 @@ td {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: #007BFF;
+    background: var(--primary);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -465,79 +843,25 @@ td {
 }
 
 #splash-screen h1 {
-    color: white;
+    color: var(--white);
     font-size: 2em;
     margin: 0;
 }
 
 #splash-screen p {
-    color: white;
+    color: var(--white);
     margin: 5px 0 0;
     font-size: 1.2em;
 }
+
 /* =====================
    Accessibility & touch
 ===================== */
 button:focus-visible,
 select:focus-visible,
 .game-timer:focus-visible {
-    outline: 3px solid #f5a300;
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
-}
-
-.player-list select {
-    min-height: 44px;
-}
-
-.score-controls button {
-    height: 64px;
-    min-height: 44px;
-}
-
-.score-info {
-    margin: 0 0 4px;
-}
-
-.nicknames {
-    margin: 0 0 4px;
-    font-size: 14px;
-    font-weight: 800;
-    color: #c76a00;
-}
-
-.score-controls button.own-goal {
-    background-color: #ff4646;
-}
-
-.game-timer {
-    cursor: pointer;
-}
-
-.game-timer.paused {
-    background-color: #fff3c4;
-    animation: blink 1s steps(2, start) infinite;
-}
-
-.hint {
-    font-size: 13px;
-    text-align: center;
-    opacity: 0.8;
-    margin: 8px 0 0;
-}
-
-.toolbar {
-    display: flex;
-    gap: 10px;
-}
-
-.toolbar button.toggle {
-    height: 44px;
-    font-size: 15px;
-    width: 50%;
-}
-
-.resume-banner p {
-    margin: 6px 0;
 }
 
 /* =====================
@@ -548,8 +872,8 @@ select:focus-visible,
 }
 
 @keyframes goalFlash {
-    0% { transform: scale(1.35); text-shadow: 0 0 14px #ffd600; }
-    100% { transform: scale(1); text-shadow: none; }
+    0% { transform: scale(1.25); }
+    100% { transform: scale(1); }
 }
 
 @keyframes blink {
@@ -572,12 +896,12 @@ select:focus-visible,
     bottom: calc(24px + env(safe-area-inset-bottom));
     transform: translate(-50%, 120px);
     max-width: 90%;
-    background: #222;
-    color: #fff;
     padding: 12px 18px;
-    border-radius: 12px;
-    font-weight: 800;
+    font-weight: 600;
     text-align: center;
+    color: var(--white);
+    background: var(--s12);
+    border-radius: var(--radius);
     opacity: 0;
     transition: transform 0.3s ease, opacity 0.3s ease;
     z-index: 10001;
@@ -587,30 +911,6 @@ select:focus-visible,
 #toast.show {
     transform: translate(-50%, 0);
     opacity: 1;
-}
-
-/* =====================
-   Awards & summary
-===================== */
-#awards,
-#games-list {
-    white-space: normal;
-}
-
-.award {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: white;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 8px 0;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-    color: #222;
-}
-
-.award-icon {
-    font-size: 30px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -625,9 +925,9 @@ select:focus-visible,
 }
 
 /* =====================
-   Compact game screen (everything visible without scrolling)
+   Compact game screen
 ===================== */
-body.in-game h1 {
+body.in-game .topbar {
     display: none;
 }
 
@@ -643,92 +943,12 @@ body.in-game #content {
     position: sticky;
     top: calc(env(safe-area-inset-top) + 4px);
     z-index: 5;
-    height: 46px;
-    box-sizing: border-box;
 }
 
-#view-game .title-timer h2 {
-    margin: 0;
-    font-size: 20px;
+#next-players {
+    margin: 10px 0 0;
 }
 
-#score-board .team-section {
-    margin: 8px 0;
-    padding: 6px 8px;
-}
-
-#score-board .team-section h3 {
-    margin: 0 0 4px;
-    font-size: 16px;
-}
-
-#score-board .score-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 6px 0;
-    padding: 6px 8px;
-    text-align: left;
-}
-
-#score-board .score-text {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 0;
-    padding: 0;
-    box-shadow: none;
-    text-align: left;
-    justify-content: flex-start;
-}
-
-#score-board .score-text .player-name {
-    font-size: 16px;
-}
-
-#score-board .score-stats {
-    font-size: 12px;
-    opacity: 0.8;
-}
-
-#score-board .nicknames {
-    margin: 0;
-    font-size: 12px;
-}
-
-#score-board .score-controls-buttons {
-    display: flex;
-    gap: 6px;
-    padding: 0;
-    box-shadow: none;
-    flex: none;
-}
-
-#score-board .score-controls button {
-    width: 84px;
-    height: 56px;
-    margin: 0;
-    font-size: 15px;
-}
-
-#score-board hr,
-#view-game hr {
-    margin: 6px 0;
-}
-
-/* Undo button in the timer bar */
-.title-timer .undo-btn {
-    width: 44px;
-    height: 44px;
-    margin: 0;
-    padding: 0;
-    font-size: 22px;
-    background-color: #fefefe;
-    color: #0061A8;
-    flex: none;
-}
-
-.title-timer .undo-btn:disabled {
-    background-color: rgba(255, 255, 255, 0.35);
-    color: rgba(255, 255, 255, 0.7);
+#next-players h3 {
+    margin-bottom: 4px;
 }

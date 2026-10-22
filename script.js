@@ -180,7 +180,7 @@ function renderWaitingTeams(waiting, soloPlayer) {
     list.innerHTML = '';
     waiting.forEach((team, index) => {
         const item = document.createElement('p');
-        item.textContent = `Em espera ${index + 1}: ${playerName(team[0])} & ${playerName(team[1])}`;
+        item.textContent = `${index + 1}: ${playerName(team[0])} & ${playerName(team[1])}`;
         list.appendChild(item);
     });
     if (soloPlayer) {
@@ -421,7 +421,10 @@ function updateScoreBoard() {
     const resultGame = document.getElementById('result');
     board.innerHTML = '';
     const score = getScore(currentGame);
-    resultGame.textContent = `🔴 ${score.red} - ${score.white} ⚪ `;
+    resultGame.innerHTML = `<span class="score-dot red" aria-hidden="true"></span>` +
+        `<span class="score-num" aria-hidden="true">${score.red}</span><span class="score-sep" aria-hidden="true">–</span>` +
+        `<span class="score-num" aria-hidden="true">${score.white}</span><span class="score-dot white" aria-hidden="true"></span>` +
+        `<span class="sr-only">Vermelha ${score.red}, Branca ${score.white}</span>`;
     document.getElementById('undo-button').disabled = !(currentGame.goalHistory && currentGame.goalHistory.length > 0);
 
     ['red', 'white'].forEach(team => {
@@ -699,7 +702,7 @@ window.addEventListener('scroll', () => {
 
     // Opacidade dinâmica
     const opacity = 0.8 * ratio; // até 80%
-    overlay.style.background = `rgba(255, 255, 255, ${opacity})`;
+    overlay.style.background = `rgba(246, 246, 246, ${opacity})`;
 
     // Blur dinâmico
     const blur = 10 * ratio; // até 10px

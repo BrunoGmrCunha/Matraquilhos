@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="blank">
         <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0061A8">
+    <meta name="theme-color" content="#0B73F5">
+    <link rel="icon" type="image/svg+xml" href="./images/favicon.svg">
     <meta name="apple-mobile-web-app-title" content="Matraquilhos">
     <meta name="format-detection" content="telephone=no">
     <link rel="manifest" href="./manifest.webmanifest">
@@ -22,7 +25,10 @@
 <body>
     <div id="notch-overlay"></div>
     <div id="content">
-        <h1>NIUP - Matraquilhos</h1>
+        <header class="topbar">
+            <div class="brand"><img src="./images/white-logo.svg" alt="NIUP"></div>
+            <h1>Matraquilhos</h1>
+        </header>
 
         <div id="popup">
             Nova versão disponível!
@@ -150,7 +156,7 @@
             <button id="new-tournament-button" style="display: none;" onclick="openConfirmModal('Deseja iniciar novo torneio?', newTournament)">Novo torneio</button>
             <button id="retify-game-button" class="repair" onclick="reftifyGame()">Corrigir jogo anterior</button>
             <hr>
-            <button id="end-tournament-button" style="background-color:#ff4646" onclick="openConfirmModal('Deseja finalizar o torneio?', endTournament)">Finalizar torneio</button>
+            <button id="end-tournament-button" class="danger" onclick="openConfirmModal('Deseja finalizar o torneio?', endTournament)">Finalizar torneio</button>
             <button id="share-image-button" style="display: none;" onclick="shareImage()">📲 Partilhar resumo (imagem)</button>
             <button id="share-text-button" class="back" style="display: none;" onclick="shareText()">💬 Enviar texto no WhatsApp</button>
             <button id="file-download-button" style="display: none;" onclick="fileDownload()">Download ficheiro</button>

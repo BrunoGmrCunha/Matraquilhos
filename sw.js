@@ -1,6 +1,6 @@
 // Service worker: lets the app open without network (e.g. bad signal at the table).
 // Network first, so a new version is always picked up when online; the cache is the fallback.
-const CACHE_NAME = 'matraquilhos-v2';
+const CACHE_NAME = 'matraquilhos-v4';
 const APP_SHELL = [
     './',
     './index.html',
@@ -14,7 +14,9 @@ const APP_SHELL = [
     './js/storage.js',
     './js/tournament.js',
     './js/share.js',
-    './images/apple-touch-icon-180x180.png'
+    './images/apple-touch-icon-180x180.png',
+    './images/white-logo.svg',
+    './images/favicon.svg'
 ];
 
 self.addEventListener('install', event => {

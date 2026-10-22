@@ -179,7 +179,7 @@ function launchConfetti(duration = 2800) {
     canvas.height = window.innerHeight;
     document.body.appendChild(canvas);
     const ctx = canvas.getContext('2d');
-    const colors = ['#a40000', '#0061A8', '#f5c400', '#2ecc71', '#ff7ab2', '#8e44ad'];
+    const colors = ['#A80000', '#0B73F5', '#F6A400', '#4ECCA2', '#4A9AFF', '#003B84'];
     const pieces = Array.from({ length: 140 }, () => ({
         x: Math.random() * canvas.width,
         y: -20 - Math.random() * canvas.height * 0.5,

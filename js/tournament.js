@@ -122,7 +122,7 @@ function renderRockPaperScissors(winnerTeam) {
         return true;
     }
     if (rps) {
-        text.textContent = `✅ ${playerName(rps.stayId)} fica\n🎲 Quem joga?`;
+        text.textContent = `${playerName(rps.stayId)} fica.\nEscolhe os jogadores para o parceiro e as próximas equipas.`;
         populateRpsPlayers(rps.stayId);
         drawArea.style.display = 'block';
         newGameButton.disabled = true;

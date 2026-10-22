@@ -108,7 +108,7 @@ async function buildShareImage() {
     try {
         await Promise.all(['500', '600', '700', '800'].map(w => document.fonts.load(`${w} 30px Inter`)));
     } catch (e) { /* the fallback font is used */ }
-    const logo = await loadImage('./images/white-logo.svg');
+    const logo = await loadImage('./images/apple-touch-icon-180x180.png');
 
     const width = 1080;
     const margin = 40;
@@ -163,8 +163,8 @@ async function buildShareImage() {
     ctx.clip();
     ctx.fillStyle = C.card;
     ctx.fillRect(cardX, y, cardW, headerH);
-    ctx.fillStyle = C.primary;
-    ctx.fillRect(cardX, y, 300, headerH);
+    ctx.fillStyle = '#0571F8';
+    ctx.fillRect(cardX, y, headerH, headerH);
     ctx.restore();
     roundedRectPath(ctx, cardX, y, cardW, headerH, 28);
     ctx.lineWidth = 2;
@@ -172,20 +172,25 @@ async function buildShareImage() {
     ctx.stroke();
 
     if (logo) {
-        ctx.drawImage(logo, cardX + 70, y + headerH / 2 - 21, 160, 160 * 136 / 611);
+        // the app logo, clipped by the rounded corner of the header card
+        ctx.save();
+        roundedRectPath(ctx, cardX, y, cardW, headerH, 28);
+        ctx.clip();
+        ctx.drawImage(logo, cardX, y, headerH, headerH);
+        ctx.restore();
     } else {
         ctx.fillStyle = '#FFFFFF';
         ctx.textAlign = 'center';
-        ctx.font = `800 48px ${SHARE_FONT}`;
-        ctx.fillText('NIUP', cardX + 150, y + headerH / 2 + 17);
+        ctx.font = `800 40px ${SHARE_FONT}`;
+        ctx.fillText('NIUP', cardX + headerH / 2, y + headerH / 2 + 14);
     }
     ctx.textAlign = 'left';
     ctx.fillStyle = C.text;
     ctx.font = `700 48px ${SHARE_FONT}`;
-    ctx.fillText('Matraquilhos', cardX + 340, y + 62);
+    ctx.fillText('NIUP - Matraquilhos', cardX + headerH + 34, y + 62);
     ctx.fillStyle = C.muted;
     ctx.font = `500 28px ${SHARE_FONT}`;
-    ctx.fillText(`${new Date().toLocaleDateString('pt-PT')}  ·  ${games.length} jogo(s)`, cardX + 340, y + 102);
+    ctx.fillText(`${new Date().toLocaleDateString('pt-PT')}  ·  ${games.length} jogo(s)`, cardX + headerH + 34, y + 102);
     y += headerH + gap;
 
     // Awards and rivalries

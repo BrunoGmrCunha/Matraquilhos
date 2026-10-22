@@ -23,6 +23,12 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+    <!-- Splash screen: shown while the app opens -->
+    <div id="splash-screen" role="status" aria-label="A abrir NIUP Matraquilhos">
+        <img class="splash-icon" src="./images/apple-touch-icon.png" alt="NIUP - Matraquilhos">
+        <p class="splash-name">NIUP - Matraquilhos</p>
+        <img class="splash-loader" src="./images/loader_image_portrait.svg" alt="">
+    </div>
     <div id="notch-overlay"></div>
     <div id="content">
         <header class="topbar">
@@ -180,6 +186,17 @@
     <script src="./js/tournament.js"></script>
     <script src="./js/share.js"></script>
     <script>
+        // Keeps the splash for one turn of the loader, then fades it out
+        (function () {
+            const splash = document.getElementById('splash-screen');
+            if (!splash) return;
+            const minimumTime = 1400;
+            const hide = () => {
+                splash.classList.add('hide');
+                setTimeout(() => splash.remove(), 400);
+            };
+            window.addEventListener('load', () => setTimeout(hide, Math.max(0, minimumTime - performance.now())));
+        })();
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => { }));
         }

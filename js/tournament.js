@@ -417,7 +417,6 @@ function endTournament() {
     renderTournamentSummary();
     celebrateWinner(currentGame.winner);
     saveState();
-    fileDownload();
 }
 
 function downloadBlob(blob, fileName) {

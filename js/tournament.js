@@ -84,17 +84,15 @@ function registerParticipants() {
     ids.filter(id => id && !roster.includes(id)).forEach(id => roster.push(id));
 }
 
-/**
- * Players who can replace the loser of the rock-paper-scissors: everyone who is out
- * (not the winners, not the next challengers); when nobody is left, everyone but the winners.
- */
-function getRockPaperScissorsPool(winnerTeam) {
-    registerParticipants();
-    const winners = currentGame[winnerTeam].map(p => p.id);
-    const challengers = ['next-player-1', 'next-player-2'].map(id => document.getElementById(id).value);
-    const others = roster.filter(id => !winners.includes(id));
-    const outside = others.filter(id => !challengers.includes(id));
-    return outside.length > 0 ? outside : others;
+/** Finished games since the player last played (the current game counts); never played = the most. */
+function getIdleGames(id) {
+    const finished = games.includes(currentGame) ? games : [...games, currentGame];
+    for (let i = finished.length - 1; i >= 0; i--) {
+        if (['red', 'white'].some(team => finished[i][team].some(p => p.id === id))) {
+            return finished.length - 1 - i;
+        }
+    }
+    return finished.length;
 }
 
 /**
@@ -104,7 +102,9 @@ function getRockPaperScissorsPool(winnerTeam) {
 function renderRockPaperScissors(winnerTeam) {
     const section = document.getElementById('rps-section');
     const streak = winnerTeam ? getTeamWinStreak(winnerTeam) : 0;
-    const applies = streak > 0 && streak % RPS_STREAK === 0 && getRockPaperScissorsPool(winnerTeam).length > 0;
+    if (winnerTeam) registerParticipants();
+    // Needs a partner and two opponents besides the player who stays
+    const applies = streak > 0 && streak % RPS_STREAK === 0 && roster.length >= 4;
     const newGameButton = document.getElementById('new-game-button');
     const text = document.getElementById('rps-text');
     const buttons = document.getElementById('rps-buttons');
@@ -115,13 +115,12 @@ function renderRockPaperScissors(winnerTeam) {
     buttons.innerHTML = '';
     const rps = currentGame.rps;
     if (rps) {
-        text.textContent = `✊✋✌️ ${playerName(rps.stayId)} ganhou e fica. `
-            + `${playerName(rps.outId)} sai e entra ${playerName(rps.inId)} (sorteio). `
-            + 'As equipas em espera foram sorteadas de novo.';
+        text.textContent = `✅ ${playerName(rps.stayId)} fica com ${playerName(rps.partnerId)}\n`
+            + `🆚 ${playerName(rps.nextTeam[0])} & ${playerName(rps.nextTeam[1])}`;
         return true;
     }
 
-    text.textContent = `✊✋✌️ ${streak} vitórias seguidas! Pedra-papel-tesoura entre os vencedores: quem ganhou?`;
+    text.textContent = '✊✋✌️ Pedra-papel-tesoura!\nQuem ganhou?';
     currentGame[winnerTeam].forEach(player => {
         const button = document.createElement('button');
         button.type = 'button';
@@ -135,22 +134,31 @@ function renderRockPaperScissors(winnerTeam) {
 
 function resolveRockPaperScissors(winnerTeam, stayId) {
     const outId = currentGame[winnerTeam].map(p => p.id).find(id => id !== stayId);
-    const pool = getRockPaperScissorsPool(winnerTeam);
-    const inId = pool[Math.floor(Math.random() * pool.length)];
+    registerParticipants();
 
-    // Everyone still out is drawn again into new waiting teams
-    const challengers = ['next-player-1', 'next-player-2']
-        .map(id => document.getElementById(id).value)
-        .map(v => v === inId ? outId : v);
-    const out = roster.filter(id => id !== stayId && id !== inId && !challengers.includes(id));
-    shuffle(out);
+    // Everyone but the player who stays is drawn; those idle for longest face the winner
+    // (random order breaks ties), the rest is drawn for the partner and the waiting teams
+    const candidates = roster.filter(id => id !== stayId);
+    shuffle(candidates);
+    candidates.sort((a, b) => getIdleGames(b) - getIdleGames(a));
+    const nextTeam = candidates.slice(0, 2);
+    const rest = candidates.slice(2);
+    shuffle(rest);
+
+    // The player who lost the rock-paper-scissors does not come back as the partner
+    if (rest[0] === outId) {
+        const swapIndex = nextTeam.findIndex(id => id !== outId);
+        [rest[0], nextTeam[swapIndex]] = [nextTeam[swapIndex], rest[0]];
+    }
+    const partnerId = rest[0];
+    const waiting = rest.slice(1);
     const waitingTeams = [];
-    for (let i = 0; i + 1 < out.length; i += 2) waitingTeams.push([out[i], out[i + 1]]);
-    const soloPlayer = out.length % 2 === 1 ? out[out.length - 1] : null;
+    for (let i = 0; i + 1 < waiting.length; i += 2) waitingTeams.push([waiting[i], waiting[i + 1]]);
+    const soloPlayer = waiting.length % 2 === 1 ? waiting[waiting.length - 1] : null;
 
-    currentGame.rps = { stayId, outId, inId, waitingTeams, soloPlayer };
+    currentGame.rps = { stayId, outId, partnerId, nextTeam, waitingTeams, soloPlayer };
     renderRockPaperScissors(winnerTeam);
-    speak(`${playerName(stayId)} fica. Entra ${playerName(inId)}!`);
+    speak(`${playerName(stayId)} fica com ${playerName(partnerId)}!`);
     saveState();
 }
 

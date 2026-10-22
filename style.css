@@ -183,6 +183,12 @@ button:disabled {
     text-align: center;
 }
 
+#rps-text {
+    margin: 0 0 8px;
+    font-size: 18px;
+    white-space: pre-line;
+}
+
 /* =====================
    Game Timer & Scoreboard
 ===================== */

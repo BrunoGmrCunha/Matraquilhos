@@ -216,11 +216,11 @@ function newGame() {
     const winningTeam = currentGame[currentGame.winner];
     let winnerIds = winningTeam.map(p => p.id);
     let nextValues = ['next-player-1', 'next-player-2'].map(id => document.getElementById(id).value);
-    // Rock-paper-scissors: the loser leaves and the drawn player takes the same place
+    // Rock-paper-scissors: the drawn partner takes the loser's place and the drawn opponents play next
     const rps = currentGame.rps;
     if (rps) {
-        winnerIds = winnerIds.map(id => id === rps.outId ? rps.inId : id);
-        nextValues = nextValues.map(v => v === rps.inId ? rps.outId : v);
+        winnerIds = winnerIds.map(id => id === rps.outId ? rps.partnerId : id);
+        nextValues = rps.nextTeam;
     }
     // A next player that belongs to the winning team cannot also replace the losers
     const nextIds = nextValues.map(v => winnerIds.includes(v) ? null : v);

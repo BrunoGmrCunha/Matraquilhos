@@ -79,7 +79,7 @@ function getTeamWinStreak(winnerTeam) {
 
 /** Adds every player currently in a selector or in the current game to the tournament roster. */
 function registerParticipants() {
-    const ids = SELECT_IDS.map(id => document.getElementById(id).value);
+    const ids = [...getPicked('red'), ...getPicked('white'), ...getPicked('next')];
     if (currentGame) ['red', 'white'].forEach(team => currentGame[team].forEach(p => ids.push(p.id)));
     ids.filter(id => id && !roster.includes(id)).forEach(id => roster.push(id));
 }

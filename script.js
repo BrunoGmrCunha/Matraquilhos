@@ -34,31 +34,67 @@ function appendPlayerOptions(select, players, selectedIds = []) {
     });
 }
 
-function populatePlayerSelect(selectId, selectedPlayer = null) {
-    const select = document.getElementById(selectId);
-    select.innerHTML = '';
+// Each team (and the next players) is one multi-select where two players are picked
+const PICK_LISTS = { red: 'players-red', white: 'players-white', next: 'players-next' };
+const PICK_LIMIT = 2;
 
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.text = "seleciona um jogador";
-    defaultOption.disabled = true;
-    if (!selectedPlayer) defaultOption.selected = true;
-    select.appendChild(defaultOption);
-
-    // The next players are never the ones already on the table
-    let players = sortedPlayers();
-    if (selectId.startsWith('next-player')) {
-        const onTable = ['player-red-1', 'player-red-2', 'player-white-1', 'player-white-2']
-            .map(id => document.getElementById(id).value);
-        players = players.filter(player => !onTable.includes(player.id));
+/** Ids picked in a list, in the order they were picked. */
+function getPicked(side) {
+    try {
+        return JSON.parse(document.getElementById(PICK_LISTS[side]).dataset.order || '[]');
+    } catch (e) {
+        return [];
     }
-    appendPlayerOptions(select, players, [selectedPlayer]);
 }
 
-/** Rebuilds the next players lists (e.g. after the players on the table changed). */
-function refreshNextPlayerSelects() {
-    ['next-player-1', 'next-player-2'].forEach(id => {
-        populatePlayerSelect(id, document.getElementById(id).value || null);
+/** Rebuilds a list with the given players picked. The next players never include who is on the table. */
+function setPicked(side, ids) {
+    const select = document.getElementById(PICK_LISTS[side]);
+    let players = sortedPlayers();
+    let picked = ids.filter(Boolean);
+    if (side === 'next') {
+        const onTable = [...getPicked('red'), ...getPicked('white')];
+        players = players.filter(player => !onTable.includes(player.id));
+        picked = picked.filter(id => !onTable.includes(id));
+    }
+    picked = picked.slice(0, PICK_LIMIT);
+
+    select.dataset.order = JSON.stringify(picked);
+    select.innerHTML = '';
+    appendPlayerOptions(select, players, picked);
+    select.size = Math.min(select.options.length + select.querySelectorAll('optgroup').length, side === 'next' ? 4 : 6);
+    renderPicked(side);
+}
+
+/** Keeps at most two players picked: a third pick replaces the oldest one. */
+function enforcePickLimit(side) {
+    const select = document.getElementById(PICK_LISTS[side]);
+    const current = Array.from(select.selectedOptions).map(o => o.value);
+    const order = getPicked(side).filter(id => current.includes(id));
+    current.filter(id => !order.includes(id)).forEach(id => order.push(id));
+    while (order.length > PICK_LIMIT) order.shift();
+    select.dataset.order = JSON.stringify(order);
+    Array.from(select.options).forEach(option => { option.selected = order.includes(option.value); });
+    renderPicked(side);
+}
+
+/** Shows the picked names under the list, so it is clear who is selected. */
+function renderPicked(side) {
+    const picked = getPicked(side);
+    const summary = document.getElementById(PICK_LISTS[side] + '-summary');
+    summary.textContent = picked.length > 0
+        ? picked.map(playerName).join(' & ') + (picked.length < PICK_LIMIT ? ' (falta 1)' : '')
+        : 'Escolhe 2 jogadores';
+    summary.classList.toggle('complete', picked.length === PICK_LIMIT);
+}
+
+/** A player picked in one list cannot be picked in another one. */
+function syncPickedOptions() {
+    Object.keys(PICK_LISTS).forEach(side => {
+        const others = Object.keys(PICK_LISTS).filter(other => other !== side).flatMap(getPicked);
+        Array.from(document.getElementById(PICK_LISTS[side]).options).forEach(option => {
+            option.disabled = others.includes(option.value);
+        });
     });
 }
 
@@ -108,15 +144,11 @@ function random() {
     const waiting = teams.slice(2);
     const nextTeam = waiting[0] || [];
 
-    populatePlayerSelect('player-red-1', sides[0][0]);
-    populatePlayerSelect('player-red-2', sides[0][1]);
-    populatePlayerSelect('player-white-1', sides[1][0]);
-    populatePlayerSelect('player-white-2', sides[1][1]);
-    populatePlayerSelect('next-player-1', nextTeam[0] || null);
-    populatePlayerSelect('next-player-2', nextTeam[1] || null);
+    setPicked('red', sides[0]);
+    setPicked('white', sides[1]);
+    setPicked('next', nextTeam);
     renderWaitingTeams(waiting, soloPlayer);
-    document.getElementById("start-button").disabled = false;
-    checkPlayers()
+    checkPlayers();
 
     showView('view-select');
 }
@@ -153,18 +185,16 @@ function renderWaitingTeams(waiting, soloPlayer) {
 
 function jumpRandom() {
     renderWaitingTeams([], null);
-    populatePlayerSelect('player-red-1');
-    populatePlayerSelect('player-red-2');
-    populatePlayerSelect('player-white-1');
-    populatePlayerSelect('player-white-2');
-    populatePlayerSelect('next-player-1');
-    populatePlayerSelect('next-player-2');
+    setPicked('red', []);
+    setPicked('white', []);
+    setPicked('next', []);
+    checkPlayers();
     showView('view-select');
 }
 
 function startGame() {
-    const redPlayers = [...document.getElementById('team-red').querySelectorAll('select')].map(s => playersList.find(p => p.id === s.value));
-    const whitePlayers = [...document.getElementById('team-white').querySelectorAll('select')].map(s => playersList.find(p => p.id === s.value));
+    const redPlayers = getPicked('red').map(id => playersList.find(p => p.id === id));
+    const whitePlayers = getPicked('white').map(id => playersList.find(p => p.id === id));
 
     currentGame = {
         red: redPlayers.map(p => ({ ...p, goals: 0, ownGoals: 0 })),
@@ -183,11 +213,6 @@ function startGame() {
     document.getElementById('score-board').style.display = 'block';
     document.getElementById('tie-breaker').style.display = 'none';
     document.getElementById('game').style.display = 'block';
-    // Keep the next players already chosen (e.g. the third team of the random draw)
-    ['next-player-1', 'next-player-2'].forEach(id => {
-        const current = document.getElementById(id).value;
-        populatePlayerSelect(id, current || null);
-    });
     document.getElementById('winner-team').value = ""
     onChangeSelect('winner-team');
 
@@ -249,7 +274,7 @@ function newGame() {
     finalizeGame();
     const winningTeam = currentGame[currentGame.winner];
     let winnerIds = winningTeam.map(p => p.id);
-    let nextValues = ['next-player-1', 'next-player-2'].map(id => document.getElementById(id).value);
+    let nextValues = getPicked('next');
     // Rock-paper-scissors: the drawn partner takes the loser's place and the drawn opponents play next
     const rps = currentGame.rps;
     if (rps) {
@@ -262,13 +287,10 @@ function newGame() {
 
     document.getElementById('team-red').style.display = 'block';
     document.getElementById('team-white').style.display = 'block';
-    populatePlayerSelect(`player-${currentGame.winner}-1`, winnerIds[0]);
-    populatePlayerSelect(`player-${currentGame.winner}-2`, winnerIds[1]);
-    populatePlayerSelect(`player-${loserSide}-1`, nextIds[0]);
-    populatePlayerSelect(`player-${loserSide}-2`, nextIds[1]);
+    setPicked(currentGame.winner, winnerIds);
+    setPicked(loserSide, nextIds);
     // The next players are now on the table, so the next challengers start empty again
-    populatePlayerSelect('next-player-1');
-    populatePlayerSelect('next-player-2');
+    setPicked('next', []);
     document.getElementById('swap-sides-button').style.display = 'block';
     checkPlayers();
     showView('view-select');
@@ -278,11 +300,9 @@ function newGame() {
 
 // Winners and the next challengers switch fields (red <-> white)
 function swapSides() {
-    const ids = ['player-red-1', 'player-red-2', 'player-white-1', 'player-white-2'];
-    const [r1, r2, w1, w2] = ids.map(id => document.getElementById(id));
-    const values = [w1.value, w2.value, r1.value, r2.value];
-
-    ids.forEach((id, i) => populatePlayerSelect(id, values[i] || null));
+    const red = getPicked('red');
+    setPicked('red', getPicked('white'));
+    setPicked('white', red);
     checkPlayers();
     saveState();
 }
@@ -573,14 +593,16 @@ function onChangeSelect(id) {
                 randomButton.disabled = selectedPlayers.length < 4;
             }
             break;
-        case 'player-red-1':
-        case 'player-red-2':
-        case 'player-white-1':
-        case 'player-white-2':
+        case 'players-red':
+            enforcePickLimit('red');
             checkPlayers();
             break;
-        case 'next-player-1':
-        case 'next-player-2':
+        case 'players-white':
+            enforcePickLimit('white');
+            checkPlayers();
+            break;
+        case 'players-next':
+            enforcePickLimit('next');
             checkNextPlayers();
             break;
         case 'winner-team': {
@@ -594,47 +616,19 @@ function onChangeSelect(id) {
 }
 
 function checkPlayers() {
-    const selectIds = ["player-red-1", "player-red-2", "player-white-1", "player-white-2"];
-    const selects = selectIds.map(id => document.getElementById(id));
+    // The next players do not include who is on the table
+    setPicked('next', getPicked('next'));
+    syncPickedOptions();
 
-    // Obter todos os valores selecionados
-    const selectedValues = selects
-        .map(s => s.value)
-        .filter(v => v !== "");
-
-    // Atualizar opções nas outras selects
-    selects.forEach(select => {
-        Array.from(select.options).forEach(option => {
-            if (option.value === "") return; // ignorar vazio
-            option.disabled = selectedValues.includes(option.value) && option.value !== select.value;
-        });
-    });
-
-    // Os próximos jogadores não incluem quem está em jogo; impedem-se repetidos entre si.
-    refreshNextPlayerSelects();
-    checkNextPlayers(false);
-
-    // Habilitar ou desabilitar o botão
-    const allSelected = selects.every(s => s.value !== "");
-    document.getElementById("start-button").disabled = !allSelected;
+    const ready = getPicked('red').length === PICK_LIMIT && getPicked('white').length === PICK_LIMIT;
+    document.getElementById("start-button").disabled = !ready;
 }
 
 function checkNextPlayers(scroll = true) {
-    const nextPlayersSelectIds = ["next-player-1", "next-player-2"];
-    const nextPlayersSelect = nextPlayersSelectIds.map(id => document.getElementById(id));
-
-    const selectedValues = nextPlayersSelect
-        .map(s => s.value)
-        .filter(v => v !== "");
-
-    nextPlayersSelect.forEach(select => {
-        Array.from(select.options).forEach(option => {
-            if (option.value === "") return; // ignorar vazio
-            option.disabled = selectedValues.includes(option.value) && option.value !== select.value;
-        });
-    });
-
-    if (scroll && selectedValues.length === 2) { document.getElementById('view-game').scrollIntoView({ behavior: "smooth" }); }
+    syncPickedOptions();
+    if (scroll && getPicked('next').length === PICK_LIMIT) {
+        document.getElementById('view-game').scrollIntoView({ behavior: "smooth" });
+    }
 }
 
 function checkWinner() {

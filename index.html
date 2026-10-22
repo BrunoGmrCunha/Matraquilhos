@@ -67,16 +67,16 @@
             <div class="team-section red">
                 <h2>🔴 Equipa Vermelha</h2>
                 <div class="player-list" id="team-red">
-                    <select id="player-red-1" onchange="onChangeSelect('player-red-1')"></select>
-                    <select id="player-red-2" onchange="onChangeSelect('player-red-2')"></select>
+                    <select id="players-red" multiple onchange="onChangeSelect('players-red')" style="height: auto;"></select>
+                    <p class="picked" id="players-red-summary"></p>
                 </div>
             </div>
 
             <div class="team-section white">
                 <h2>⚪ Equipa Branca</h2>
                 <div class="player-list" id="team-white">
-                    <select id="player-white-1" onchange="onChangeSelect('player-white-1')"></select>
-                    <select id="player-white-2" onchange="onChangeSelect('player-white-2')"></select>
+                    <select id="players-white" multiple onchange="onChangeSelect('players-white')" style="height: auto;"></select>
+                    <p class="picked" id="players-white-summary"></p>
                 </div>
             </div>
 
@@ -108,8 +108,8 @@
                 <div class="team-section" id="next-players">
                     <h3>Próximos jogadores</h3>
                     <div class="player-list">
-                        <select id="next-player-1" onchange="onChangeSelect('next-player-1')"></select>
-                        <select id="next-player-2" onchange="onChangeSelect('next-player-2')"></select>
+                        <select id="players-next" multiple onchange="onChangeSelect('players-next')" style="height: auto;"></select>
+                        <p class="picked" id="players-next-summary"></p>
                     </div>
                 </div>
                 <br>

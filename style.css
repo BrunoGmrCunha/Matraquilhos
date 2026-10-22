@@ -115,6 +115,22 @@ h2 {
 /* =====================
    Selects
 ===================== */
+.player-list .picked {
+    margin: 2px 0 6px;
+    font-size: 15px;
+    font-weight: 800;
+    text-align: center;
+    opacity: 0.7;
+}
+
+.player-list .picked.complete {
+    opacity: 1;
+}
+
+.player-list select[multiple] {
+    min-height: 0;
+}
+
 .player-list select {
     width: 100%;
     padding: 10px;

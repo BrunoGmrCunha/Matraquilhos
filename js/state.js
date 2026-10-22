@@ -23,7 +23,6 @@ let lastFocusedElement = null;
 
 const STATE_KEY = 'matraquilhos-state';
 const SETTINGS_KEY = 'matraquilhos-settings';
-const SELECT_IDS = ['player-red-1', 'player-red-2', 'player-white-1', 'player-white-2', 'next-player-1', 'next-player-2'];
 
 const columnDefs = [
     { headerName: "Nome", field: "name", sortable: true, filter: true },

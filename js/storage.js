@@ -2,12 +2,7 @@
 // Persistência do torneio
 // =====================
 function collectSelectState() {
-    const selects = {};
-    SELECT_IDS.forEach(id => {
-        const select = document.getElementById(id);
-        selects[id] = { value: select.value, disabled: select.disabled };
-    });
-    return selects;
+    return { red: getPicked('red'), white: getPicked('white'), next: getPicked('next') };
 }
 
 function saveState() {
@@ -88,10 +83,10 @@ function resumeTournament() {
     timeLeft = state.timeLeft || 0;
     tournamentEnded = !!state.tournamentEnded;
 
-    SELECT_IDS.forEach(id => {
-        const saved = state.selects ? state.selects[id] : null;
-        populatePlayerSelect(id, saved && saved.value ? saved.value : null);
-    });
+    const saved = state.selects || {};
+    setPicked('red', saved.red || []);
+    setPicked('white', saved.white || []);
+    setPicked('next', saved.next || []);
     checkPlayers();
     checkNextPlayers(false);
     document.getElementById('winner-team').value = state.winnerTeam || '';

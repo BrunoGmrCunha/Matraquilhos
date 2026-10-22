@@ -499,6 +499,22 @@ select:focus-visible,
     width: 50%;
 }
 
+.toolbar button.cheer {
+    font-size: 14px;
+    border: solid 2px;
+    background-color: #fefefe;
+}
+
+.toolbar button.cheer.red {
+    border-color: #a40000;
+    color: #a40000;
+}
+
+.toolbar button.cheer.white {
+    border-color: #333;
+    color: #333;
+}
+
 .resume-banner p {
     margin: 6px 0;
 }

@@ -105,6 +105,13 @@ function playOwnGoalSound() {
     playTone(300, 0.38, 0.5, { type: 'sawtooth', volume: 0.35, slideTo: 160 });
 }
 
+/** Short cheer for a great move, followed by the spoken phrase. */
+function cheerGreatPlay() {
+    [392, 523, 659].forEach((f, i) => playTone(f, i * 0.08, 0.14, { type: 'triangle' }));
+    speak('Eish, ganda jogada!');
+    vibrate(60);
+}
+
 function playFanfare() {
     const notes = [[523, 0], [523, 0.15], [523, 0.3], [659, 0.45], [784, 0.7], [659, 0.95], [784, 1.15], [1047, 1.4]];
     notes.forEach(([f, t]) => playTone(f, t, t === 1.4 ? 0.7 : 0.2, { type: 'square', volume: 0.3 }));

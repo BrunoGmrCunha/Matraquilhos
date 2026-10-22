@@ -6,6 +6,11 @@ body {
     margin: 0;
     padding: 0;
     width: 100%;
+    /* Native feel: no grey tap flash, no rubber-band bounce, no long-press menu */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
     background-color: #fefefe;
     color: #0061A8;
     font-family: 'Inter';
@@ -141,6 +146,16 @@ button {
     -moz-user-select: none;
     /* Para Firefox */
     -ms-user-select: none;
+}
+
+/* Press feedback like a native button */
+button {
+    transition: transform 0.08s ease, filter 0.08s ease;
+}
+
+button:active:not(:disabled) {
+    transform: scale(0.97);
+    filter: brightness(0.92);
 }
 
 button:disabled {
@@ -538,7 +553,7 @@ select:focus-visible,
 #toast {
     position: fixed;
     left: 50%;
-    bottom: 24px;
+    bottom: calc(24px + env(safe-area-inset-bottom));
     transform: translate(-50%, 120px);
     max-width: 90%;
     background: #222;

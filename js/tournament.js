@@ -145,16 +145,8 @@ function renderRockPaperScissors(winnerTeam) {
 function populateRpsPlayers(stayId) {
     const select = document.getElementById('rps-players');
     select.innerHTML = '';
-    [...playersList].sort((a, b) => a.name.localeCompare(b.name))
-        .filter(player => player.id !== stayId)
-        .forEach(player => {
-            const option = document.createElement('option');
-            option.value = player.id;
-            option.text = player.name;
-            option.selected = roster.includes(player.id);
-            select.appendChild(option);
-        });
-    select.size = select.options.length;
+    appendPlayerOptions(select, sortedPlayers().filter(player => player.id !== stayId), roster);
+    select.size = select.options.length + select.querySelectorAll("optgroup").length;
     updateRpsDrawButton();
 }
 

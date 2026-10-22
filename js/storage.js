@@ -91,7 +91,6 @@ function resumeTournament() {
     SELECT_IDS.forEach(id => {
         const saved = state.selects ? state.selects[id] : null;
         populatePlayerSelect(id, saved && saved.value ? saved.value : null);
-        document.getElementById(id).disabled = !!(saved && saved.disabled);
     });
     checkPlayers();
     checkNextPlayers(false);

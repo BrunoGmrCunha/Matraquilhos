@@ -1,0 +1,16 @@
+{
+    "name": "NIUP - Matraquilhos",
+    "short_name": "Matraquilhos",
+    "description": "Torneio de matraquilhos: equipas, marcador, cronómetro e resumo.",
+    "lang": "pt-PT",
+    "start_url": "./index.html",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#fefefe",
+    "theme_color": "#0061A8",
+    "icons": [
+        { "src": "images/apple-touch-icon-180x180.png", "sizes": "180x180", "type": "image/png" },
+        { "src": "images/apple-touch-icon.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any" }
+    ]
+}

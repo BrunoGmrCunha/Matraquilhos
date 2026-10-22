@@ -1,36 +1,43 @@
 // =====================
 // Seleção de Jogadores
 // =====================
-function populatePlayerSelect(selectId, selectedPlayer = null) {
-    const select = document.getElementById(selectId);
-    select.innerHTML = '';
-    if (selectId.startsWith('next-player')) {
-        populateNextPlayerSelect(select, selectedPlayer);
-        return;
-    }
-
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.text = "seleciona um jogador";
-    defaultOption.disabled = true;
-    if (!selectedPlayer) defaultOption.selected = true;
-    select.appendChild(defaultOption);
-
-    playersList.sort((a, b) => a.name.localeCompare(b.name));
-    playersList.forEach(player => {
-        const option = document.createElement("option");
-        option.value = player.id;
-        option.text = player.name;
-        if (player.id === selectedPlayer) option.selected = true;
-        select.appendChild(option);
-    });
+/** Players sorted by name (the order used by every list). */
+function sortedPlayers() {
+    return [...playersList].sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /**
- * Next players: players on the table are left out, and the list is split in two groups -
- * those already in the tournament (random draw or waiting) first, then everyone else.
+ * Adds the players to a select. While there are no games the list is plain; once games exist
+ * the tournament players are listed apart from the others.
  */
-function populateNextPlayerSelect(select, selectedPlayer) {
+function appendPlayerOptions(select, players, selectedIds = []) {
+    const createOption = player => {
+        const option = document.createElement("option");
+        option.value = player.id;
+        option.text = player.name;
+        option.selected = selectedIds.includes(player.id);
+        return option;
+    };
+
+    if (games.length === 0) {
+        players.forEach(player => select.appendChild(createOption(player)));
+        return;
+    }
+    [
+        { label: 'No torneio', list: players.filter(p => roster.includes(p.id)) },
+        { label: 'Outros jogadores', list: players.filter(p => !roster.includes(p.id)) }
+    ].filter(group => group.list.length > 0).forEach(group => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = group.label;
+        group.list.forEach(player => optgroup.appendChild(createOption(player)));
+        select.appendChild(optgroup);
+    });
+}
+
+function populatePlayerSelect(selectId, selectedPlayer = null) {
+    const select = document.getElementById(selectId);
+    select.innerHTML = '';
+
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
     defaultOption.text = "seleciona um jogador";
@@ -38,28 +45,14 @@ function populateNextPlayerSelect(select, selectedPlayer) {
     if (!selectedPlayer) defaultOption.selected = true;
     select.appendChild(defaultOption);
 
-    const onTable = ['player-red-1', 'player-red-2', 'player-white-1', 'player-white-2']
-        .map(id => document.getElementById(id).value);
-    const available = [...playersList]
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .filter(player => !onTable.includes(player.id));
-
-    const groups = [
-        { label: 'No torneio', players: available.filter(p => roster.includes(p.id)) },
-        { label: 'Outros jogadores', players: available.filter(p => !roster.includes(p.id)) }
-    ];
-    groups.filter(group => group.players.length > 0).forEach(group => {
-        const optgroup = document.createElement('optgroup');
-        optgroup.label = group.label;
-        group.players.forEach(player => {
-            const option = document.createElement("option");
-            option.value = player.id;
-            option.text = player.name;
-            if (player.id === selectedPlayer) option.selected = true;
-            optgroup.appendChild(option);
-        });
-        select.appendChild(optgroup);
-    });
+    // The next players are never the ones already on the table
+    let players = sortedPlayers();
+    if (selectId.startsWith('next-player')) {
+        const onTable = ['player-red-1', 'player-red-2', 'player-white-1', 'player-white-2']
+            .map(id => document.getElementById(id).value);
+        players = players.filter(player => !onTable.includes(player.id));
+    }
+    appendPlayerOptions(select, players, [selectedPlayer]);
 }
 
 /** Rebuilds the next players lists (e.g. after the players on the table changed). */
@@ -79,14 +72,8 @@ function populateRandomPlayerSelect(selectId) {
     defaultOption.disabled = true;
     select.appendChild(defaultOption);
 
-    playersList.sort((a, b) => a.name.localeCompare(b.name));
-    playersList.forEach(player => {
-        const option = document.createElement("option");
-        option.value = player.id;
-        option.text = player.name;
-        select.appendChild(option);
-    });
-    select.size = select.options.length;
+    appendPlayerOptions(select, sortedPlayers());
+    select.size = select.options.length + select.querySelectorAll("optgroup").length;
 }
 
 // =====================
@@ -282,10 +269,6 @@ function newGame() {
     // The next players are now on the table, so the next challengers start empty again
     populatePlayerSelect('next-player-1');
     populatePlayerSelect('next-player-2');
-    document.getElementById(`player-${currentGame.winner}-1`).disabled = true;
-    document.getElementById(`player-${currentGame.winner}-2`).disabled = true;
-    document.getElementById(`player-${loserSide}-1`).disabled = false;
-    document.getElementById(`player-${loserSide}-2`).disabled = false;
     document.getElementById('swap-sides-button').style.display = 'block';
     checkPlayers();
     showView('view-select');
@@ -298,12 +281,8 @@ function swapSides() {
     const ids = ['player-red-1', 'player-red-2', 'player-white-1', 'player-white-2'];
     const [r1, r2, w1, w2] = ids.map(id => document.getElementById(id));
     const values = [w1.value, w2.value, r1.value, r2.value];
-    const disabled = [w1.disabled, w2.disabled, r1.disabled, r2.disabled];
 
-    ids.forEach((id, i) => {
-        populatePlayerSelect(id, values[i] || null);
-        document.getElementById(id).disabled = disabled[i];
-    });
+    ids.forEach((id, i) => populatePlayerSelect(id, values[i] || null));
     checkPlayers();
     saveState();
 }
